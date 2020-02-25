@@ -20,7 +20,7 @@
 # -- Project information -----------------------------------------------------
 
 project = u'Bolts'
-copyright = u'2020, Wout Slakhorst'
+copyright = u'2020, Nuts foundation'
 author = u'Wout Slakhorst'
 
 # The short X.Y version
@@ -128,7 +128,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'Bolts.tex', u'Bolts Documentation',
-     u'Wout Slakhorst', 'manual'),
+     u'Nuts foundation', 'manual'),
 ]
 
 
