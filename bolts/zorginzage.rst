@@ -6,7 +6,7 @@ Beschrijving
 
 De zorginzage bolt gaat over het beschikbaar maken van dossiergegevens voor professionals die de voortgang van een zorgtraject willen volgen.
 Hierbij worden observaties en metingen gedaan door verplegend personeel en deze worden dan bekeken door een specialist.
-Een concreet voorbeeld hiervan is een thuiszorgdossier wat wordt bijgehouden door de thuiszorg en welke wordt ingezien door de huisarts.
+Een concreet voorbeeld hiervan is een thuiszorgdossier dat wordt bijgehouden door de thuiszorg en wordt ingezien door de huisarts.
 
 Achtergrond
 ***********
@@ -16,15 +16,15 @@ Wettelijke basis
 
 Wanneer het voorbeeld in de beschrijving genomen wordt als uitgangspunt dan moet de patiënt/cliënt expliciet toestemming geven om de dossiergegevens te delen met de huisarts.
 Hoewel de huisarts wel verantwoordelijk is voor de gezondheid van de gezamenlijke cliënten heeft er geen verwijzing plaatsgevonden van de huisarts naar de thuiszorginstelling.
-De cliënt tekent bij de zorginstelling ook apart een zorgleveringsovereenkomst welke dan de verlichaming is van de behandelrelatie tussen thuiszorginstelling en cliënt.
-Omdat dit een andere behandelrelatie is dan tussen cliënt en huisarts moet er expliciet toestemming gegeven worden om gegevens te mogen delen vanuit thuiszorginstelling naar huisarts.
+De cliënt tekent bij de zorginstelling ook apart een zorgleveringsovereenkomst welke dan de belichaming is van de behandelrelatie tussen thuiszorginstelling en cliënt.
+Omdat dit een andere behandelrelatie is dan tussen cliënt en huisarts moet er expliciet toestemming gegeven worden om gegevens te mogen delen vanuit de thuiszorginstelling met de huisarts.
 
-Binnen Nuts termen moet het *consent* dus een verwijzing bevatten naar een ondertekend document of digitale handtekening.
+In Nuts termen moet het *consent* dus een referentie bevatten naar een ondertekend document of digitale handtekening waarmee de patiënt expliciet toestemming geeft.
 
 Kopiëren of inzien
 ==================
 
-Medische data over een patiënt (subject) die beschikbaar gesteld wordt vanuit de ene zorgorganisatie (custodian) aan een andere zorgorganisatie (actor) kan alleen bekeken worden wanneer nodig of kan gekopieerd worden (hogere beschikbaarheid).
+Medische data over een patiënt (subject) die beschikbaar gesteld wordt vanuit de ene zorgorganisatie (custodian) aan een andere zorgorganisatie (actor) kan alleen ingezien worden wanneer nodig of kan gekopieerd worden naar het eigen ICT systeem. Dit laatste leidt tot een hogere beschikbaarheid.
 Wat mag eigenlijk en wat willen we?
 
 Vanuit de patiënt:
@@ -37,10 +37,11 @@ Een zorgprofessional wil gegevens beschikbaar hebben wanneer nodig en wil niet g
 
 Vanuit wetgeving:
 
-De AVG bevat ondermeer ‘het recht op verwijderen’, wanneer gegevens alleen ingezien worden hoeft er natuurlijk niet verwijderd te worden. Wanneer deze gekopieerd worden natuurlijk wel.
+De AVG bevat ondermeer ‘het recht op verwijderen’, wanneer gegevens alleen ingezien worden hoeft er natuurlijk niet verwijderd te worden. Wanneer deze gekopieerd worden wel.
 Bijkomstigheid is natuurlijk dat gegevens niet zomaar naar een derde partij zijn gegaan, maar dat deze naar een zorgorganisatie zijn gegaan welke ook een behandelrelatie heeft met de patiënt en dus al gegevens had (welke misschien in een los verwijderverzoek ook verwijderd kunnen worden).
-Side-note: bewaarplicht medische gegevens is inmiddels 20jaar.
-Dit alles gezegd hebbende, heeft Nuts een voordeel, de wettelijke grondslag voor gegevens uitwisseling is namelijk opgeslagen en kan als bron dienen om de patiënt te informeren met welke partij gegevens mogelijk gedeeld zijn.
+Side-note: bewaarplicht medische gegevens is inmiddels 20 jaar.
+
+Dit alles gezegd hebbende, heeft Nuts een voordeel: de wettelijke grondslag voor gegevensuitwisseling is opgeslagen en kan als bron dienen om de patiënt te informeren met welke partij gegevens mogelijk gedeeld zijn.
 Daarnaast bevat de logging natuurlijk elke raadpleging door een zorgprofessional van buiten de zorgorganisatie.
 Hierdoor zijn we van mening dat de keuze voor alleen inzien of ook kopiëren kan liggen bij het ‘doel-systeem’ (het XIS/ECD van de actor) met als extra voorwaarde dat bij kopiëren de mogelijkheid aanwezig moet zijn dat er genotificeerd moet kunnen worden indien eerder gekopieerde gegevens verwijderd moeten worden. Het niet verwijderen kan namelijk leiden tot een ‘data-breach’ of erger, er kunnen keuzes gemaakt worden o.b.v. foutieve data.
 
