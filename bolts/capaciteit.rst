@@ -104,8 +104,8 @@ CapacityList
 
   [
     {
-      type: "Type of care given (human readable)",
-      count: <integer>
+      "type": "Type of care given (human readable)",
+      "count": <integer>
     }
   ]
 
