@@ -11,7 +11,7 @@ Deze Bolt heeft in verband met de Corona crisis opeens een hogere prioriteit gek
 Inzet van de Nuts Node
 ======================
 
-Gegeven de verhoogde prioriteit, en de vaststelling dat de Nuts Node vandaag nog niet productie-rijp is, willen we deze Bolt mogelijk maken met *en* zonder gebruikmaking van de Nuts Node. De service kan worden vastgelegd in het Nuts register, maar moet ook aanbiedbaar en bevraagbaar zijn zonder gebruik te maken van een Nuts Node.
+Gegeven de verhoogde prioriteit, en de vaststelling dat de Nuts Node nog niet bij alle leveranciers productie-rijp is, willen we deze Bolt mogelijk maken met *en* zonder gebruikmaking van de Nuts Node. De service kan worden vastgelegd in het Nuts register, maar moet ook aanbiedbaar en bevraagbaar zijn zonder gebruik te maken van een Nuts Node.
 
 Achtergrond
 ***********
