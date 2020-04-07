@@ -95,7 +95,7 @@ Bijvoorbeeld:
 
 De lijst van postcodes mag dus meerdere van zulke strings bevatten, van verschillende specifiekheid. Hiermee wordt een gebied opgebouwd (een wijk of *neighbourhood*) waarin de capaciteit wordt aangeboden.
 
-Indien deze informatie niet beschikbaar is en de naam van de wijk voldoende specifiek is (denk ook wijken die in verschillende steden voorkomen), mag het veld :code:`postalcodes` ook achterwege gelaten worden. Dit maakt het echter wel tamelijk onmogelijk om op een kaart te plotten, dus het heeft zeker niet de voorkeur.
+Indien deze informatie niet beschikbaar is en de naam van de wijk voldoende specifiek is (denk ook aan wijken die in verschillende steden voorkomen), mag het veld :code:`postalcodes` ook achterwege gelaten worden. Dit maakt het echter wel tamelijk onmogelijk om op een kaart te plotten, dus het heeft zeker niet de voorkeur.
 
 CapacityList
 ^^^^^^^^^^^^
