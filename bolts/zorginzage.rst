@@ -94,11 +94,11 @@ Patient ophalen
 
 .. code-block:: rest
 
-   GET /{base_url}/Patient?identifier=http://fhir.nl/fhir/NamingSystem/bsn=999999990
+   GET /{base_url}/Patient?identifier=http://fhir.nl/fhir/NamingSystem/bsn|999999990
 
 Observaties ophalen
 ^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: rest
 
-   GET /{base_url}/Observation?subject.identifier=http://fhir.nl/fhir/NamingSystem/bsn=999999990
+   GET /{base_url}/Observation?subject.identifier=http://fhir.nl/fhir/NamingSystem/bsn|999999990
