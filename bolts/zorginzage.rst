@@ -75,12 +75,12 @@ Voor de uitwisseling wordt HL7 FHIR gebruikt (STU3). De ZIBs zijn gemapt op de v
 Item                 FHIR profiel                                                          ZIB
 ===================  ====================================================================  ========================================================
 Patient              https://simplifier.net/nictizstu3-zib2017-2-x/nl-core-patient         https://zibs.nl/wiki/Patient-v3.1.1(2019NL)
-Bloeddruk            https://simplifier.net/NictizSTU3-Zib2017/ZIB-BloodPressure           https://zibs.nl/wiki/Bloeddruk-v3.1(2018NL)
-Lichaamsgewicht      https://simplifier.net/nictizstu3-zib2017/zib-bodyweight              https://zibs.nl/wiki/Lichaamsgewicht-v3.1(2018NL)
-Lichaamslengte       https://simplifier.net/nictizstu3-zib2017/zib-bodyheight              https://zibs.nl/wiki/Lichaamslengte-v3.1(2018NL)
-Lichaamstemperatuur  https://simplifier.net/nictizstu3-zib2017/zib-bodytemperature         https://zibs.nl/wiki/Lichaamstemperatuur-v3.1.1(2018NL)
-O2Saturatie          https://simplifier.net/nictizstu3-zib2017/zib-oxygensaturation        https://zibs.nl/wiki/O2Saturatie-v3.1(2018NL)
-Polsfrequentie       https://simplifier.net/NictizSTU3-Zib2017/Zib-PulseRate               https://zibs.nl/wiki/Polsfrequentie-v3.3(2019NL)
+Bloeddruk            https://simplifier.net/NictizSTU3-Zib2017/ZIBBloodPressure            https://zibs.nl/wiki/Bloeddruk-v3.1(2018NL)
+Lichaamsgewicht      https://simplifier.net/nictizstu3-zib2017/zibbodyweight               https://zibs.nl/wiki/Lichaamsgewicht-v3.1(2018NL)
+Lichaamslengte       https://simplifier.net/nictizstu3-zib2017/zibbodyheight               https://zibs.nl/wiki/Lichaamslengte-v3.1(2018NL)
+Lichaamstemperatuur  https://simplifier.net/nictizstu3-zib2017/zibbodytemperature          https://zibs.nl/wiki/Lichaamstemperatuur-v3.1.1(2018NL)
+O2Saturatie          https://simplifier.net/nictizstu3-zib2017/ziboxygensaturation         https://zibs.nl/wiki/O2Saturatie-v3.1(2018NL)
+Polsfrequentie       https://simplifier.net/NictizSTU3-Zib2017/ZibPulseRate                https://zibs.nl/wiki/Polsfrequentie-v3.3(2019NL)
 Glucose-meting       https://simplifier.net/NictizSTU3-Zib2017/vitalsigns-bloodglucose     https://zibs.nl/wiki/LaboratoriumUitslag-v4.4(2019NL)
 ===================  ====================================================================  ========================================================
 
