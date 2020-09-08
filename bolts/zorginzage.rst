@@ -74,16 +74,16 @@ Voor de uitwisseling wordt HL7 FHIR gebruikt (STU3). De ZIBs zijn gemapt op de v
 ===================  ====================================================================  ========================================================
 Item                 FHIR profiel                                                          ZIB
 ===================  ====================================================================  ========================================================
-Patient              https://simplifier.net/nictizstu3-zib2017-2-x/nl-core-patient         https://zibs.nl/wiki/Patient-v3.1.1(2019NL)
-Bloeddruk            https://simplifier.net/NictizSTU3-Zib2017/ZIBBloodPressure            https://zibs.nl/wiki/Bloeddruk-v3.1(2018NL)
-Lichaamsgewicht      https://simplifier.net/nictizstu3-zib2017/zibbodyweight               https://zibs.nl/wiki/Lichaamsgewicht-v3.1(2018NL)
-Lichaamslengte       https://simplifier.net/nictizstu3-zib2017/zibbodyheight               https://zibs.nl/wiki/Lichaamslengte-v3.1(2018NL)
-Lichaamstemperatuur  https://simplifier.net/nictizstu3-zib2017/zibbodytemperature          https://zibs.nl/wiki/Lichaamstemperatuur-v3.1.1(2018NL)
-O2Saturatie          https://simplifier.net/nictizstu3-zib2017/ziboxygensaturation         https://zibs.nl/wiki/O2Saturatie-v3.1(2018NL)
-Polsfrequentie       https://simplifier.net/NictizSTU3-Zib2017/ZibPulseRate                https://zibs.nl/wiki/Polsfrequentie-v3.3(2019NL)
-Glucose-meting       https://simplifier.net/NictizSTU3-Zib2017/vitalsignsbloodglucose      https://zibs.nl/wiki/LaboratoriumUitslag-v4.4(2019NL)
+Patient              https://simplifier.net/nictizstu3-zib2017-2-x/nl-core-patient         `Patient-v3.1.1 <https://zibs.nl/wiki/Patient-v3.1.1(2019NL)>`_
+Bloeddruk            https://simplifier.net/NictizSTU3-Zib2017/ZIBBloodPressure            `Bloeddruk-v3.1 <https://zibs.nl/wiki/Bloeddruk-v3.1(2018NL)>`_
+Lichaamsgewicht      https://simplifier.net/nictizstu3-zib2017/zibbodyweight               `Lichaamsgewicht-v3.1 <https://zibs.nl/wiki/Lichaamsgewicht-v3.1(2018NL)>`_
+Lichaamslengte       https://simplifier.net/nictizstu3-zib2017/zibbodyheight               `Lichaamslengte-v3.1 <https://zibs.nl/wiki/Lichaamslengte-v3.1(2018NL)>`_
+Lichaamstemperatuur  https://simplifier.net/nictizstu3-zib2017/zibbodytemperature          `Lichaamstemperatuur-v3.1.1 <https://zibs.nl/wiki/Lichaamstemperatuur-v3.1.1(2018NL)>`_
+O2Saturatie          https://simplifier.net/nictizstu3-zib2017/ziboxygensaturation         `O2Saturatie-v3.1 <https://zibs.nl/wiki/O2Saturatie-v3.1(2018NL)>`_
+Polsfrequentie       https://simplifier.net/NictizSTU3-Zib2017/ZibPulseRate                `Polsfrequentie-v3.3 <https://zibs.nl/wiki/Polsfrequentie-v3.3(2019NL)>`_
+Glucose-meting       https://simplifier.net/NictizSTU3-Zib2017/vitalsignsbloodglucose      `LaboratoriumUitslag-v4.4 <https://zibs.nl/wiki/LaboratoriumUitslag-v4.4(2019NL)>`_
 ===================  ====================================================================  ========================================================
-
+`Python <http://www.python.org/>`_
 Daarnaast is de 'gewone' tekstrapportage uit de thuiszorg gemapt op een FHIR `Observation`.
 
 FHIR operaties
