@@ -81,7 +81,7 @@ Lichaamslengte       https://simplifier.net/nictizstu3-zib2017/zibbodyheight    
 Lichaamstemperatuur  https://simplifier.net/nictizstu3-zib2017/zibbodytemperature          https://zibs.nl/wiki/Lichaamstemperatuur-v3.1.1(2018NL)
 O2Saturatie          https://simplifier.net/nictizstu3-zib2017/ziboxygensaturation         https://zibs.nl/wiki/O2Saturatie-v3.1(2018NL)
 Polsfrequentie       https://simplifier.net/NictizSTU3-Zib2017/ZibPulseRate                https://zibs.nl/wiki/Polsfrequentie-v3.3(2019NL)
-Glucose-meting       https://simplifier.net/NictizSTU3-Zib2017/vitalsignsbloodglucose     https://zibs.nl/wiki/LaboratoriumUitslag-v4.4(2019NL)
+Glucose-meting       https://simplifier.net/NictizSTU3-Zib2017/vitalsignsbloodglucose      https://zibs.nl/wiki/LaboratoriumUitslag-v4.4(2019NL)
 ===================  ====================================================================  ========================================================
 
 Daarnaast is de 'gewone' tekstrapportage uit de thuiszorg gemapt op een FHIR `Observation`.
