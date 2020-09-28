@@ -102,3 +102,11 @@ Observaties ophalen
 .. code-block:: rest
 
    GET /{base_url}/Observation?subject.identifier=http://fhir.nl/fhir/NamingSystem/bsn|999999990
+   
+Nuts scope
+==========
+
+.. code-block:: text
+
+   urn:oid:1.3.6.1.4.1.54851.1:MEDICAL
+   
