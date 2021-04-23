@@ -22,7 +22,7 @@ Dit document is niet volledig. Het is op dit moment een levend document om tusse
 
 Wij wensen u veel leesplezier, en mocht dit document vragen bij u oproepen dan houden we ons aanbevolen [om die te beantwoorden](https://nuts.nl/contact/).
 
-### 1.1. Verklarende woordenlijst
+### 1.1 Verklarende woordenlijst
 
 * Nuts — Een samenwerkingsverband van partijen in de zorg om tot een breed gedragen, open, decentrale infrastructuur te komen ten behoeve van de uitwisseling van gegevens in de zorg en het medische domein. Zie [www.nuts.nl](http://www.nuts.nl).
 * Bolt — Een concrete toepassing van het Nuts gedachtengoed en open technologie om een tastbare use-case in de zorg mogelijk te maken.
@@ -49,7 +49,7 @@ In de praktijk vinden stadia 1 en 2 vaak telefonisch plaats, terwijl stadium 3 v
 
 In de rest van dit hoofdstuk zullen we de verschillende stadia van dit proces verder uittekenen en voorzien van de nodige context om te begrijpen waar we de verpleegkundige overdracht goed mee ondersteunen.
 
-### 2.1. Plekken zoeken
+### 2.1 Plekken zoeken
 
 In het eerste stadium gaat het over het vinden van één of meerdere zorginstellingen die de benodigde zorg kunnen leveren aan de patiënt, en ook capaciteit beschikbaar hebben om die zorg te leveren. Dit wordt vaak “de marktplaats” of “vrije bedden zoeken” genoemd, ook al is er lang niet altijd sprake van een concreet bed.
 
@@ -63,9 +63,9 @@ Echter, de meningen verschillen vrij sterk over hoe fijnmazig zo’n aanbod op z
 
 Omdat er voor deze informatie nog geen data-standaard beschikbaar is en nog geen consensus lijkt te bestaan, laten we dit hele stadium momenteel buiten beschouwing. De noodzaak om dit stadium te digitaliseren lijkt ook niet zo groot, omdat organisaties in dezelfde regio vaak wel weten welke collega-instellingen ze moeten bellen voor bepaalde zorgbehoeftes, en omdat de telefoon dit bij twijfel goed oplost.
 
-### 2.2. Patiënt aanbieden
+### 2.2 Patiënt aanbieden
 
-Wanneer in grove lijnen duidelijk is welke organisaties de patiënt verder zouden kunnen helpen wordt het tijd om de patiënt aan te bieden aan die organisaties. Het is daarbij belangrijk om niet meer informatie te delen dan nodig is voor een goede beoordeling. Zie voor meer informatie over het juridische kader [§3.2](https://docs.google.com/document/d/1laPV5L4VaA-2f9uURzYvPodmIYIs1_n-Og62i_30WXk/edit?ts=5f16e095#heading=h.7mpxg9cb0qa5).
+Wanneer in grove lijnen duidelijk is welke organisaties de patiënt verder zouden kunnen helpen wordt het tijd om de patiënt aan te bieden aan die organisaties. Het is daarbij belangrijk om niet meer informatie te delen dan nodig is voor een goede beoordeling. Zie voor meer informatie over het juridische kader [§3.2](#32-wetgeving).
 
 Het aanbieden van de patiënt aan andere organisaties kan plaatsvinden door het beschikbaar stellen van een aanmeldbericht. In dit aanmeldbericht staan die gegevens uit het dossier van de patiënt die relevant zijn voor de plaatsing. Het doelsysteem van de organisatie ontvangt een event of notificatie dat er een nieuw aanmeldbericht klaarstaat, en kan dit aanmeldbericht ophalen en tonen aan de gebruiker. De gebruiker kan dan geïnformeerd de keuze maken om de patiënt te accepteren of te weigeren. We willen dat de gebruiker daarbij een reden op kan geven, want er is verschil tussen “nee, want ik heb geen capaciteit beschikbaar” en “nee, want ik kan deze zorg niet leveren”.
 
@@ -77,7 +77,7 @@ Wanneer een bronhouder een patiënt aanbiedt aan collega-instellingen kunnen er 
 
 In het eerste geval zal er waarschijnlijk nog een aanbod uitgezet moeten worden, of zal de transfermedewerker toch telefonisch contact moeten zoeken met collega-instellingen. In het tweede geval kan het dossier van de patiënt overgedragen worden. In het derde geval kan de keuze voor een organisatie voorgelegd worden aan de patiënt, diens familie of diens zorgverleners.
 
-### 2.3. Dossier overdragen
+### 2.3 Dossier overdragen
 
 Aan het einde van stadia 1 en 2 is er één organisatie bereid gevonden om de patiënt over te nemen, en is de patiënt daarover geïnformeerd. Daarmee is er formeel sprake van een overdracht, en op basis daarvan mogen dossiergegevens van de patiënt gedeeld worden met de ontvangende organisatie.
 
@@ -89,7 +89,7 @@ Tenslotte kan de gebruiker zichzelf identificeren met een cryptografische handte
 
 Onderstaande paragrafen gegeven een architecturale oplossingsrichting voor het proces dat beschreven is in het vorige hoofdstuk. We nemen hierbij [het Nuts manifest](https://nuts.nl/manifest/) als leidraad.
 
-### 3.1. Notified pull
+### 3.1 Notified pull
 
 In het ontwerp van deze Bolt gaan we uit van een notified pull. Dit houdt in dat gegevens niet actief gestuurd worden naar het doelsysteem \(push\) en dat het doelsysteem niet lukraak gegevens ophaalt \(pull\). In plaats daarvan stuurt het bronsysteem een notificatie naar het doelsysteem dat er specifieke gegevens klaar staan om opgehaald te worden. Alleen naar aanleiding van die notificatie haalt het doelsysteem de benodigde gegevens op.
 
@@ -101,7 +101,7 @@ Het concept van notified pull is daarom de enige manier om alle gevraagde functi
 
 De notificatie kan door de ontvangende partij gebruikt worden om direct een gebruiker te notificeren of andere processen in gang te zetten. De notificatie moet zo “dun” mogelijk zijn en geen persoons- en/of medische gegevens bevatten, om in verschillende stadia van het proces bruikbaar te zijn en vanwege het juridische kader dat we in de volgende paragraaf zullen beschrijven.
 
-### 3.2. Wetgeving
+### 3.2 Wetgeving
 
 De van toepassing zijnde wetteksten zijn:
 
@@ -129,7 +129,7 @@ Als er nog geen overeenstemming is wie de ontvanger gaat worden, dan geldt de WG
 
 Dit is een onnodige extra administratieve last voor de zorg en de betrokkene, want het is voor de evaluatie van het ziektebeeld en het bepalen of de patiënt geplaatst kan worden niet relevant over welk individu het gaat. We kunnen daarom de hoeveelheid data in het aanmeldbericht minimaliseren, en alleen niet-identificerende gegevens versturen. In dat geval is er namelijk sprake van geanonimiseerde gegevens en deze vallen niet onder de AVG.
 
-### 3.3. Beveiliging & vertrouwen
+### 3.3 Beveiliging & vertrouwen
 
 In het notified pull scenario haalt de ontvangende partij gegevens op bij de bronhouder. De bronhouder, als gegevensbeheerder, moet zich ervan vergewissen dat de opvragende partij inderdaad bij de gegevens mag.
 
@@ -144,7 +144,7 @@ Ervan uitgaande dat er behoefte is aan een zo open mogelijke oplossing, waarbij 
 
 Het is noodzakelijk dat er afstemming is welke roots of trust er gekozen worden voor deze cryptografische handtekeningen.
 
-### 3.4. Scheiding proces en autorisatie
+### 3.4 Scheiding proces en autorisatie
 
 Het is de ambitie van Nuts om tot een breed inzetbare en flexibele infrastructuur te komen voor data-uitwisselingen in de zorg en het medische domein. Dit vereist dat we ons voor elke Bolt weer opnieuw de vraag stellen: welke delen van dit proces zijn uniek voor deze use case en welke zijn generiek herbruikbaar?
 
@@ -156,7 +156,7 @@ Het loskoppelen van het overdrachtsproces en de autorisatie voor gegevenstoegang
 
 Deze constructie maakt het eenvoudiger om gegevens bij de bron te houden en vanaf verschillende kanten te bekijken. Zonder ze domweg te kopiëren van het bronsysteem naar het systeem dat het proces ondersteunt, en nogmaals naar het dossiersysteem. Wel betekent het dat het overdrachtsproces zal moeten leiden tot autorisaties voor gegevensuitwisseling. Die constructie zullen we in hoofdstuk vier verder verkennen.
 
-### 3.5. Open & inclusief
+### 3.5 Open & inclusief
 
 We kiezen in het ontwerp van deze Bolt voor open standaarden, volgens het principe van comply or campaign. Er worden geen verplichtingen gesteld tot het gebruik van bepaalde services of software. Elke partij is vrij om te kiezen of ze gebruik maken van ondersteunende diensten zolang deze diensten geen eisen of restricties opleggen aan andere partijen.
 
@@ -172,7 +172,7 @@ Het [technisch ontwerp](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_FH
 
 Sommige onderdelen zijn op dit moment verder uitgewerkt dan andere. Waar mogelijk wordt verwezen naar bestaande standaarden. Waar een onderdeel nog niet voldoende is uitgewerkt zal besproken worden wat er nog mist en hoe tot een oplossing gekomen kan worden. Het is mogelijk dat het vinden van een oplossingsrichting in een later stadium onderdeel moet worden van de verdere samenwerking tussen de verschillende leveranciers.
 
-### 4.1. Proces tracking
+### 4.1 Proces tracking
 
 De juiste doelsystemen moeten genotificeerd worden, zodat de ontvangende partijen weten dat er een overdracht naar de organisatie gedaan zou kunnen worden. Het notificeren zal zowel voor het aanmeldbericht als het daadwerkelijke overdrachtsbericht plaatsvinden. Bij het aanmeldbericht dient deze notificatie ertoe dat het aanbod ter verificatie geëvalueerd kan worden. De notificatie voor het overdrachtsbericht heeft als doel de ontvangende partij te notificeren dat er meer gegevens beschikbaar zijn.
 
@@ -269,9 +269,9 @@ TODO: uitwerking in RFC opnemen voor https://github.com/nuts-foundation/nuts-spe
 
 #### 4.2.1 Grondslag
 
-Zoals beschreven in [§3.4](https://docs.google.com/document/d/1laPV5L4VaA-2f9uURzYvPodmIYIs1_n-Og62i_30WXk/edit?ts=5f16e095#heading=h.6pgdhdq9jcpz) scheiden we het overdrachtsproces van de autorisatie voor gegevenstoegang. Dit betekent dat er naast de task die het proces beheert ook een mechanisme aanwezig moet zijn dat de toegang tot gegevens regelt.
+Zoals beschreven in [§3.4](#34-scheiding-proces-en-autorisatie) scheiden we het overdrachtsproces van de autorisatie voor gegevenstoegang. Dit betekent dat er naast de task die het proces beheert ook een mechanisme aanwezig moet zijn dat de toegang tot gegevens regelt.
 
-In [§3.2](https://docs.google.com/document/d/1laPV5L4VaA-2f9uURzYvPodmIYIs1_n-Og62i_30WXk/edit?ts=5f16e095#heading=h.7mpxg9cb0qa5) staat beschreven op basis van welke grondslagen gegevens verwerkt mogen worden. Een verwijzing is een geldige grondslag, een mogelijke verwijzing \(in het geval van een aanmeldbericht\) in beginsel niet. In FHIR termen kunnen we een grondslag vastleggen in een consent resource.
+In [§3.2](#32-wetgeving) staat beschreven op basis van welke grondslagen gegevens verwerkt mogen worden. Een verwijzing is een geldige grondslag, een mogelijke verwijzing \(in het geval van een aanmeldbericht\) in beginsel niet. In FHIR termen kunnen we een grondslag vastleggen in een consent resource.
 
 De verschillende processtappen in de verpleegkundige overdracht vereisen een bepaalde toegang tot gegevens. Evenzo zullen verschillende toestanden van de task resource leiden tot verschillende consent resources:
 
@@ -377,41 +377,41 @@ Legenda:
 
 De blauwe pijlen geven interactie van de gebruiker weer en de rode pijlen geven gegevensstromen weer. Het slotje bij een gebruiker wil zeggen dat deze geauthenticeerd is volgens de oauth beschrijving.
 
-### 5.1. Aanbiedende partij
+### 5.1 Aanbiedende partij
 
-#### 5.1.1. Embedded scenario
+#### 5.1.1 Embedded scenario
 
 In het embedded scenario is één leverancier verantwoordelijk voor het bijhouden van het overdrachtsproces en voor het beschikbaar stellen van de benodigde gegevens. Dit is het geval wanneer een XIS/ECD leverancier de benodigde functionaliteit voor de verpleegkundige overdracht implementeert in het XIS/ECD.
 
 ![](https://lh5.googleusercontent.com/O3od8KgnBNyw47gRCXxk_vLf_d8UJkU3heJTq-TuDb7xnhL-uVz7NZPz6fv0VazflwG64hMeDolrnHarvE0_poG0sORWHSRfN8RFDt3qj0spaqWQTGJHzx2mspeoYuxYuOqIFlGd)
 
-#### 5.1.2. Hybride scenario
+#### 5.1.2 Hybride scenario
 
 In het hybride scenario is er een scheiding aangebracht in het beschikbaar stellen van de gegevens en het afhandelen van de verpleegkundige overdracht. Het XIS/ECD beschikt in dit scenario over een resource server die ZIBs over FHIR beschikbaar stelt. In dit scenario komen dergelijke gegevens rechtstreeks uit het XIS/ECD. De broker handelt in dit geval het overdrachtsproces af. De broker maakt het mogelijk via de transfer UI om de ontvangende zorginstellingen te selecteren en om de juiste gegevens te selecteren. Ook het aanmeldbericht en het overdrachtsbericht zijn dan de verantwoordelijkheid voor de broker. Deze hebben echter wel verwijzingen naar resources die bij het XIS/ECD opgeslagen zijn. Om de juiste gegevens te selecteren moet er wel een koppeling zijn tussen broker en XIS/ECD. Hoe die koppeling er uit ziet valt buiten deze specificatie. Bij het selecteren van de juiste gegevens moet de broker ook de juiste grondslag vastleggen zodat de AAA service de juiste autorisatie kan toepassen. 
 
 ![](https://lh4.googleusercontent.com/1h7jRP1_heZAwAeRhVNLwfudzuT8aiSk8U38N-0tXwEBnhBuv18CyWHWsDHXmNh9QxHLzgfM_N5a_aSCLGeU2dr3uQMljTt068auyLXuX4Hu8gELfqHG20NGvH9A0_ChOK5-WuRG)
 
-#### 5.1.3. Delegate scenario
+#### 5.1.3 Delegate scenario
 
 Het delegate scenario gaat er van uit dat het XIS/ECD geen enkele ondersteuning heeft en ook niet zal gaan bieden voor het ontsluiten van ZIBs over FHIR. In dit geval handelt de broker en het proces af en voorziet het in de gegevensontsluiting. In de praktijk komen de gegevens wel vanuit het XIS/ECD, maar zal de broker deze omvormen naar ZIBs. De data-proxy handelt dit voor de broker af. Het kan zijn dat het hier gaat om het kopiëren van gegevens, maar ook dat gegevens real-time omgezet worden naar ZIBs. Ook in dit scenario zal de broker bij de gegevens uit het XIS/ECD moeten kunnen om de transfer professional te kunnen ondersteunen.
 
 ![](https://lh5.googleusercontent.com/uqASB5V_px0piuRh_FV59tmeY2F9MaYkjBgmi2KzwUBrwCI3aQhH6Ikc_MKd4E6jWLARHE-GZEULkmEYyxCbKk0vKyYFyYqji5C39YyYRTHHyosWNm6W46HQQpRcqgj_9q86afiY)
 
-### 5.2. Ontvangende partij
+### 5.2 Ontvangende partij
 
-#### 5.1.1. Embedded scenario
+#### 5.1.1 Embedded scenario
 
 Dit is de evenknie van het proces aan de versturende kant. Alle functionaliteit wordt door het XIS/ECD geïmplementeerd. Zowel de professionals die de aanvraag beoordelen als de medische professionals die de zorg opstarten zullen geauthenticeerd moeten zijn volgens de in H4 vermelde methode. Een verschil is dat de beoordelend professional alleen het aanmeldbericht zal hoeven in te zien, terwijl de medisch professional het volledige overdrachtsbericht nodig heeft om dossiervorming te starten. Het synchroniseren van de tasks kan gebruikt worden om de beoordelend professional een signaal te geven dat er een nieuwe overdracht wordt aangeboden. Het XIS/ECD kan zelf ZIBs over FHIR verwerken en tonen aan de gebruiker.
 
 ![](https://lh5.googleusercontent.com/igwPdEzndJH1o8HSCTmL7oCEzDDqOAEajbMHUAUp3D5n3V1RsWGWF2xTmXuNISv1llXzkcXGIufoEAbjitRfHrsUZpIlS78FPGvhFaFlIefmknIe6JTNTq5AXCZEJZVP2XbxnubV)
 
-#### 5.1.2. Hybride scenario
+#### 5.1.2 Hybride scenario
 
 Het hybride scenario is voor de ontvangende klant bijna exact hetzelfde als het embedded scenario. Er zou een verschil kunnen zitten in hoe de medisch professional op de hoogte wordt gebracht dat er een nieuwe patiënt is. In het embedded scenario kan het XIS/ECD dit via interne logica regelen, terwijl er in het hybride scenario twee mogelijkheden zijn: De broker notificeert het XIS/ECD via een custom koppeling of het XIS/ECD reageert op het aanwezig zijn van een grondslag omtrent een overdracht waarbij een overdrachtsbericht beschikbaar is gekomen.
 
 ![](https://lh3.googleusercontent.com/kGZEamyRjm__WjL5adWk7AzqhdXgCc8vXfHNp1eNznasS1CiRBtV06rAJSvmLGeQxUK4dxK9beb0kmZ4w41pKDG_kw1MYAD9wcEu06s8RMqHvLQVk4M9lZeRutMLb7Xvf_8gnk-Q)
 
-#### 5.1.3. Delegate scenario
+#### 5.1.3 Delegate scenario
 
 In dit scenario neemt de broker ook het verwerken van de ZIBs over FHIR voor zijn rekening en levert dit aan het XIS/ECD op een verwerkbare manier. 
 
