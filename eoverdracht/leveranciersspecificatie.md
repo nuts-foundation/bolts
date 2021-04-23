@@ -10,11 +10,11 @@ description: 'Let op: Deze specificatie verkeert nog in de status DRAFT!'
 
 ## 1. Inleiding
 
-Een moer is waardeloos zonder een bout, en evenzo is Nuts waardeloos zonder een Bolt. “Bolt” is onze term voor een concrete toepassing van het Nuts gedachtengoed en open technologie om een tastbare use-case in de zorg mogelijk te maken.
+Een moer is waardeloos zonder een bout, en evenzo is Nuts waardeloos zonder een Bolt. “Bolt” is onze term voor een concrete toepassing van het Nuts gedachtegoed en open technologie om een tastbare use-case in de zorg mogelijk te maken.
 
 Voor u ligt de leveranciersspecificatie van de eOverdracht Bolt, zoals opgesteld door de samenwerkende softwareleveranciers in het Nuts initiatief. Dit document specificeert eenduidig hoe de digitale overdracht van een patiënt van de ene naar de andere instelling procesmatig en technisch zal plaatsvinden, met gebruikmaking van open standaarden.
 
-Nictiz en V&VN hebben veel werk verzet voor het [specificeren van de eOverdracht](https://informatiestandaarden.nictiz.nl/wiki/vpk:V3.1_Ontwerp_eOverdracht). Naar goed gebruik is deze specificatie [infrastructuur agnostisch](https://informatiestandaarden.nictiz.nl/wiki/vpk:V3.1_Ontwerp_eOverdracht#Infrastructuur). Daarom is het nu tijd om onderling afspraken te maken over hoe we de specificatie van Nictiz op infrastructuur-niveau gaan implementeren. Hoe gaan we randvoorwaarden zoals notificaties, APIs, security en adressering regelen, zodat we ook op dit niveau duidelijke open standaarden hebben?
+Nictiz en V&VN hebben veel werk verzet voor het [specificeren van de eOverdracht](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_Ontwerp_eOverdracht). Naar goed gebruik is deze specificatie [infrastructuur agnostisch](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_Ontwerp_eOverdracht#Infrastructuur). Daarom is het nu tijd om onderling afspraken te maken over hoe we de specificatie van Nictiz op infrastructuur-niveau gaan implementeren. Hoe gaan we randvoorwaarden zoals notificaties, APIs, security en adressering regelen, zodat we ook op dit niveau duidelijke open standaarden hebben?
 
 Dit document is primair bedoeld voor softwareleveranciers die aan willen sluiten bij de eOverdracht, en ten behoeve daarvan een implementatietraject gaan starten. Voor hen biedt dit document de noodzakelijke inzichten om tot een succesvolle koppeling te komen. Daarnaast beoogt dit document leesbaar te zijn voor betrokken zorginstellingen, zodat helder wordt of het proces van de eOverdracht zoals dat hier beschreven staat voldoet aan hun wensen.
 
@@ -37,7 +37,7 @@ Wij wensen u veel leesplezier, en mocht dit document vragen bij u oproepen dan h
 
 ## 2. Procesbeschrijving
 
-Met deze specificatie ondersteunen we het proces van de verpleegkundige overdracht waarbij een patiënt van de ene naar de andere zorginstelling wordt overgedragen. Dat kan bijvoorbeeld zijn omdat de patiënt vanuit een thuiszorgsituatie wordt opgenomen in het ziekenhuis of omdat de patiënt uit het ziekenhuis wordt ontslagen maar nog moet revalideren bij een andere zorginstelling. Voor een volledig overzicht zie de [informatiestromen zoals uitgewerkt door Nictiz](https://informatiestandaarden.nictiz.nl/wiki/vpk:V3.1_Ontwerp_eOverdracht). 
+Met deze specificatie ondersteunen we het proces van de verpleegkundige overdracht waarbij een patiënt van de ene naar de andere zorginstelling wordt overgedragen. Dat kan bijvoorbeeld zijn omdat de patiënt vanuit een thuiszorgsituatie wordt opgenomen in het ziekenhuis of omdat de patiënt uit het ziekenhuis wordt ontslagen maar nog moet revalideren bij een andere zorginstelling. Voor een volledig overzicht zie de [informatiestromen zoals uitgewerkt door Nictiz](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_Ontwerp_eOverdracht). 
 
 We onderscheiden in dit proces drie stadia:
 
@@ -168,6 +168,8 @@ Het uitwisselen van gegevens in het notified pull scenario is onder te verdelen 
 
 Er wordt zo veel mogelijk uitgegaan van breed toepasbare en gestandaardiseerde oplossingen die ook buiten de verpleegkundige overdracht gebruikt kunnen worden.
 
+Het [technisch ontwerp](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_FHIR_eOverdracht) van Nictiz bevat veel inhoudelijke aspecten van de gegevensuitwisselingen. Deze Bolt omschrijving vult dit aan met infrastructurele zaken.  
+
 Sommige onderdelen zijn op dit moment verder uitgewerkt dan andere. Waar mogelijk wordt verwezen naar bestaande standaarden. Waar een onderdeel nog niet voldoende is uitgewerkt zal besproken worden wat er nog mist en hoe tot een oplossing gekomen kan worden. Het is mogelijk dat het vinden van een oplossingsrichting in een later stadium onderdeel moet worden van de verdere samenwerking tussen de verschillende leveranciers.
 
 ### 4.1. Proces tracking
@@ -180,13 +182,7 @@ Ook is het noodzakelijk om de voortgang van het proces te kunnen monitoren. Elk 
 
 De [task resource](https://www.hl7.org/fhir/task.html) is geschikt om de voortgang van een uitgezette taak bij te houden. Deze kan gebruikt worden om een ontvangende partij te notificeren en kan geupdate worden door beide partijen. De bronhouder is verantwoordelijk voor het uitzetten van de taak. Wanneer de bronhouder met meerdere partijen een aanmeldbericht wil delen, zal voor elke ontvangende partij een task moeten worden aangemaakt. De bronhouder is ervoor verantwoordelijk dat voor gerelateerde tasks er uiteindelijk maar één toegewezen wordt aan een ontvangende partij. Vanwege deze verantwoordelijkheid en vanwege het principe van gegevens aan de bron zal de task opgeslagen worden in het bronsysteem. Het doelsysteem wordt genotificeerd en kan de task ophalen. Bij elke wijziging in de task zal het bronsysteem een notificatie sturen.
 
-Op [de site van HL7 FHIR](https://www.hl7.org/fhir/task.html) is te zien dat de task resource verschillende toestanden kan hebben. Deze toestanden zijn voor de verpleegkundige overdracht van toepassing:
-
-* Requested
-* Accepted
-* Rejected
-* Cancelled
-* Completed 
+Zie [§3.4](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_FHIR_eOverdracht) van de technische specificatie.
 
 Qua gegevens kan de task een referentie bevatten naar het aanmeldbericht. Als de task de status completed krijgt kan tevens een referentie naar het overdrachtsbericht worden toegevoegd. Voor het overdrachtsbericht is dan geen aparte task nodig.
 
@@ -198,7 +194,63 @@ De bronhouder is belast met het notificeren van de juiste ontvangende partijen. 
 2. Wat is het technische adres van dit doelsysteem?
 3. Is het doelsysteem te vertrouwen? Met andere woorden: is de leverancier van het doelsysteem daadwerkelijk een verwerker van de ontvangende partij?
 
-Er is momenteel geen oplossing die bovenstaande punten ondersteunt. Een minimale oplossing die meteen werkt is dat partijen dit handmatig met elkaar uitwisselen tot een meer geïntegreerde en digitale oplossing beschikbaar is. Een minimale eis aan een toekomstige oplossing is dat alle gegevens van een cryptografische handtekening zijn voorzien die is te herleiden tot een configureerbare root of trust. Ook moet de oplossing voldoen aan de zaken die zijn genoemd in [§3.5](https://docs.google.com/document/d/1laPV5L4VaA-2f9uURzYvPodmIYIs1_n-Og62i_30WXk/edit?ts=5f16e095#heading=h.cso86v73tl3k).
+Voor het vinden van de ontvangende partij wordt gebruik gemaakt van het Nuts register volgens [RFC006](https://nuts-foundation.gitbook.io/drafts/rfc/rfc006-distributed-registry) van de Nuts specificatie. Om de overdracht te ondersteunen moeten zowel de verzendende partij als ontvangende partij een dienst registreren in het register.
+
+Diensten kunnen per leverancier en/of organisatie geregistreerd worden volgens de [service specificatie](https://nuts-foundation.gitbook.io/drafts/rfc/rfc006-distributed-registry#4-services).
+Voor de verzendende partij dient er een `eOverdracht-sender` dienst geregistreerd te worden:
+
+```json
+{
+  "id": "did:nuts:organization_identifier#F1Dsgwngfdg3SH6TpDv0Ta1aOE",
+  "type": "eOverdracht-sender", 
+  "serviceEndpoint": {
+    "oauth": "did:nuts:vendor_identifier?type=oauth",
+    "fhir": "did:nuts:vendor_identifier?type=fhir"
+  }
+}
+```
+
+het `type` moet hierin `eOverdracht-sender` zijn. Het `id` zal volgens de specificatie moeten worden opgesteld. Het `serviceEndpoint` moet de velden `oauth` en `fhir` bevatten. Beide waardes moeten een dynamische verwijzing hebben naar een endpoint. Het endpoint waarnaar verwezen wordt vanuit het `fhir` veld moet een `serviceEndpoint` hebben welke verwijst naar het fhir `\[base\]` path zoals beschreven in de technische specificatie van Nictiz. Het endpoint waarnaar verwezen wordt vanuit het `oauth` veld moet een `serviceEndpoint` hebben welke verwijst naar het `accesstoken` endpoint van een OAuth authentication server.
+Het type in het query veld mag daarbij door de leverancier zelf gekozen worden. De dynamische verwijzingen uit het voorbeeld verwijzen bijvoorbeeld naar de endpoints die de leverancier geregistreerd heeft:
+
+```json
+{
+    "id": "did:nuts:vendor_identifier#F1Dsgwngfdg3SH6TpDv0Ta1aOE",
+    "type": "fhir", 
+    "serviceEndpoint": "https://fhir.example.com/base"
+}
+```
+```json
+{
+    "id": "did:nuts:vendor_identifier#F1Dsgwngfdg3SH6TpDv0Ta1aOE",
+    "type": "oauth",
+    "serviceEndpoint": "https://nuts.example.com/public/auth/v1/accesstoken"
+}
+```
+
+Voor de ontvanger een `eOverdracht-receiver` dienst geregistreerd te worden:
+
+```json
+{
+    "id": "did:nuts:organization_identifier#F1Dsgwngfdg3SH6TpDv0Ta1aOE",
+    "type": "eOverdracht-receiver", 
+    "serviceEndpoint": {
+        "fhir": "did:nuts:vendor_identifier?type=fhir"
+    }
+}
+```
+
+Met het endpoint:
+
+```json
+{
+    "id": "did:nuts:vendor_identifier#F1Dsgwngfdg3SH6TpDv0Ta1aOE",
+    "type": "oauth",
+    "serviceEndpoint": "https://fhir.example.com/base"
+}
+```
+
+Dit laatste endpoint dient het `\[base\]` path te zien waarop notificaties ontvangen kunnen worden middels de `Task` resource.
 
 #### 4.1.3 Notificatie protocol
 
@@ -210,7 +262,8 @@ De keuze blijft aan de leverancier om deze registratie te implementeren in een e
 
 Wanneer er een task wordt toegevoegd zal het bronsysteem een notificatie \(lege POST volgens FHIR documentatie\) sturen naar het eerder geregistreerde endpoint van het doelsysteem. Dit is een signaal aan het doelsysteem om een FHIR search request uit te voeren op de task resource. Ook de task resource moet een geregistreerd endpoint hebben. Dit levert een of meerdere task records op. Deze task records kunnen opgehaald worden zonder geïdentificeerde gebruiker. Dit betekent dat de task resource geen persoonsgegevens bevat en dat eventuele referenties naar persoonsgegevens natuurlijk een geautoriseerde gebruiker vereisen.
 
-Zaken als security en request context moeten nog uitgewerkt worden. Daartoe zal te zijner tijd een specificatie moeten komen voor het notificatiemechanisme.
+De beveiliging zal geschieden volgens [RFC003](https://nuts-foundation.gitbook.io/drafts/rfc/rfc003-oauth2-authorization).
+TODO: uitwerking in RFC opnemen voor https://github.com/nuts-foundation/nuts-specification/issues/55.
 
 ### 4.2 Data uitwisselingen
 
@@ -240,7 +293,7 @@ Er wordt momenteel gewerkt aan een specificatie voor het automatisch uitwisselen
 
 Voor de eOverdracht is door Nictiz een lijst met zorg-informatie-bouwstenen \(ZIBs\) gedefinieerd. Deze bouwstenen zijn een feitelijke omschrijving van alle informatie benodigd voor een overdracht. 
 
-De ZIBs beschrijven de benodigde data, maar beschrijven niet hoe deze door computersystemen kunnen worden uitgewisseld. Daarvoor maken we gebruik van HL7 FHIR. De profielen voor de eOverdracht worden door Nictiz beheerd en worden gepubliceerd op de website van [Simplifier](https://simplifier.net/Nictiz-STU3-eOverdracht). De mapping van een ZIB naar FHIR is vaak niet een-op-een. Zo wordt de ZIB Persoonsgegevens gemapt op de FHIR profielen: Patient, Coverage en Related Person. Zie voor de complete mapping van ZIBs op FHIR profielen voor de eOverdracht [deze tabel](https://informatiestandaarden.nictiz.nl/wiki/vpk:V3.1_FHIR_eOverdracht#Structure_of_the_Overdrachtsbericht_.28complete.29). De set van FHIR resources die samen de overdracht vormen worden gebundeld in een [FHIR Composition](https://www.hl7.org/fhir/composition.html). 
+De ZIBs beschrijven de benodigde data, maar beschrijven niet hoe deze door computersystemen kunnen worden uitgewisseld. Daarvoor maken we gebruik van HL7 FHIR. De profielen voor de eOverdracht worden door Nictiz beheerd en worden gepubliceerd op de website van [Simplifier](https://simplifier.net/Nictiz-STU3-eOverdracht). De mapping van een ZIB naar FHIR is vaak niet een-op-een. Zo wordt de ZIB Persoonsgegevens gemapt op de FHIR profielen: Patient, Coverage en Related Person. Zie voor de complete mapping van ZIBs op FHIR profielen voor de eOverdracht [deze tabel](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_FHIR_eOverdracht#HCIMs). De set van FHIR resources die samen de overdracht vormen worden gebundeld in een [FHIR Composition](https://www.hl7.org/fhir/composition.html). 
 
 De inhoud van de ZIBs en FHIR profielen staan open ter discussie. Zo heeft het aanmeldbericht verplicht persoonsgegevens volgens de ZIB beschrijving, waarbij eerder is opgemerkt dat dit niet zonder meer toegestaan is. Ook moet er nog besloten worden hoe om te gaan met verschillende versies van de ZIB standaard.
 
@@ -253,15 +306,13 @@ Naast de informatie over welke FHIR resource opgehaald kan worden is het ook nod
 3. Vanuit welk doelsysteem komt het request?
 4. Vanuit welke bronhouder wordt de data beschikbaar gesteld?
 
-Daarnaast zouden er nog extra attributen opgenomen kunnen worden indien nodig. Elke van bovenstaande punten wordt gedekt door de voorgestelde OAuth flow.
-
-Er wordt momenteel gewerkt aan een specificatie voor de OAuth flow. 
+Daarnaast zouden er nog extra attributen opgenomen kunnen worden indien nodig. Elke van bovenstaande punten wordt gedekt door [RFC003](https://nuts-foundation.gitbook.io/drafts/rfc/rfc003-oauth2-authorization)
 
 #### 4.2.4 Beveiligde verbinding
 
 Alle requests worden gedaan over een TLS verbinding. Naast het servercertificaat is er ook nog een client-certificaat benodigd. Het client-certificaat identificeert het doelsysteem.
 
-De uitgever \(CA\) van het client-certificaat moet nog afgestemd worden.
+Er wordt gebruik gemaakt van pkiOverheid certificaten voor zowel het server certificaat als het client certificaat.
 
 #### 4.2.5 Authenticatie & Autorisatie
 
@@ -283,7 +334,7 @@ De gegevens van het request worden na succesvolle verificatie omgezet in een sig
 
 Wanneer er is vastgesteld wie toegang wil hebben tot welke gegevens kan aan de hand van de uitgegeven grondslagen gecontroleerd worden of dit is toegestaan. In de grondslag staat immers welke opvragende partij bij welke resource mag. Verschillende grondslagen kunnen natuurlijk gecombineerd worden zodat een gebruiker van een opvragende partij toegang krijgt tot meerdere resources. Dit mechanisme ondersteunt dus automatisch ook meer use cases dan enkel de verpleegkundige overdracht.
 
-Deze flow is reeds gebruikt in een proeftuin. Er wordt momenteel gewerkt aan een Oauth specificatie.
+Zie [RFC003](https://nuts-foundation.gitbook.io/drafts/rfc/rfc003-oauth2-authorization) voor de volledige specificatie.
 
 #### 4.2.6 Auditing
 
