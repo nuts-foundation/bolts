@@ -228,7 +228,7 @@ Het type in het query veld mag daarbij door de leverancier zelf gekozen worden. 
 }
 ```
 
-Voor de ontvanger een `eOverdracht-receiver` dienst geregistreerd te worden:
+Voor de ontvanger dient een `eOverdracht-receiver` dienst geregistreerd te worden:
 
 ```json
 {
@@ -416,4 +416,3 @@ Het hybride scenario is voor de ontvangende klant bijna exact hetzelfde als het 
 In dit scenario neemt de broker ook het verwerken van de ZIBs over FHIR voor zijn rekening en levert dit aan het XIS/ECD op een verwerkbare manier. 
 
 ![](https://lh3.googleusercontent.com/Gop-QxG9C0IEJ8tQSfO4Ak-T-fAo17Kiex-SGKDkquNKNsSo2e_izGWyo2t0OpY67UmeruTRCSPCImuXrwwTPDDHkVmqhJdB-l_hShSo9PCOnvYoFYtC57p0BRi4nUk3W1hd9s5r)
-
