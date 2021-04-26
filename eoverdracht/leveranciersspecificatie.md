@@ -204,8 +204,8 @@ Voor de verzendende partij dient er een `eOverdracht-sender` dienst geregistreer
   "id": "did:nuts:organization_identifier#F1Dsgwngfdg3SH6TpDv0Ta1aOE",
   "type": "eOverdracht-sender", 
   "serviceEndpoint": {
-    "oauth": "did:nuts:vendor_identifier?type=oauth",
-    "fhir": "did:nuts:vendor_identifier?type=fhir"
+    "oauth": "did:nuts:vendor_identifier?type=production-oauth",
+    "fhir": "did:nuts:vendor_identifier?type=eOverdracht-sender-fhir"
   }
 }
 ```
@@ -216,14 +216,14 @@ Het type in het query veld mag daarbij door de leverancier zelf gekozen worden. 
 ```json
 {
     "id": "did:nuts:vendor_identifier#F1Dsgwngfdg3SH6TpDv0Ta1aOE",
-    "type": "fhir", 
+    "type": "eOverdracht-sender-fhir", 
     "serviceEndpoint": "https://fhir.example.com/base"
 }
 ```
 ```json
 {
     "id": "did:nuts:vendor_identifier#F1Dsgwngfdg3SH6TpDv0Ta1aOE",
-    "type": "oauth",
+    "type": "production-oauth",
     "serviceEndpoint": "https://nuts.example.com/public/auth/v1/accesstoken"
 }
 ```
@@ -235,7 +235,7 @@ Voor de ontvanger dient een `eOverdracht-receiver` dienst geregistreerd te worde
     "id": "did:nuts:organization_identifier#F1Dsgwngfdg3SH6TpDv0Ta1aOE",
     "type": "eOverdracht-receiver", 
     "serviceEndpoint": {
-        "fhir": "did:nuts:vendor_identifier?type=fhir"
+        "fhir": "did:nuts:vendor_identifier?type=eOverdracht-receiver-fhir"
     }
 }
 ```
@@ -245,7 +245,7 @@ Met het endpoint:
 ```json
 {
     "id": "did:nuts:vendor_identifier#F1Dsgwngfdg3SH6TpDv0Ta1aOE",
-    "type": "oauth",
+    "type": "eOverdracht-receiver-fhir",
     "serviceEndpoint": "https://fhir.example.com/base"
 }
 ```
