@@ -180,7 +180,7 @@ Ook is het noodzakelijk om de voortgang van het proces te kunnen monitoren. Elk 
 
 #### 4.1.1 Task resource
 
-De [task resource](https://www.hl7.org/fhir/task.html) is geschikt om de voortgang van een uitgezette taak bij te houden. Deze kan gebruikt worden om een ontvangende partij te notificeren en kan geupdate worden door beide partijen. De bronhouder is verantwoordelijk voor het uitzetten van de taak. Wanneer de bronhouder met meerdere partijen een aanmeldbericht wil delen, zal voor elke ontvangende partij een task moeten worden aangemaakt. De bronhouder is ervoor verantwoordelijk dat voor gerelateerde tasks er uiteindelijk maar één toegewezen wordt aan een ontvangende partij. Vanwege deze verantwoordelijkheid en vanwege het principe van gegevens aan de bron zal de task opgeslagen worden in het bronsysteem. Het doelsysteem wordt genotificeerd en kan de task ophalen. Bij elke wijziging in de task zal het bronsysteem een notificatie sturen.
+De [task resource](https://www.hl7.org/fhir/task.html) wordt gebruikt om de voortgang van een uitgezette taak bij te houden. De bronhouder is verantwoordelijk voor het uitzetten van de taak. Wanneer de bronhouder met meerdere partijen een aanmeldbericht wil delen, zal voor elke ontvangende partij een task moeten worden aangemaakt. De bronhouder is ervoor verantwoordelijk dat voor gerelateerde tasks er uiteindelijk maar één toegewezen wordt aan een ontvangende partij. Vanwege deze verantwoordelijkheid en vanwege het principe van gegevens aan de bron zal de task opgeslagen worden in het bronsysteem. Het doelsysteem wordt genotificeerd en kan de task ophalen. Bij elke wijziging in de task zal het bronsysteem een notificatie sturen.
 
 Zie [§3.4](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_FHIR_eOverdracht) van de technische specificatie.
 
@@ -250,11 +250,11 @@ Met het endpoint:
 }
 ```
 
-Dit laatste endpoint dient het `\[base\]` path te zien waarop notificaties ontvangen kunnen worden middels de `Task` resource.
+Dit laatste endpoint dient het `\[base\]` path te zien waarop notificaties ontvangen kunnen worden middels de `Task` resource. De volgende paragraaf beschrijft het notificatie mechanisme. Het betreft dus een notificatie dat er een nieuwe (of gewijzigde) `Task` resource klaar staat bij verzendende partij.
 
 #### 4.1.3 Notificatie protocol
 
-Het voorstel is om het notificatie mechanisme compatible te houden met [FHIR subscriptions](https://www.hl7.org/fhir/subscription.html). Bij een volledige implementatie van FHIR subscriptions neemt het doelsysteem een abonnement op een FHIR search query bij een bronsysteem. Daarmee wordt expliciet vastgelegd wanneer een doelsysteem genotificeerd moet worden.
+Het voorstel is om het notificatie mechanisme compatible te houden met [FHIR subscriptions](http://hl7.org/fhir/STU3/subscription.html). Bij een volledige implementatie van FHIR subscriptions neemt het doelsysteem een abonnement op een FHIR search query bij een bronsysteem. Daarmee wordt expliciet vastgelegd wanneer een doelsysteem genotificeerd moet worden.
 
 Echter, wanneer een organisatie maar één generiek FHIR subscriptions endpoint kan registreren terwijl er verschillende systemen gebruikt worden voor de eOverdracht en andere Bolts of niet-Nuts processen, dan moeten subscriptions doorgestuurd worden naar verschillende applicaties, met alle complicaties van dien. Daarom is het voorstel om de specifieke notificatie endpoints voor verschillende use-cases apart te registreren en uit te wisselen.
 
@@ -293,9 +293,9 @@ Er wordt momenteel gewerkt aan een specificatie voor het automatisch uitwisselen
 
 Voor de eOverdracht is door Nictiz een lijst met zorg-informatie-bouwstenen \(ZIBs\) gedefinieerd. Deze bouwstenen zijn een feitelijke omschrijving van alle informatie benodigd voor een overdracht. 
 
-De ZIBs beschrijven de benodigde data, maar beschrijven niet hoe deze door computersystemen kunnen worden uitgewisseld. Daarvoor maken we gebruik van HL7 FHIR. De profielen voor de eOverdracht worden door Nictiz beheerd en worden gepubliceerd op de website van [Simplifier](https://simplifier.net/Nictiz-STU3-eOverdracht). De mapping van een ZIB naar FHIR is vaak niet een-op-een. Zo wordt de ZIB Persoonsgegevens gemapt op de FHIR profielen: Patient, Coverage en Related Person. Zie voor de complete mapping van ZIBs op FHIR profielen voor de eOverdracht [deze tabel](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_FHIR_eOverdracht#HCIMs). De set van FHIR resources die samen de overdracht vormen worden gebundeld in een [FHIR Composition](https://www.hl7.org/fhir/composition.html). 
+De ZIBs beschrijven de benodigde data, maar beschrijven niet hoe deze door computersystemen kunnen worden uitgewisseld. Daarvoor maken we gebruik van HL7 FHIR. De profielen voor de eOverdracht worden door Nictiz beheerd en worden gepubliceerd op de website van [Simplifier](https://simplifier.net/Nictiz-STU3-eOverdracht). De mapping van een ZIB naar FHIR is vaak niet een-op-een. Zo wordt de ZIB Persoonsgegevens gemapt op de FHIR profielen: Patient, Coverage en Related Person. Zie voor de complete mapping van ZIBs op FHIR profielen voor de eOverdracht [deze tabel](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_FHIR_eOverdracht#HCIMs). De set van FHIR resources die samen de overdracht vormen worden gebundeld in een [FHIR Composition](https://www.hl7.org/fhir/STU3/composition.html). 
 
-De inhoud van de ZIBs en FHIR profielen staan open ter discussie. Zo heeft het aanmeldbericht verplicht persoonsgegevens volgens de ZIB beschrijving, waarbij eerder is opgemerkt dat dit niet zonder meer toegestaan is. Ook moet er nog besloten worden hoe om te gaan met verschillende versies van de ZIB standaard.
+Volgens de specificatie is het mogelijk om persoonsgegevens op te nemen in het aanmeldbericht. Dit is niet altijd toegestaan vanuit de wetgeving. De verzendende partij moet hier rekening mee houden. Zie ook [§2.2.2](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_Ontwerp_eOverdracht) van het Nictiz functioneel ontwerp. 
 
 #### 4.2.3 Context
 
@@ -399,19 +399,19 @@ Het delegate scenario gaat er van uit dat het XIS/ECD geen enkele ondersteuning 
 
 ### 5.2 Ontvangende partij
 
-#### 5.1.1 Embedded scenario
+#### 5.2.1 Embedded scenario
 
-Dit is de evenknie van het proces aan de versturende kant. Alle functionaliteit wordt door het XIS/ECD geïmplementeerd. Zowel de professionals die de aanvraag beoordelen als de medische professionals die de zorg opstarten zullen geauthenticeerd moeten zijn volgens de in H4 vermelde methode. Een verschil is dat de beoordelend professional alleen het aanmeldbericht zal hoeven in te zien, terwijl de medisch professional het volledige overdrachtsbericht nodig heeft om dossiervorming te starten. Het synchroniseren van de tasks kan gebruikt worden om de beoordelend professional een signaal te geven dat er een nieuwe overdracht wordt aangeboden. Het XIS/ECD kan zelf ZIBs over FHIR verwerken en tonen aan de gebruiker.
+Dit is de evenknie van het proces aan de versturende kant. Alle functionaliteit wordt door het XIS/ECD geïmplementeerd. Zowel de professionals die de aanvraag beoordelen als de medische professionals die de zorg opstarten zullen geauthenticeerd moeten zijn volgens de in H4 vermelde methode. Een verschil is dat de beoordelend professional alleen het aanmeldbericht zal hoeven in te zien, terwijl de medisch professional het volledige overdrachtsbericht nodig heeft om dossiervorming te starten. Het synchroniseren van de tasks kan gebruikt worden om de beoordelend professional een signaal te geven dat er een nieuwe overdracht wordt aangeboden. Het updaten van de tasks gaat nog altijd via de versturende kant. Het XIS/ECD kan zelf ZIBs over FHIR verwerken en tonen aan de gebruiker.
 
 ![](https://lh5.googleusercontent.com/igwPdEzndJH1o8HSCTmL7oCEzDDqOAEajbMHUAUp3D5n3V1RsWGWF2xTmXuNISv1llXzkcXGIufoEAbjitRfHrsUZpIlS78FPGvhFaFlIefmknIe6JTNTq5AXCZEJZVP2XbxnubV)
 
-#### 5.1.2 Hybride scenario
+#### 5.2.2 Hybride scenario
 
 Het hybride scenario is voor de ontvangende klant bijna exact hetzelfde als het embedded scenario. Er zou een verschil kunnen zitten in hoe de medisch professional op de hoogte wordt gebracht dat er een nieuwe patiënt is. In het embedded scenario kan het XIS/ECD dit via interne logica regelen, terwijl er in het hybride scenario twee mogelijkheden zijn: De broker notificeert het XIS/ECD via een custom koppeling of het XIS/ECD reageert op het aanwezig zijn van een grondslag omtrent een overdracht waarbij een overdrachtsbericht beschikbaar is gekomen.
 
 ![](https://lh3.googleusercontent.com/kGZEamyRjm__WjL5adWk7AzqhdXgCc8vXfHNp1eNznasS1CiRBtV06rAJSvmLGeQxUK4dxK9beb0kmZ4w41pKDG_kw1MYAD9wcEu06s8RMqHvLQVk4M9lZeRutMLb7Xvf_8gnk-Q)
 
-#### 5.1.3 Delegate scenario
+#### 5.2.3 Delegate scenario
 
 In dit scenario neemt de broker ook het verwerken van de ZIBs over FHIR voor zijn rekening en levert dit aan het XIS/ECD op een verwerkbare manier. 
 
