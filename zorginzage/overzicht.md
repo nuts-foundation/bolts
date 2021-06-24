@@ -62,7 +62,7 @@ Voor de uitwisseling wordt HL7 FHIR gebruikt \(STU3\). De ZIBs zijn gemapt op de
 | Polsfrequentie | [https://simplifier.net/NictizSTU3-Zib2017/ZibPulseRate](https://simplifier.net/NictizSTU3-Zib2017/ZibPulseRate) | [Polsfrequentie-v3.3](https://zibs.nl/wiki/Polsfrequentie-v3.3%282019NL%29) |
 | Glucose-meting | [https://simplifier.net/NictizSTU3-Zib2017/vitalsignsbloodglucose](https://simplifier.net/NictizSTU3-Zib2017/vitalsignsbloodglucose) | [LaboratoriumUitslag-v4.4](https://zibs.nl/wiki/LaboratoriumUitslag-v4.4%282019NL%29) |
 
-[Python](http://www.python.org/) Daarnaast is de ‘gewone’ tekstrapportage uit de thuiszorg gemapt op een FHIR Observation.
+Daarnaast is de ‘gewone’ tekstrapportage uit de thuiszorg gemapt op een FHIR Observation.
 
 #### FHIR operaties
 

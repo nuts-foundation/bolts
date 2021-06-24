@@ -6,7 +6,7 @@ description: 'Let op: Deze specificatie verkeert nog in de status DRAFT!'
 
 ![](../.gitbook/assets/by-sa.png)
 
- _Dit werk valt onder een_ [_Creative Commons Naamsvermelding-GelijkDelen 4.0 Internationaal-licentie_](https://creativecommons.org/licenses/by-sa/4.0/)_._
+_Dit werk valt onder een_ [_Creative Commons Naamsvermelding-GelijkDelen 4.0 Internationaal-licentie_](https://creativecommons.org/licenses/by-sa/4.0/)_._
 
 ## 1. Inleiding
 
@@ -37,7 +37,7 @@ Wij wensen u veel leesplezier, en mocht dit document vragen bij u oproepen dan h
 
 ## 2. Procesbeschrijving
 
-Met deze specificatie ondersteunen we het proces van de verpleegkundige overdracht waarbij een patiënt van de ene naar de andere zorginstelling wordt overgedragen. Dat kan bijvoorbeeld zijn omdat de patiënt vanuit een thuiszorgsituatie wordt opgenomen in het ziekenhuis of omdat de patiënt uit het ziekenhuis wordt ontslagen maar nog moet revalideren bij een andere zorginstelling. Voor een volledig overzicht zie de [informatiestromen zoals uitgewerkt door Nictiz](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_Ontwerp_eOverdracht). 
+Met deze specificatie ondersteunen we het proces van de verpleegkundige overdracht waarbij een patiënt van de ene naar de andere zorginstelling wordt overgedragen. Dat kan bijvoorbeeld zijn omdat de patiënt vanuit een thuiszorgsituatie wordt opgenomen in het ziekenhuis of omdat de patiënt uit het ziekenhuis wordt ontslagen maar nog moet revalideren bij een andere zorginstelling. Voor een volledig overzicht zie de [informatiestromen zoals uitgewerkt door Nictiz](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_Ontwerp_eOverdracht).
 
 We onderscheiden in dit proces drie stadia:
 
@@ -65,7 +65,7 @@ Omdat er voor deze informatie nog geen data-standaard beschikbaar is en nog geen
 
 ### 2.2 Patiënt aanbieden
 
-Wanneer in grove lijnen duidelijk is welke organisaties de patiënt verder zouden kunnen helpen wordt het tijd om de patiënt aan te bieden aan die organisaties. Het is daarbij belangrijk om niet meer informatie te delen dan nodig is voor een goede beoordeling. Zie voor meer informatie over het juridische kader [§3.2](#32-wetgeving).
+Wanneer in grove lijnen duidelijk is welke organisaties de patiënt verder zouden kunnen helpen wordt het tijd om de patiënt aan te bieden aan die organisaties. Het is daarbij belangrijk om niet meer informatie te delen dan nodig is voor een goede beoordeling. Zie voor meer informatie over het juridische kader [§3.2](leveranciersspecificatie.md#32-wetgeving).
 
 Het aanbieden van de patiënt aan andere organisaties kan plaatsvinden door het beschikbaar stellen van een aanmeldbericht. In dit aanmeldbericht staan die gegevens uit het dossier van de patiënt die relevant zijn voor de plaatsing. Het doelsysteem van de organisatie ontvangt een event of notificatie dat er een nieuw aanmeldbericht klaarstaat, en kan dit aanmeldbericht ophalen en tonen aan de gebruiker. De gebruiker kan dan geïnformeerd de keuze maken om de patiënt te accepteren of te weigeren. We willen dat de gebruiker daarbij een reden op kan geven, want er is verschil tussen “nee, want ik heb geen capaciteit beschikbaar” en “nee, want ik kan deze zorg niet leveren”.
 
@@ -168,7 +168,7 @@ Het uitwisselen van gegevens in het notified pull scenario is onder te verdelen 
 
 Er wordt zo veel mogelijk uitgegaan van breed toepasbare en gestandaardiseerde oplossingen die ook buiten de verpleegkundige overdracht gebruikt kunnen worden.
 
-Het [technisch ontwerp](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_FHIR_eOverdracht) van Nictiz bevat veel inhoudelijke aspecten van de gegevensuitwisselingen. Deze Bolt omschrijving vult dit aan met infrastructurele zaken.  
+Het [technisch ontwerp](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_FHIR_eOverdracht) van Nictiz bevat veel inhoudelijke aspecten van de gegevensuitwisselingen. Deze Bolt omschrijving vult dit aan met infrastructurele zaken.
 
 Sommige onderdelen zijn op dit moment verder uitgewerkt dan andere. Waar mogelijk wordt verwezen naar bestaande standaarden. Waar een onderdeel nog niet voldoende is uitgewerkt zal besproken worden wat er nog mist en hoe tot een oplossing gekomen kan worden. Het is mogelijk dat het vinden van een oplossingsrichting in een later stadium onderdeel moet worden van de verdere samenwerking tussen de verschillende leveranciers.
 
@@ -196,10 +196,9 @@ De bronhouder is belast met het notificeren van de juiste ontvangende partijen. 
 
 Voor het vinden van de ontvangende partij wordt gebruik gemaakt van het Nuts register volgens [RFC006](https://nuts-foundation.gitbook.io/drafts/rfc/rfc006-distributed-registry) van de Nuts specificatie. Om de overdracht te ondersteunen moeten zowel de verzendende partij als ontvangende partij een dienst registreren in het register.
 
-Diensten kunnen per leverancier en/of organisatie geregistreerd worden volgens de [service specificatie](https://nuts-foundation.gitbook.io/drafts/rfc/rfc006-distributed-registry#4-services).
-Voor de verzendende partij dient er een `eOverdracht-sender` dienst geregistreerd te worden:
+Diensten kunnen per leverancier en/of organisatie geregistreerd worden volgens de [service specificatie](https://nuts-foundation.gitbook.io/drafts/rfc/rfc006-distributed-registry#4-services). Voor de verzendende partij dient er een `eOverdracht-sender` dienst geregistreerd te worden:
 
-```json
+```javascript
 {
   "id": "did:nuts:organization_identifier#F1Dsgwngfdg3SH6TpDv0Ta1aOE",
   "type": "eOverdracht-sender", 
@@ -213,14 +212,15 @@ Voor de verzendende partij dient er een `eOverdracht-sender` dienst geregistreer
 het `type` moet hierin `eOverdracht-sender` zijn. Het `id` zal volgens de specificatie moeten worden opgesteld. Het `serviceEndpoint` moet de velden `oauth` en `fhir` bevatten. Beide waardes moeten een dynamische verwijzing hebben naar een endpoint. Het endpoint waarnaar verwezen wordt vanuit het `fhir` veld moet een `serviceEndpoint` hebben welke verwijst naar het fhir `[base]` path zoals beschreven in de technische specificatie van Nictiz. Het endpoint waarnaar verwezen wordt vanuit het `oauth` veld moet een `serviceEndpoint` hebben welke verwijst naar het `accesstoken` endpoint van een OAuth authentication server.
 Het type in het query veld mag daarbij door de leverancier zelf gekozen worden. De dynamische verwijzingen uit het voorbeeld verwijzen bijvoorbeeld naar de endpoints die de leverancier geregistreerd heeft:
 
-```json
+```javascript
 {
     "id": "did:nuts:vendor_identifier#F1Dsgwngfdg3SH6TpDv0Ta1aOE",
     "type": "eOverdracht-sender-fhir", 
     "serviceEndpoint": "https://fhir.example.com/base"
 }
 ```
-```json
+
+```javascript
 {
     "id": "did:nuts:vendor_identifier#F1Dsgwngfdg3SH6TpDv0Ta1aOE",
     "type": "production-oauth",
@@ -230,7 +230,7 @@ Het type in het query veld mag daarbij door de leverancier zelf gekozen worden. 
 
 Voor de ontvanger dient een `eOverdracht-receiver` dienst geregistreerd te worden:
 
-```json
+```javascript
 {
     "id": "did:nuts:organization_identifier#F1Dsgwngfdg3SH6TpDv0Ta1aOE",
     "type": "eOverdracht-receiver", 
@@ -242,7 +242,7 @@ Voor de ontvanger dient een `eOverdracht-receiver` dienst geregistreerd te worde
 
 Met het endpoint:
 
-```json
+```javascript
 {
     "id": "did:nuts:vendor_identifier#F1Dsgwngfdg3SH6TpDv0Ta1aOE",
     "type": "eOverdracht-receiver-fhir",
@@ -262,16 +262,15 @@ De keuze blijft aan de leverancier om deze registratie te implementeren in een e
 
 Wanneer er een task wordt toegevoegd zal het bronsysteem een notificatie \(lege POST volgens FHIR documentatie\) sturen naar het eerder geregistreerde endpoint van het doelsysteem. Dit is een signaal aan het doelsysteem om een FHIR search request uit te voeren op de task resource. Ook de task resource moet een geregistreerd endpoint hebben. Dit levert een of meerdere task records op. Deze task records kunnen opgehaald worden zonder geïdentificeerde gebruiker. Dit betekent dat de task resource geen persoonsgegevens bevat en dat eventuele referenties naar persoonsgegevens natuurlijk een geautoriseerde gebruiker vereisen.
 
-De beveiliging zal geschieden volgens [RFC003](https://nuts-foundation.gitbook.io/drafts/rfc/rfc003-oauth2-authorization).
-TODO: uitwerking in RFC opnemen voor https://github.com/nuts-foundation/nuts-specification/issues/55.
+De beveiliging zal geschieden volgens [RFC003](https://nuts-foundation.gitbook.io/drafts/rfc/rfc003-oauth2-authorization). TODO: uitwerking in RFC opnemen voor [https://github.com/nuts-foundation/nuts-specification/issues/55](https://github.com/nuts-foundation/nuts-specification/issues/55).
 
 ### 4.2 Data uitwisselingen
 
 #### 4.2.1 Grondslag
 
-Zoals beschreven in [§3.4](#34-scheiding-proces-en-autorisatie) scheiden we het overdrachtsproces van de autorisatie voor gegevenstoegang. Dit betekent dat er naast de task die het proces beheert ook een mechanisme aanwezig moet zijn dat de toegang tot gegevens regelt.
+Zoals beschreven in [§3.4](leveranciersspecificatie.md#34-scheiding-proces-en-autorisatie) scheiden we het overdrachtsproces van de autorisatie voor gegevenstoegang. Dit betekent dat er naast de task die het proces beheert ook een mechanisme aanwezig moet zijn dat de toegang tot gegevens regelt.
 
-In [§3.2](#32-wetgeving) staat beschreven op basis van welke grondslagen gegevens verwerkt mogen worden. Een verwijzing is een geldige grondslag, een mogelijke verwijzing \(in het geval van een aanmeldbericht\) in beginsel niet.
+In [§3.2](leveranciersspecificatie.md#32-wetgeving) staat beschreven op basis van welke grondslagen gegevens verwerkt mogen worden. Een verwijzing is een geldige grondslag, een mogelijke verwijzing \(in het geval van een aanmeldbericht\) in beginsel niet.
 
 De verschillende processtappen in de verpleegkundige overdracht vereisen een bepaalde toegang tot gegevens. Evenzo zullen verschillende toestanden van de task resource leiden tot bepaalde toegang:
 
@@ -291,11 +290,11 @@ Er wordt momenteel gewerkt aan een specificatie voor het automatisch uitwisselen
 
 #### 4.2.2 Inhoud
 
-Voor de eOverdracht is door Nictiz een lijst met zorg-informatie-bouwstenen \(ZIBs\) gedefinieerd. Deze bouwstenen zijn een feitelijke omschrijving van alle informatie benodigd voor een overdracht. 
+Voor de eOverdracht is door Nictiz een lijst met zorg-informatie-bouwstenen \(ZIBs\) gedefinieerd. Deze bouwstenen zijn een feitelijke omschrijving van alle informatie benodigd voor een overdracht.
 
-De ZIBs beschrijven de benodigde data, maar beschrijven niet hoe deze door computersystemen kunnen worden uitgewisseld. Daarvoor maken we gebruik van HL7 FHIR. De profielen voor de eOverdracht worden door Nictiz beheerd en worden gepubliceerd op de website van [Simplifier](https://simplifier.net/Nictiz-STU3-eOverdracht). De mapping van een ZIB naar FHIR is vaak niet een-op-een. Zo wordt de ZIB Persoonsgegevens gemapt op de FHIR profielen: Patient, Coverage en Related Person. Zie voor de complete mapping van ZIBs op FHIR profielen voor de eOverdracht [deze tabel](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_FHIR_eOverdracht#HCIMs). De set van FHIR resources die samen de overdracht vormen worden gebundeld in een [FHIR Composition](https://www.hl7.org/fhir/STU3/composition.html). 
+De ZIBs beschrijven de benodigde data, maar beschrijven niet hoe deze door computersystemen kunnen worden uitgewisseld. Daarvoor maken we gebruik van HL7 FHIR. De profielen voor de eOverdracht worden door Nictiz beheerd en worden gepubliceerd op de website van [Simplifier](https://simplifier.net/Nictiz-STU3-eOverdracht). De mapping van een ZIB naar FHIR is vaak niet een-op-een. Zo wordt de ZIB Persoonsgegevens gemapt op de FHIR profielen: Patient, Coverage en Related Person. Zie voor de complete mapping van ZIBs op FHIR profielen voor de eOverdracht [deze tabel](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_FHIR_eOverdracht#HCIMs). De set van FHIR resources die samen de overdracht vormen worden gebundeld in een [FHIR Composition](https://www.hl7.org/fhir/STU3/composition.html).
 
-Volgens de specificatie is het mogelijk om persoonsgegevens op te nemen in het aanmeldbericht. Dit is niet altijd toegestaan vanuit de wetgeving. De verzendende partij moet hier rekening mee houden. Zie ook [§2.2.2](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_Ontwerp_eOverdracht) van het Nictiz functioneel ontwerp. 
+Volgens de specificatie is het mogelijk om persoonsgegevens op te nemen in het aanmeldbericht. Dit is niet altijd toegestaan vanuit de wetgeving. De verzendende partij moet hier rekening mee houden. Zie ook [§2.2.2](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_Ontwerp_eOverdracht) van het Nictiz functioneel ontwerp.
 
 #### 4.2.3 Context
 
@@ -443,7 +442,7 @@ In het embedded scenario is één leverancier verantwoordelijk voor het bijhoude
 
 #### 6.1.2 Hybride scenario
 
-In het hybride scenario is er een scheiding aangebracht in het beschikbaar stellen van de gegevens en het afhandelen van de verpleegkundige overdracht. Het XIS/ECD beschikt in dit scenario over een resource server die ZIBs over FHIR beschikbaar stelt. In dit scenario komen dergelijke gegevens rechtstreeks uit het XIS/ECD. De broker handelt in dit geval het overdrachtsproces af. De broker maakt het mogelijk via de transfer UI om de ontvangende zorginstellingen te selecteren en om de juiste gegevens te selecteren. Ook het aanmeldbericht en het overdrachtsbericht zijn dan de verantwoordelijkheid voor de broker. Deze hebben echter wel verwijzingen naar resources die bij het XIS/ECD opgeslagen zijn. Om de juiste gegevens te selecteren moet er wel een koppeling zijn tussen broker en XIS/ECD. Hoe die koppeling er uit ziet valt buiten deze specificatie. Bij het selecteren van de juiste gegevens moet de broker ook de juiste grondslag vastleggen zodat de AAA service de juiste autorisatie kan toepassen. 
+In het hybride scenario is er een scheiding aangebracht in het beschikbaar stellen van de gegevens en het afhandelen van de verpleegkundige overdracht. Het XIS/ECD beschikt in dit scenario over een resource server die ZIBs over FHIR beschikbaar stelt. In dit scenario komen dergelijke gegevens rechtstreeks uit het XIS/ECD. De broker handelt in dit geval het overdrachtsproces af. De broker maakt het mogelijk via de transfer UI om de ontvangende zorginstellingen te selecteren en om de juiste gegevens te selecteren. Ook het aanmeldbericht en het overdrachtsbericht zijn dan de verantwoordelijkheid voor de broker. Deze hebben echter wel verwijzingen naar resources die bij het XIS/ECD opgeslagen zijn. Om de juiste gegevens te selecteren moet er wel een koppeling zijn tussen broker en XIS/ECD. Hoe die koppeling er uit ziet valt buiten deze specificatie. Bij het selecteren van de juiste gegevens moet de broker ook de juiste grondslag vastleggen zodat de AAA service de juiste autorisatie kan toepassen.
 
 ![](https://lh4.googleusercontent.com/1h7jRP1_heZAwAeRhVNLwfudzuT8aiSk8U38N-0tXwEBnhBuv18CyWHWsDHXmNh9QxHLzgfM_N5a_aSCLGeU2dr3uQMljTt068auyLXuX4Hu8gELfqHG20NGvH9A0_ChOK5-WuRG)
 
@@ -469,6 +468,7 @@ Het hybride scenario is voor de ontvangende klant bijna exact hetzelfde als het 
 
 #### 6.2.3 Delegate scenario
 
-In dit scenario neemt de broker ook het verwerken van de ZIBs over FHIR voor zijn rekening en levert dit aan het XIS/ECD op een verwerkbare manier. 
+In dit scenario neemt de broker ook het verwerken van de ZIBs over FHIR voor zijn rekening en levert dit aan het XIS/ECD op een verwerkbare manier.
 
 ![](https://lh3.googleusercontent.com/Gop-QxG9C0IEJ8tQSfO4Ak-T-fAo17Kiex-SGKDkquNKNsSo2e_izGWyo2t0OpY67UmeruTRCSPCImuXrwwTPDDHkVmqhJdB-l_hShSo9PCOnvYoFYtC57p0BRi4nUk3W1hd9s5r)
+
