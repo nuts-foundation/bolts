@@ -1,0 +1,57 @@
+@startuml
+actor Consumer
+box "Data Station" #Azure
+boundary HttpServer as "Http Messaging Interface (mTLS)"
+control MessageHandler
+control VCVerifier as "Nuts Node" #LightCoral
+control ValidQueryCredential
+entity ActivityLog
+entity Connections
+entity FAIRData
+end box
+
+Consumer -> HttpServer ++ : POST (body: basic message request)
+HttpServer ->> MessageHandler ++ : Route to message handler
+HttpServer --> Consumer : 200 OK
+deactivate HttpServer
+
+    MessageHandler -> ActivityLog : Log message request
+    MessageHandler -> Connections ++ : Verify connection
+    ... Option to automatic accept the connection or to accept the connection manually  ...
+    Connections --> MessageHandler : Connection accepted
+    deactivate Connections
+
+    MessageHandler -> VCVerifier ++ : Verify Presentation and credentials
+    == Handling verification   ==
+
+    == End verification  ==
+    VCVerifier --> MessageHandler -- : Presentation and credentials accepted
+    deactivate VCVerifier
+
+    MessageHandler ->> ValidQueryCredential ++ : Process credentials
+deactivate MessageHandler
+    
+
+
+loop Embedded Verifiable Credentials
+
+    ValidQueryCredential -> FAIRData ++ : GET /<dataset>/sparql?query=<sparql query>
+    FAIRData -> FAIRData : Query data
+    FAIRData --> ValidQueryCredential -- : result set
+
+end
+ValidQueryCredential --> HttpServer ++ : Send message (result set)
+deactivate ValidQueryCredential
+
+    HttpServer -> HttpServer ++ : Route to message handler
+
+        HttpServer -> Consumer : POST (body: basic message response)
+
+        HttpServer -> ActivityLog ++ : Log message response
+        deactivate ActivityLog
+    
+        Consumer --> HttpServer : 200 OK
+
+    deactivate HttpServer
+deactivate HttpServer
+@enduml
