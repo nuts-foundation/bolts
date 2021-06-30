@@ -1,0 +1,74 @@
+@startuml
+skinparam ParticipantPadding 30
+skinparam BoxPadding 20
+
+Box Sender
+  actor Alice
+  participant "Sender System" as Sender
+  participant SenderNode
+end box
+Box Receiver
+  participant ReceiverNode
+  participant "Receiving System" as Receiver
+  actor Bob
+end box
+
+group "Nofify"
+  Alice --> Sender: start
+  activate Sender
+  Sender -> SenderNode: (1) Register etransfer authorization
+  SenderNode --> Sender: Ok
+  SenderNode -> ReceiverNode: (2) sync authorizations
+  Sender -> SenderNode: (3) Find Task notify endpoint
+  SenderNode -> Sender: <<Endpoint>>
+  Sender -> SenderNode: (4) Request Token
+  SenderNode -> Sender: <<Token>>
+  Sender -> Receiver: (5) Notify
+  Receiver -> ReceiverNode: (6) Validate <<token>>
+  ReceiverNode --> Receiver: Ok
+  Receiver --> Sender: Ok
+  deactivate Sender
+end
+
+group "Retrieve Task"
+  Receiver -> ReceiverNode: (7) Request token
+  activate Receiver
+  ReceiverNode -> Receiver: <<token>>
+  Receiver -> Sender: (8) Task search
+  Sender -> SenderNode: (9) Validate <<token>>
+  SenderNode --> Sender: Ok
+  Sender -> Receiver: <<tasks>>
+  Receiver --> Bob: Notify
+  deactivate Receiver
+end
+
+group "Sign contract"
+  Bob --> Receiver: start
+  activate Bob
+  activate Receiver
+  Receiver -> ReceiverNode: (10) Auth
+  ReceiverNode -> Receiver: Auth challenge
+  Receiver -> Bob: (11) Show QR code
+  Bob -> ReceiverNode: Sign Auth
+  deactivate Bob
+  ReceiverNode -> Receiver: <<Signed contract>>
+end
+
+group "Retrieve eTransfer"
+  Receiver -> ReceiverNode: (12) Find eTransfer endpoint
+  ReceiverNode -> Receiver: <<Endpoints>>
+  Receiver -> ReceiverNode: (13) Find eTransfer authorization
+  ReceiverNode -> Receiver: <<Authorization>>
+  Receiver -> SenderNode: (14) Authz request <<contract, authorization>>
+  SenderNode -> Receiver: <<Access token>>
+  Receiver -> Sender: (15) request eTransfer <<access token>>
+  activate Sender
+  Sender -> SenderNode: (16) validate
+  SenderNode -> Sender: <<restrictions>>
+  Sender -> Sender: (17) eTransfer in restrictions?
+  Sender -> Receiver: <<eTransfer>>
+  deactivate Sender
+  Receiver --> Bob: Show
+  deactivate Receiver
+end
+@enduml
