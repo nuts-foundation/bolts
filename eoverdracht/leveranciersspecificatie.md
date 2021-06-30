@@ -340,19 +340,11 @@ Omdat de identiteit van de gebruiker en de opvragende partij zijn vastgelegd in 
 
 #### 4.2.7 Service autorisatie
 
-In het autorisatie record moet in ieder geval het volgende zijn opgenomen:
-
-* Een identifier van het autorisatie record
-* De bronhouder
-* De ontvangende partij
-* Een verwijzing naar het aanmeldbericht zodat deze opgehaald kan worden op de aangegeven locatie
-* Een verwijzing naar de bijbehorende Task. De ontvangende partij moet immers rechten hebben om de Task te mogen updaten 
-* Het type grondslag \(veronderstelde toestemming\)
-* Op welke gegevensdiensten de autorisatie van toepassing is \(eOverdracht\)
-
-Daarnaast kan de betrokken patiënt opgenomen zijn in het autorisatie record, als deze bekend mag zijn bij de ontvangende partij.
-
-Er wordt momenteel aan de specificatie gewerkt voor het autorisatie record \([RFC014](https://nuts-foundation.gitbook.io/drafts/rfc/rfc014-authorization-credential)\).
+Vanuit [RFC014](https://nuts-foundation.gitbook.io/drafts/rfc/rfc014-authorization-credential) is er de verplichting om voor elke Bolt een access policy te definiëren.
+Een policy beschrijft hoet het autorisatie record opgesteld moet worden en waar het vervolgens toegang tot geeft.
+Alleen de bronhouder moet een autorisatie record aanmaken (`eOverdracht-sender`).
+Een autorisatie record voor de service `eOverdracht-sender` geeft geen algemene rechten tot resources.
+Alleen de resources die onder de restricties worden geregistreerd zijn toegankelijk.
 
 ## 5. Implementatie
 
