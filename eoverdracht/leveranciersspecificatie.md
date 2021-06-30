@@ -260,7 +260,7 @@ Echter, wanneer een organisatie maar één generiek FHIR subscriptions endpoint 
 
 De keuze blijft aan de leverancier om deze registratie te implementeren in een echte FHIR subscription of een oplossing op maat te maken.
 
-Wanneer er een task wordt toegevoegd zal het bronsysteem een notificatie \(lege POST volgens FHIR documentatie\) sturen naar het eerder geregistreerde endpoint van het doelsysteem. Dit is een signaal aan het doelsysteem om een FHIR search request uit te voeren op de task resource. Ook de task resource moet een geregistreerd endpoint hebben. Dit levert een of meerdere task records op. Deze task records kunnen opgehaald worden zonder geïdentificeerde gebruiker. Dit betekent dat de task resource geen persoonsgegevens bevat en dat eventuele referenties naar persoonsgegevens natuurlijk een geautoriseerde gebruiker vereisen.
+Wanneer er een task wordt toegevoegd zal het bronsysteem een notificatie \(lege POST volgens FHIR documentatie\) sturen naar het eerder geregistreerde endpoint van het doelsysteem. Dit is een signaal aan het doelsysteem om een FHIR search request uit te voeren op de task resource. Dit levert een of meerdere task records op. Deze task records kunnen opgehaald worden zonder geïdentificeerde gebruiker. Dit betekent dat de task resource geen persoonsgegevens bevat en dat eventuele referenties naar persoonsgegevens natuurlijk een geautoriseerde gebruiker vereisen.
 
 De beveiliging zal geschieden volgens [RFC003](https://nuts-foundation.gitbook.io/drafts/rfc/rfc003-oauth2-authorization). TODO: uitwerking in RFC opnemen voor [https://github.com/nuts-foundation/nuts-specification/issues/55](https://github.com/nuts-foundation/nuts-specification/issues/55).
 
