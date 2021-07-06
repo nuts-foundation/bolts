@@ -95,7 +95,7 @@ In het ontwerp van deze Bolt gaan we uit van een notified pull. Dit houdt in dat
 
 Het voordeel van deze aanpak boven push is dat het doelsysteem gegevens alleen dan op hoeft te halen wanneer de ontvangende partij ook daadwerkelijk behoefte aan deze gegevens heeft. Op deze manier kan dus beter aan de eis van dataminimalisatie worden voldaan. Ook is het eenvoudiger om vast te stellen dat de persoon die gegevens ophaalt de juiste persoon is, en om te voldoen aan de NEN7513 en AVG verplichting om te loggen welke persoon de gegevens heeft ingezien. Vergelijk een persoonlijke e-mail inbox waar je inlogt om je e-mail op te halen met een faxmachine op de afdeling waar iedereen die langsloopt bij kan.
 
-Het voordeel van deze aanpak boven enkel een pull mechanisme is timing en eenvoud van beveiliging. Wanneer het doelsysteem geen notificatie ontvangt moet er periodiek gepulled worden om te zien of er nieuwe gegevens staan te wachten. Analoog aan het constant herladen van een webpagina. Dit veroorzaakt veel onnodig extra netwerkverkeer en vertragingen in het ontvangen van berichten. Ook moet het bronsysteem dan bij elke pull het verzoek naast een complexe rechtenstructuur leggen om te ontdekken of de ontvanger het gevraagde bericht mag ophalen. In het geval van een notified pull kan er simpelweg worden gekeken of er voor de combinatie van ontvangende partij en gevraagde informatie inderdaad een notificatie is verzonden.
+Het voordeel van deze aanpak boven enkel een pull mechanisme is timing en eenvoud van beveiliging. Wanneer het doelsysteem geen notificatie ontvangt moet er periodiek gepulled worden om te zien of er nieuwe gegevens staan te wachten. Analoog aan het constant herladen van een webpagina. Dit veroorzaakt veel onnodig extra netwerkverkeer en vertragingen in het ontvangen van berichten. Ook moet het bronsysteem dan bij elke pull het verzoek naast een complexe rechtenstructuur leggen om te ontdekken of de ontvanger het gevraagde bericht mag ophalen.
 
 Het concept van notified pull is daarom de enige manier om alle gevraagde functionaliteit te ondersteunen, privacy te waarborgen en auditing op de juiste manier toe te passen. Het voorkomt onnodig kopiëren van gegevens tussen systemen en de bronhouder behoudt de volledige controle over wie er toegang krijgt tot gegevens.
 
@@ -235,7 +235,7 @@ Voor de ontvanger dient een `eOverdracht-receiver` dienst geregistreerd te worde
     "id": "did:nuts:organization_identifier#F1Dsgwngfdg3SH6TpDv0Ta1aOE",
     "type": "eOverdracht-receiver", 
     "serviceEndpoint": {
-        "fhir": "did:nuts:vendor_identifier?type=eOverdracht-receiver-fhir"
+        "notification": "did:nuts:vendor_identifier?type=eOverdracht-receiver-fhir"
     }
 }
 ```
@@ -246,7 +246,7 @@ Met het endpoint:
 {
     "id": "did:nuts:vendor_identifier#F1Dsgwngfdg3SH6TpDv0Ta1aOE",
     "type": "eOverdracht-receiver-fhir",
-    "serviceEndpoint": "https://fhir.example.com/base"
+    "serviceEndpoint": "https://notify.example.com/base"
 }
 ```
 
@@ -376,7 +376,7 @@ Onderstaand flow diagram toont alle stappen van notificeren tot ophalen. Wanneer
 
 ### 5.3.2 Notificatie 
 
-3. De bronhouder zoekt in de Nuts node naar het endpoint om de Task notificatie naar toe te sturen. Het base endpoint bevindt zich in het `fhir` veld van de `eOverdracht-receiver` service van de ontvangende organisatie. Het endpoint waar de notificatie heen moet is een combinatie van het _base_ endpoint en het relatieve pad zoals gedefinieerd in het TO van Nictiz.
+3. De bronhouder zoekt in de Nuts node naar het endpoint om de Task notificatie naar toe te sturen. Het base endpoint bevindt zich in het `notification` veld van de `eOverdracht-receiver` service van de ontvangende organisatie. Het endpoint waar de notificatie heen moet is een combinatie van het _base_ endpoint en het relatieve pad zoals gedefinieerd in het TO van Nictiz.
 4. De bronhouder vraagt een security token aan de Nuts node. In hoofdstuk X \(volgt nog\) van [RFC003](https://nuts-foundation.gitbook.io/drafts/rfc/rfc003-oauth2-authorization) staat hoe dit token opgebouwd dient te worden. Het security token wordt aangevraagd in de context van de service.
 5. Er wordt een notificatie gestuurd volgens het Nictiz TO naar het endpoint vanuit stap 3. Het security token uit stap 4 wordt hierbij als header meegestuurd.
 6. Het doelsysteem valideert het token bij de Nuts node.
