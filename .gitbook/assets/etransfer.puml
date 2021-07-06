@@ -13,12 +13,15 @@ Box Receiver
   actor Bob
 end box
 
-group "Nofify"
-  Alice --> Sender: start
-  activate Sender
+Alice --> Sender: start
+activate Sender
+group "authorization registration"
   Sender -> SenderNode: (1) Register etransfer authorization
   SenderNode --> Sender: Ok
   SenderNode -> ReceiverNode: (2) sync authorizations
+end
+
+group "Notify"
   Sender -> SenderNode: (3) Find Task notify endpoint
   SenderNode -> Sender: <<Endpoint>>
   Sender -> SenderNode: (4) Request Token
@@ -55,12 +58,14 @@ group "Sign contract"
 end
 
 group "Retrieve eTransfer"
-  Receiver -> ReceiverNode: (12) Find eTransfer endpoint
-  ReceiverNode -> Receiver: <<Endpoints>>
-  Receiver -> ReceiverNode: (13) Find eTransfer authorization
-  ReceiverNode -> Receiver: <<Authorization>>
-  Receiver -> SenderNode: (14) Authz request <<contract, authorization>>
-  SenderNode -> Receiver: <<Access token>>
+  group "Endpoint authorization"
+   Receiver -> ReceiverNode: (12) Find eTransfer endpoint
+   ReceiverNode -> Receiver: <<Endpoints>>
+   Receiver -> ReceiverNode: (13) Find eTransfer authorization
+   ReceiverNode -> Receiver: <<Authorization>>
+   Receiver -> SenderNode: (14) Authz request <<contract, authorization>>
+   SenderNode -> Receiver: <<Access token>>
+  end
   Receiver -> Sender: (15) request eTransfer <<access token>>
   activate Sender
   Sender -> SenderNode: (16) validate
@@ -69,6 +74,23 @@ group "Retrieve eTransfer"
   Sender -> Receiver: <<eTransfer>>
   deactivate Sender
   Receiver --> Bob: Show
+  deactivate Receiver
+end
+
+group "Complete transfer"
+  Bob --> Receiver: complete
+  activate Receiver
+  group "Endpoint authorization"
+    Receiver <-> SenderNode: steps (12-14)
+  end
+  Receiver -> Sender: (18) update Task <<access token>>
+  activate Sender
+  Sender -> SenderNode: (19) validate
+  SenderNode -> Sender: <<restrictions>>
+  Sender -> Sender: (20) Task in restrictions?
+  Sender -> Sender: (21) update Task
+  Sender --> Receiver: Ok
+  deactivate Sender
   deactivate Receiver
 end
 @enduml
