@@ -234,7 +234,7 @@ Voor de ontvanger dient een `eOverdracht-receiver` dienst geregistreerd te worde
     "id": "did:nuts:organization_identifier#F1Dsgwngfdg3SH6TpDv0Ta1aOE",
     "type": "eOverdracht-receiver", 
     "serviceEndpoint": {
-        "fhir": "did:nuts:vendor_identifier?type=eOverdracht-receiver-fhir"
+        "notification": "did:nuts:vendor_identifier?type=eOverdracht-receiver-fhir"
     }
 }
 ```
@@ -245,7 +245,7 @@ Met het endpoint:
 {
     "id": "did:nuts:vendor_identifier#F1Dsgwngfdg3SH6TpDv0Ta1aOE",
     "type": "eOverdracht-receiver-fhir",
-    "serviceEndpoint": "https://fhir.example.com/base"
+    "serviceEndpoint": "https://notify.example.com/base"
 }
 ```
 
@@ -380,7 +380,7 @@ Onderstaand flow diagram toont alle stappen van notificeren tot ophalen. Wanneer
 
 1. In de eerste stap wordt het Nuts autorisatie record geregistreerd. Hiervoor dient [RFC014](https://nuts-foundation.gitbook.io/drafts/rfc/rfc014-authorization-credential) gevolgd te worden. Het type grondslag \(_consentType_\) is `implied`, de service is `eOverdracht-sender`, bij het `subject` kan het BSN ingevuld worden en onder `restrictions` wordt het relatieve pad ingevuld van het overdrachtsbericht.
 2. Het Nuts netwerk zorgt voor de aflevering van het autorisatie record bij de juiste ontvangende Nuts node.
-3. De bronhouder zoekt in de Nuts node naar het endpoint om de Task notificatie naar toe te sturen. Het base endpoint bevindt zich in het `fhir` veld van de `eOverdracht-receiver` service van de ontvangende organisatie. Het endpoint waar de notificatie heen moet is een combinatie van het _base_ endpoint en het relatieve pad zoals gedefinieerd in het TO van Nictiz.
+3. De bronhouder zoekt in de Nuts node naar het endpoint om de Task notificatie naar toe te sturen. Het base endpoint bevindt zich in het `notification` veld van de `eOverdracht-receiver` service van de ontvangende organisatie. Het endpoint waar de notificatie heen moet is een combinatie van het _base_ endpoint en het relatieve pad zoals gedefinieerd in het TO van Nictiz.
 4. De bronhouder vraagt een security token aan de Nuts node. In hoofdstuk X \(volgt nog\) van [RFC003](https://nuts-foundation.gitbook.io/drafts/rfc/rfc003-oauth2-authorization) staat hoe dit token opgebouwd dient te worden. Het security token wordt aangevraagd in de context van de service.
 5. Er wordt een notificatie gestuurd volgens het Nictiz TO naar het endpoint vanuit stap 3. Het security token uit stap 4 wordt hierbij als header meegestuurd.
 6. Het doelsysteem valideert het token bij de Nuts node.
