@@ -142,8 +142,7 @@ Bij het opvragen is naast de opvragende partij ook een specifieke gebruiker en h
 
 Ervan uitgaande dat er behoefte is aan een zo open mogelijke oplossing, waarbij elke partij evenveel kansen krijgt in de markt en waarbij de beveiliging van een erg hoog niveau is, is het gebruik van cryptografische bewijzen noodzakelijk. Elke van de bovengenoemde controles moet met behulp van een cryptografische handtekening uitgevoerd kunnen worden. Immers, elke oplossing die gebruik zou maken van een actieve trusted third party voor deze controles zou die partij in staat stellen om de markt te beïnvloeden of “op slot” te zetten, en zou een security hotspot en single point of failure vormen in het ontwerp.
 
-[RFC002 §7](https://nuts-foundation.gitbook.io/drafts/rfc/rfc002-authentication-token#7-supported-means) Specificeert welke middelen geaccepteerd moeten worden voor de persoonlijke identificatie. 
-Middelen die noodzakelijk zijn voor de identificatie van organisaties zijn nog in ontwikkeling. 
+[RFC002 §7](https://nuts-foundation.gitbook.io/drafts/rfc/rfc002-authentication-token#7-supported-means) Specificeert welke middelen geaccepteerd moeten worden voor de persoonlijke identificatie. Middelen die noodzakelijk zijn voor de identificatie van organisaties zijn nog in ontwikkeling.
 
 ### 3.4 Scheiding proces en autorisatie
 
@@ -185,7 +184,7 @@ De [task resource](https://www.hl7.org/fhir/task.html) wordt gebruikt om de voor
 
 Zie [§3.4](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_FHIR_eOverdracht) van de technische specificatie.
 
-Qua gegevens kan de task een referentie bevatten naar het aanmeldbericht. Als de task de status completed krijgt kan tevens een referentie naar het overdrachtsbericht worden toegevoegd. Voor het overdrachtsbericht is dan geen aparte task nodig.
+Qua gegevens kan de task een referentie bevatten naar het aanmeldbericht. Als de task de status `in-progress` krijgt kan tevens een referentie naar het overdrachtsbericht worden toegevoegd. Voor het overdrachtsbericht is dan geen aparte task nodig.
 
 #### 4.1.2 Organisatie endpoint discovery
 
@@ -278,6 +277,7 @@ De verschillende processtappen in de verpleegkundige overdracht vereisen een bep
 * Accepted    → toegang tot aanmeldbericht
 * Rejected    → alle toegang ingetrokken
 * Cancelled    → alle toegang ingetrokken
+* In-progress → toegang tot overdrachtsbericht
 * Completed    → toegang tot overdrachtsbericht
 
 Het concept van een grondslag verbindt welke ontvangende partij toegang krijgt tot welke gegevens bij welke bronhouder inzake welke patiënt. En hoewel er voor het aanmeldbericht dus geen valide grondslag is om persoonsgegevens te verwerken, is het voor de implementatie wel handig om beide berichten via eenzelfde mechanisme toegankelijk te maken. De grondslag is onderdeel van een speciaal autorisatie record, deze is beschreven in [RFC014](https://nuts-foundation.gitbook.io/drafts/rfc/rfc014-authorization-credential).
@@ -309,7 +309,7 @@ Daarnaast zouden er nog extra attributen opgenomen kunnen worden indien nodig. E
 
 #### 4.2.4 Beveiligde verbinding
 
-Alle requests worden gedaan over een TLS verbinding. Naast het servercertificaat is er ook nog een client-certificaat benodigd. Het client-certificaat identificeert het doelsysteem.
+Alle requests worden gedaan over een mTLS verbinding. Naast het servercertificaat is er ook nog een client-certificaat benodigd. Het client-certificaat identificeert het doelsysteem.
 
 Er wordt gebruik gemaakt van PKIoverheid certificaten voor zowel het server certificaat als het client certificaat. Zie ook [RFC008](https://nuts-foundation.gitbook.io/drafts/rfc/rfc008-certificate-structure).
 
@@ -341,11 +341,7 @@ Omdat de identiteit van de gebruiker en de opvragende partij zijn vastgelegd in 
 
 #### 4.2.7 Service autorisatie
 
-Vanuit [RFC014](https://nuts-foundation.gitbook.io/drafts/rfc/rfc014-authorization-credential) is er de verplichting om voor elke Bolt een access policy te definiëren.
-Een policy beschrijft hoet het autorisatie record opgesteld moet worden en waar het vervolgens toegang tot geeft.
-Alleen de bronhouder moet een autorisatie record aanmaken (`eOverdracht-sender`).
-Een autorisatie record voor de service `eOverdracht-sender` geeft geen algemene rechten tot resources.
-Alleen de resources die onder de restricties worden geregistreerd zijn toegankelijk.
+Vanuit [RFC014](https://nuts-foundation.gitbook.io/drafts/rfc/rfc014-authorization-credential) is er de verplichting om voor elke Bolt een access policy te definiëren. Een policy beschrijft hoe het autorisatie record opgesteld moet worden en waar het vervolgens toegang tot geeft. Alleen de bronhouder moet een autorisatie record aanmaken \(`eOverdracht-sender`\). Een autorisatie record voor de service `eOverdracht-sender` geeft geen algemene rechten tot resources. Alleen de resources die onder de restricties worden geregistreerd zijn toegankelijk.
 
 ## 5. Implementatie
 
@@ -374,41 +370,41 @@ Onderstaand flow diagram toont alle stappen van notificeren tot ophalen. Wanneer
 1. In de eerste stap wordt het Nuts autorisatie record geregistreerd. Hiervoor dient [RFC014](https://nuts-foundation.gitbook.io/drafts/rfc/rfc014-authorization-credential) gevolgd te worden. Het type grondslag \(_consentType_\) is `implied`, de service is `eOverdracht-sender`, bij het `subject` kan het BSN ingevuld worden en onder `restrictions` wordt het relatieve pad ingevuld van het overdrachtsbericht en van de task. De task wordt in stap 18 geupdate en heeft daarom ook een autorisatie nodig.
 2. Het Nuts netwerk zorgt voor de aflevering van het autorisatie record bij de juiste ontvangende Nuts node.
 
-### 5.3.2 Notificatie 
+### 5.3.2 Notificatie
 
-3. De bronhouder zoekt in de Nuts node naar het endpoint om de Task notificatie naar toe te sturen. Het base endpoint bevindt zich in het `notification` veld van de `eOverdracht-receiver` service van de ontvangende organisatie. Het endpoint waar de notificatie heen moet is een combinatie van het _base_ endpoint en het relatieve pad zoals gedefinieerd in het TO van Nictiz.
-4. De bronhouder vraagt een security token aan de Nuts node. In hoofdstuk X \(volgt nog\) van [RFC003](https://nuts-foundation.gitbook.io/drafts/rfc/rfc003-oauth2-authorization) staat hoe dit token opgebouwd dient te worden. Het security token wordt aangevraagd in de context van de service.
-5. Er wordt een notificatie gestuurd volgens het Nictiz TO naar het endpoint vanuit stap 3. Het security token uit stap 4 wordt hierbij als header meegestuurd.
-6. Het doelsysteem valideert het token bij de Nuts node.
+1. De bronhouder zoekt in de Nuts node naar het endpoint om de Task notificatie naar toe te sturen. Het base endpoint bevindt zich in het `notification` veld van de `eOverdracht-receiver` service van de ontvangende organisatie. Het endpoint waar de notificatie heen moet is een combinatie van het _base_ endpoint en het relatieve pad zoals gedefinieerd in het TO van Nictiz.
+2. De bronhouder vraagt een security token aan de Nuts node. In hoofdstuk X \(volgt nog\) van [RFC003](https://nuts-foundation.gitbook.io/drafts/rfc/rfc003-oauth2-authorization) staat hoe dit token opgebouwd dient te worden. Het security token wordt aangevraagd in de context van de service.
+3. Er wordt een notificatie gestuurd volgens het Nictiz TO naar het endpoint vanuit stap 3. Het security token uit stap 4 wordt hierbij als header meegestuurd.
+4. Het doelsysteem valideert het token bij de Nuts node.
 
 ### 5.3.3 Ophalen Task
 
-7. Het doelsysteem is nu op de hoogte van een nieuwe of gewijzigde Task resource. Het security token dat in stap 5 gebruikt is, bevat het bronsysteem. Het doelsysteem zal ook een security token moeten hebben om de Task daadwerkelijk op te halen. Deze stap is hetzelfde als stap 4, maar dan door het doelsysteem.
-8. De notificatie uit stap 5 bevatte een security header met daarin oa de identifiers van de bronhouder en de ontvangende partij. Het doelsysteem kan hiermee bepalen waar de Task opgehaald moet worden. Het endpoint van de Task FHIR URL is te vinden in het `fhir` veld van de `eOverdracht-sender` service van de bronhouder. Dit is de `base` URL van de FHIR service. Daar moet, zoals beschreven, in het Nictiz TO nog het relatieve pad van de Task resource aan toegevoegd worden. De query parameters `code` en `_lastUpdated` dienen hierbij gebruikt worden en moeten door het bronsysteem volgens de FHIR specificaties verwerkt worden. Het security token gaat net zoals bij stap 5 mee in een header. Het bronsysteem is verantwoordelijk voor het vinden van de juiste Task resources. Omdat het security token geen gebruikersinformatie bevat, mogen er nooit persoonsgegevens meegestuurd worden in de Task.
-9. Het bronsysteem controleert het security token en bepaalt aan de hand daarvan de bronhouder en de opvragende partij. Samen met de gegeven query parameters bevat dit voldoende informatie om de juiste Task resource\(s\) terug te geven.
+1. Het doelsysteem is nu op de hoogte van een nieuwe of gewijzigde Task resource. Het security token dat in stap 5 gebruikt is, bevat het bronsysteem. Het doelsysteem zal ook een security token moeten hebben om de Task daadwerkelijk op te halen. Deze stap is hetzelfde als stap 4, maar dan door het doelsysteem.
+2. De notificatie uit stap 5 bevatte een security header met daarin oa de identifiers van de bronhouder en de ontvangende partij. Het doelsysteem kan hiermee bepalen waar de Task opgehaald moet worden. Het endpoint van de Task FHIR URL is te vinden in het `fhir` veld van de `eOverdracht-sender` service van de bronhouder. Dit is de `base` URL van de FHIR service. Daar moet, zoals beschreven, in het Nictiz TO nog het relatieve pad van de Task resource aan toegevoegd worden. De query parameters `code` en `_lastUpdated` dienen hierbij gebruikt worden en moeten door het bronsysteem volgens de FHIR specificaties verwerkt worden. Het security token gaat net zoals bij stap 5 mee in een header. Het bronsysteem is verantwoordelijk voor het vinden van de juiste Task resources. Omdat het security token geen gebruikersinformatie bevat, mogen er nooit persoonsgegevens meegestuurd worden in de Task.
+3. Het bronsysteem controleert het security token en bepaalt aan de hand daarvan de bronhouder en de opvragende partij. Samen met de gegeven query parameters bevat dit voldoende informatie om de juiste Task resource\(s\) terug te geven.
 
 ### 5.3.4 Authenticatie
 
-10. Het ontvangende systeem zal op verzoek van de gebruiker een authenticatie flow starten met een door de gebruiker gekozen authenticatiemiddel. We nemen in deze beschrijving IRMA als authenticatiemiddel. Andere authenticatiemiddelen zullen een soortgelijke flow gebruiken. Er wordt een authenticatie sessie gestart op de Nuts node. Deze geeft een _contract_ en _sessie ID_ terug. [RFC002](https://nuts-foundation.gitbook.io/drafts/rfc/rfc002-authentication-token) bevat de details.
-11. Het resultaat van stap 10 wordt als QR code weergegeven voor de gebruiker. De gebruiker scant de QR code met de camera van zijn/haar device. Het _contract_ dat in stap 10 is aangemaakt wordt op het device van de gebruiker getoond. De gebruiker ondertekent dit _contract_ met de gevraagde attributen. Het device stuurt het ondertekende contract naar de Nuts node waarna het ontvangende systeem het resultaat zal ophalen. Het ondertekende contract dient opgeslagen te worden in de sessie van de gebruiker. Het contract is voor langere tijd geldig zodat deze stap niet elke keer doorlopen hoeft te worden. Het is ook mogelijk om deze stap als login te gebruiken.
+1. Het ontvangende systeem zal op verzoek van de gebruiker een authenticatie flow starten met een door de gebruiker gekozen authenticatiemiddel. We nemen in deze beschrijving IRMA als authenticatiemiddel. Andere authenticatiemiddelen zullen een soortgelijke flow gebruiken. Er wordt een authenticatie sessie gestart op de Nuts node. Deze geeft een _contract_ en _sessie ID_ terug. [RFC002](https://nuts-foundation.gitbook.io/drafts/rfc/rfc002-authentication-token) bevat de details.
+2. Het resultaat van stap 10 wordt als QR code weergegeven voor de gebruiker. De gebruiker scant de QR code met de camera van zijn/haar device. Het _contract_ dat in stap 10 is aangemaakt wordt op het device van de gebruiker getoond. De gebruiker ondertekent dit _contract_ met de gevraagde attributen. Het device stuurt het ondertekende contract naar de Nuts node waarna het ontvangende systeem het resultaat zal ophalen. Het ondertekende contract dient opgeslagen te worden in de sessie van de gebruiker. Het contract is voor langere tijd geldig zodat deze stap niet elke keer doorlopen hoeft te worden. Het is ook mogelijk om deze stap als login te gebruiken.
 
 ### 5.3.5 Ophalen overdrachtsbericht
 
-12. Het ontvangende systeem zoekt in de Nuts node naar het endpoint waar het overdrachtsbericht opgehaald kan worden. Het base endpoint bevindt zich in het `fhir` veld van de `eOverdracht-sender` service van de bronhouder.
-13. De URL waar het overdrachtsbericht opgehaald kan worden staat in de opgehaalde Task onder `Task.input:nursingHandoff`. Deze URL zou een combinatie van het _base_ path uit stap 12 en het relatieve pad voor het overdrachtsbericht onder `restrictions` moeten zijn.
-14. Nu bekend is wat het bronsysteem is kan er een access token worden aangevraagd. De URL waar de ontvangende partij deze kan ophalen staat in het `oauth` veld van de in stap 12 gevonden service. De aanvraag voor het access token moet gevuld worden volgens [RFC003](https://nuts-foundation.gitbook.io/drafts/rfc/rfc003-oauth2-authorization). Het autorisatie record, het service ID, de bronhouder, de ontvangende partij en het ondertekende contract zullen allemaal onderdeel zijn van de token aanvraag.
-15. Met het access token in de juiste header kan het overdrachtsbericht opgehaald worden bij de URL zoals aangegeven in de Task resource.
-16. Het bronsysteem laat het access token controleren door de Nuts node. Deze zal o.b.v. de gebruikte autorisatie records ook de restricties teruggeven.
-17. Het bronsysteem kijkt of de gevraagde resource, in dit geval het overdrachtsbericht, onderdeel is van de restricties die zijn teruggegeven door de Nuts node bij het controleren van het access token.
+1. Het ontvangende systeem zoekt in de Nuts node naar het endpoint waar het overdrachtsbericht opgehaald kan worden. Het base endpoint bevindt zich in het `fhir` veld van de `eOverdracht-sender` service van de bronhouder.
+2. De URL waar het overdrachtsbericht opgehaald kan worden staat in de opgehaalde Task onder `Task.input:nursingHandoff`. Deze URL zou een combinatie van het _base_ path uit stap 12 en het relatieve pad voor het overdrachtsbericht onder `restrictions` moeten zijn.
+3. Nu bekend is wat het bronsysteem is kan er een access token worden aangevraagd. De URL waar de ontvangende partij deze kan ophalen staat in het `oauth` veld van de in stap 12 gevonden service. De aanvraag voor het access token moet gevuld worden volgens [RFC003](https://nuts-foundation.gitbook.io/drafts/rfc/rfc003-oauth2-authorization). Het autorisatie record, het service ID, de bronhouder, de ontvangende partij en het ondertekende contract zullen allemaal onderdeel zijn van de token aanvraag.
+4. Met het access token in de juiste header kan het overdrachtsbericht opgehaald worden bij de URL zoals aangegeven in de Task resource.
+5. Het bronsysteem laat het access token controleren door de Nuts node. Deze zal o.b.v. de gebruikte autorisatie records ook de restricties teruggeven.
+6. Het bronsysteem kijkt of de gevraagde resource, in dit geval het overdrachtsbericht, onderdeel is van de restricties die zijn teruggegeven door de Nuts node bij het controleren van het access token.
 
 ### 5.3.6 afronden overdracht
 
 Voor het wijzigen van de task is een access token nodig. Hiervoor kan hetzelfde access token gebruikt worden die ook bij stap 15 is gebruikt indien de geldigheid van het token dit toelaat. Indien het updaten van de task op een later tijdstip plaats vindt of als het token verlopen is, zullen stap 12 t/m 14 nogmaals doorlopen moeten worden. Als ook het contract van de gebruiker niet meer geldig is, dan zullen stappen 10 en 11 ook doorlopen moeten worden.
 
-18. Het ontvangende systeem wijzigt de `Task.status` van `in-progress` naar `completed`. De task wordt middels een `PUT` request gestuurd naar het juise pad volgens het [Nictiz](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_FHIR_eOverdracht) TO §3.2.2. Het `base` path is afkomstig vanuit het endpoint wat in stap 12 is opgehaald.
-19. Het bronsysteem laat het access token controleren door de Nuts node. Deze zal o.b.v. de gebruikte autorisatie records ook de restricties teruggeven.
-20. Het bronsysteem kijkt of de gevraagde resource, in dit geval de task, onderdeel is van de restricties die zijn teruggegeven door de Nuts node bij het controleren van het access token.
-21. Als de autorisaties het toestaan kan het bronsysteem de task updaten. Het controleert hierbij of alleen de status is aangepast.
+1. Het ontvangende systeem wijzigt de `Task.status` van `in-progress` naar `completed`. De task wordt middels een `PUT` request gestuurd naar het juise pad volgens het [Nictiz](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_FHIR_eOverdracht) TO §3.2.2. Het `base` path is afkomstig vanuit het endpoint wat in stap 12 is opgehaald.
+2. Het bronsysteem laat het access token controleren door de Nuts node. Deze zal o.b.v. de gebruikte autorisatie records ook de restricties teruggeven.
+3. Het bronsysteem kijkt of de gevraagde resource, in dit geval de task, onderdeel is van de restricties die zijn teruggegeven door de Nuts node bij het controleren van het access token.
+4. Als de autorisaties het toestaan kan het bronsysteem de task updaten. Het controleert hierbij of alleen de status is aangepast.
 
 ## 6. Integratie
 
