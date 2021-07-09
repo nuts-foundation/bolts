@@ -1,4 +1,5 @@
 @startuml
+autonumber
 skinparam ParticipantPadding 30
 skinparam BoxPadding 20
 
@@ -16,29 +17,37 @@ end box
 Alice --> Sender: start
 activate Sender
 group "authorization registration"
-  Sender -> SenderNode: (1) Register etransfer authorization
+  Sender -> SenderNode: Register etransfer authorization
   SenderNode --> Sender: Ok
-  SenderNode -> ReceiverNode: (2) sync authorizations
+  SenderNode -> ReceiverNode: sync authorizations
 end
 
 group "Notify"
-  Sender -> SenderNode: (3) Find Task notify endpoint
+  Sender -> SenderNode: Find Task notify endpoint
   SenderNode -> Sender: <<Endpoint>>
-  Sender -> SenderNode: (4) Request Token
-  SenderNode -> Sender: <<Token>>
-  Sender -> Receiver: (5) Notify
-  Receiver -> ReceiverNode: (6) Validate <<token>>
+  Sender -> SenderNode: Request accessToken
+  SenderNode -> ReceiverNode:Request accessToken <<jwt-grant>>
+  ReceiverNode -> SenderNode: <<accessToken>>
+  SenderNode -> Sender: <<accessToken>>
+  Sender -> Receiver: Notify
+  Receiver -> ReceiverNode: Validate <<accessToken>>
   ReceiverNode --> Receiver: Ok
   Receiver --> Sender: Ok
   deactivate Sender
 end
 
 group "Retrieve Task"
-  Receiver -> ReceiverNode: (7) Request token
-  activate Receiver
-  ReceiverNode -> Receiver: <<token>>
-  Receiver -> Sender: (8) Task search
-  Sender -> SenderNode: (9) Validate <<token>>
+  group "Endpoint authorization"
+    Receiver -> ReceiverNode: Find FHIR endpoint
+    activate Receiver
+    ReceiverNode -> Receiver: <<Endpoint>>
+    Receiver -> ReceiverNode: Request accessToken
+    ReceiverNode -> SenderNode: Request AccessToken <<jwt-grant>>
+    SenderNode -> ReceiverNode: <<accessToken>>
+    ReceiverNode -> Receiver: <<accessToken>>
+  end
+  Receiver -> Sender: Task search <<accessToken>>
+  Sender -> SenderNode: Validate <<accessToken>>
   SenderNode --> Sender: Ok
   Sender -> Receiver: <<tasks>>
   Receiver --> Bob: Notify
@@ -49,9 +58,9 @@ group "Sign contract"
   Bob --> Receiver: start
   activate Bob
   activate Receiver
-  Receiver -> ReceiverNode: (10) Auth
+  Receiver -> ReceiverNode: Auth
   ReceiverNode -> Receiver: Auth challenge
-  Receiver -> Bob: (11) Show QR code
+  Receiver -> Bob: Show QR code
   Bob -> ReceiverNode: Sign Auth
   deactivate Bob
   ReceiverNode -> Receiver: <<Signed contract>>
@@ -59,18 +68,13 @@ end
 
 group "Retrieve eTransfer"
   group "Endpoint authorization"
-   Receiver -> ReceiverNode: (12) Find eTransfer endpoint
-   ReceiverNode -> Receiver: <<Endpoints>>
-   Receiver -> ReceiverNode: (13) Find eTransfer authorization
-   ReceiverNode -> Receiver: <<Authorization>>
-   Receiver -> SenderNode: (14) Authz request <<contract, authorization>>
-   SenderNode -> Receiver: <<Access token>>
+   Receiver <-> SenderNode: Steps (15-20)
   end
-  Receiver -> Sender: (15) request eTransfer <<access token>>
+  Receiver -> Sender: request eTransfer <<accessToken>>
   activate Sender
-  Sender -> SenderNode: (16) validate
-  SenderNode -> Sender: <<restrictions>>
-  Sender -> Sender: (17) eTransfer in restrictions?
+  Sender -> SenderNode: validate
+  SenderNode -> Sender: <<resources>>
+  Sender -> Sender: eTransfer in resources?
   Sender -> Receiver: <<eTransfer>>
   deactivate Sender
   Receiver --> Bob: Show
@@ -81,14 +85,14 @@ group "Complete transfer"
   Bob --> Receiver: complete
   activate Receiver
   group "Endpoint authorization"
-    Receiver <-> SenderNode: steps (12-14)
+    Receiver <-> SenderNode: steps (15-20)
   end
-  Receiver -> Sender: (18) update Task <<access token>>
+  Receiver -> Sender: update Task <<accessToken>>
   activate Sender
-  Sender -> SenderNode: (19) validate
-  SenderNode -> Sender: <<restrictions>>
-  Sender -> Sender: (20) Task in restrictions?
-  Sender -> Sender: (21) update Task
+  Sender -> SenderNode: validate
+  SenderNode -> Sender: <<resources>>
+  Sender -> Sender: Task in resources?
+  Sender -> Sender: update Task
   Sender --> Receiver: Ok
   deactivate Sender
   deactivate Receiver
