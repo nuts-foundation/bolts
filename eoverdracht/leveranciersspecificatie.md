@@ -375,7 +375,7 @@ Onderstaand flow diagram toont alle stappen van notificeren tot ophalen. Wanneer
 ### 5.3.2 Notificatie
 
 5-6. De bronhouder zoekt in de Nuts node naar het endpoint om de Task notificatie naar toe te sturen. Het base endpoint bevindt zich in het `notification` veld van de `eOverdracht-receiver` service van de ontvangende organisatie. Het endpoint waar de notificatie heen moet is een combinatie van het _base_ endpoint en het relatieve pad zoals gedefinieerd in het TO van Nictiz.
-7. De bronhouder vraagt een security token aan de Nuts node. Het token wordt aangevraagd in de context van de beide partijen, de patiënt, de bolt en het autorisatie record. 
+7. De bronhouder vraagt een access token aan de Nuts node. Het token wordt aangevraagd in de context van de beide partijenen de bolt. 
 8-10. De node vraagt volgens [RFC003](https://nuts-foundation.gitbook.io/drafts/rfc/rfc003-oauth2-authorization) een access token aan bij de authorization server van de ontvangende partij.
 11. Er wordt een notificatie gestuurd volgens het Nictiz TO naar het endpoint vanuit stap 5. Het security token uit stap 10 wordt hierbij als autorisatie header meegestuurd.
 12. Het doelsysteem valideert het access token bij de Nuts node.
@@ -383,8 +383,8 @@ Onderstaand flow diagram toont alle stappen van notificeren tot ophalen. Wanneer
 ### 5.3.3 Ophalen Task
 
 Het doelsysteem is nu op de hoogte van een nieuwe of gewijzigde Task resource. Het security token dat in stap 11 gebruikt is, bevat het bronsysteem.
-15-21. De notificatie uit stap 10 bevatte een security header met daarin oa de identifiers van de bronhouder en de ontvangende partij. Het doelsysteem kan hiermee bepalen waar de Task opgehaald moet worden. Het endpoint van de Task FHIR URL is te vinden in het `fhir` veld van de `eOverdracht-sender` service van de bronhouder. Dit is de `base` URL van de FHIR service. Daar moet, zoals beschreven, in het Nictiz TO nog het relatieve pad van de Task resource aan toegevoegd worden. De query parameters `code` en `_lastUpdated` dienen hierbij gebruikt te worden en moeten door het bronsysteem volgens de FHIR specificaties verwerkt worden. Het security token gaat net zoals bij stap 11 mee in een header. Het bronsysteem is verantwoordelijk voor het vinden van de juiste Task resources. Omdat het security token geen gebruikersinformatie bevat, mogen er nooit persoonsgegevens meegestuurd worden in de Task.
-22-24. Het bronsysteem controleert het security token en bepaalt aan de hand daarvan de bronhouder en de opvragende partij. Samen met de gegeven query parameters bevat dit voldoende informatie om de juiste Task resource\(s\) terug te geven.
+15-21. De notificatie uit stap 11 bevatte een autorisatie header met daarin oa de identifiers van de bronhouder en de ontvangende partij. Het doelsysteem kan hiermee bepalen waar de Task opgehaald moet worden. Het endpoint van de Task FHIR URL is te vinden in het `fhir` veld van de `eOverdracht-sender` service van de bronhouder. Dit is de `base` URL van de FHIR service. Daar moet, zoals beschreven, in het Nictiz TO nog het relatieve pad van de Task resource aan toegevoegd worden. De query parameters `code` en `_lastUpdated` dienen hierbij gebruikt te worden en moeten door het bronsysteem volgens de FHIR specificaties verwerkt worden. Het access token gaat net zoals bij stap 11 mee in een header. Het bronsysteem is verantwoordelijk voor het vinden van de juiste Task resources. Omdat het security token geen gebruikersinformatie bevat, mogen er nooit persoonsgegevens meegestuurd worden in de Task.
+22-24. Het bronsysteem controleert het access token en bepaalt aan de hand daarvan de bronhouder en de opvragende partij. Samen met de gegeven query parameters bevat dit voldoende informatie om de juiste Task resource\(s\) terug te geven.
 
 ### 5.3.4 Authenticatie
 
@@ -394,18 +394,18 @@ Het doelsysteem is nu op de hoogte van een nieuwe of gewijzigde Task resource. H
 ### 5.3.5 Ophalen overdrachtsbericht
 
 Het ontvangende systeem zoekt in de Nuts node naar het endpoint waar het overdrachtsbericht opgehaald kan worden. Het base endpoint bevindt zich in het `fhir` veld van de `eOverdracht-sender` service van de bronhouder.
-De URL waar het overdrachtsbericht opgehaald kan worden staat in de opgehaalde Task onder `Task.input:nursingHandoff`. Deze URL zou een combinatie van het _base_ path uit stap 15 en het relatieve pad voor het overdrachtsbericht onder `Task.input:nursingHandoff` moeten zijn.
-32. Nu bekend is wat het bronsysteem is kan er een access token worden aangevraagd. Dit is gelijk aan de stappen 15 t/m 20 m.u.v. dat er nu ook gebruikersinformatie aanwezig moet zijn. Het autorisatie record, het service ID, de bronhouder, de ontvangende partij en het ondertekende contract zullen allemaal onderdeel zijn van de token aanvraag.
+De URL waar het overdrachtsbericht opgehaald kan worden staat in de opgehaalde Task onder `Task.input:nursingHandoff`. Deze URL zou een combinatie van het `base` path uit stap 15 en het relatieve pad voor het overdrachtsbericht onder `Task.input:nursingHandoff` moeten zijn.
+32. Nu bekend is wat het bronsysteem is kan er een access token worden aangevraagd. Dit is gelijk aan de stappen 15 t/m 20 m.u.v. dat er nu ook gebruikersinformatie  en een autorisatie record aanwezig moet zijn. Het autorisatie record, het service ID, de bronhouder, de ontvangende partij en het ondertekende contract zullen allemaal onderdeel zijn van de access token aanvraag.
 33. Met het access token in de juiste header kan het overdrachtsbericht opgehaald worden bij de URL zoals aangegeven in de Task resource.
 34-37. Het bronsysteem laat het access token controleren door de Nuts node. Deze zal o.b.v. de gebruikte autorisatie records ook de mogelijke resources teruggeven die geraadpleegd mogen worden. Het bronsysteem kijkt of de gevraagde resource, in dit geval het overdrachtsbericht, onderdeel is van die resources.
 
 ### 5.3.6 afronden overdracht
 
-Voor het wijzigen van de task is een access token nodig. Hiervoor kan hetzelfde access token gebruikt worden die ook bij stap 32 is gebruikt indien de geldigheid van het token dit toelaat. Indien het updaten van de task op een later tijdstip plaats vindt of als het token verlopen is, zullen stap 15 t/m 20 nogmaals doorlopen moeten worden. Als ook het contract van de gebruiker niet meer geldig is, dan zullen stappen 26 t/m 31 ook doorlopen moeten worden.
+Voor het wijzigen van de Task is een access token nodig. Hiervoor kan hetzelfde access token gebruikt worden die ook bij stap 32 is gebruikt indien de geldigheid van het access token dit toelaat. Indien het updaten van de Task op een later tijdstip plaats vindt of als het token verlopen is, zullen stap 15 t/m 20 nogmaals doorlopen moeten worden. Als ook het contract van de gebruiker niet meer geldig is, dan zullen stappen 26 t/m 31 ook doorlopen moeten worden.
 
-41. Het ontvangende systeem wijzigt de `Task.status` van `in-progress` naar `completed`. De task wordt middels een `PUT` request gestuurd naar het juise pad volgens het [Nictiz](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_FHIR_eOverdracht) TO §3.2.2. Het `base` path is afkomstig vanuit het endpoint wat in stap 15 is opgehaald.
-42-44. Het bronsysteem laat het access token controleren door de Nuts node. Deze zal o.b.v. de gebruikte autorisatie records ook de mogelijke resources teruggeven die geraadpleegd mogen worden. Het bronsysteem kijkt of de gevraagde resource, in dit geval de task resource, onderdeel is van die resources.
-45-46. Het bronsysteem kijkt of de gevraagde resource, in dit geval de task, onderdeel is van de restricties die zijn teruggegeven door de Nuts node bij het controleren van het access token. Als de autorisaties het toestaan kan het bronsysteem de task updaten. Het controleert hierbij of alleen de status is aangepast.
+41. Het ontvangende systeem wijzigt de `Task.status` van `in-progress` naar `completed`. De Task wordt middels een `PUT` request gestuurd naar het juiste pad volgens het [Nictiz](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_FHIR_eOverdracht) TO §3.2.2. Het `base` path is afkomstig vanuit het endpoint wat in stap 15 is opgehaald.
+42-44. Het bronsysteem laat het access token controleren door de Nuts node. Deze zal o.b.v. de gebruikte autorisatie records ook de mogelijke resources teruggeven die geraadpleegd mogen worden. Het bronsysteem kijkt of de gevraagde resource, in dit geval de Task resource, onderdeel is van die resources.
+45-46. Als de autorisaties het toestaan kan het bronsysteem de task updaten. Het controleert hierbij of alleen de status is aangepast.
 
 ## 6. Access policy
 
@@ -413,7 +413,7 @@ Deze eOverdracht Bolt omvat twee verschillende access policies. De belangrijkste
 
 ### 6.1 eOverdracht-receiver policy
 
-De `eOverdracht-receiver` policy beschrijft alleen de toegang tot het task notificatie endpoint. 
+De `eOverdracht-receiver` policy beschrijft alleen de toegang tot het Task notificatie endpoint. 
 Bij het aanvragen van een access token op de authorization server zijn geen [Nuts Authorization Credentials](https://nuts-foundation.gitbook.io/drafts/rfc/rfc014-authorization-credential) nodig. 
 Ook is er geen gebruikersinformatie nodig. De `vcs` en `usi` veld in de [JWT grant](https://nuts-foundation.gitbook.io/drafts/rfc/rfc003-oauth2-authorization#4-2-2-payload) mogen dus leeg zijn.
 Het `purposeOfUse` veld moet in ieder geval `eOverdracht-receiver` bevatten.
@@ -440,12 +440,12 @@ GET [base]/Task?code=http://snomed.info/sct|308292007&_lastUpdated=[time of last
 ```
 
 Waarbij `[base]` vervangen moet worden door het pad zoals deze is geregistreerd  onder het `fhir` veld in de `eOverdracht-sender` service. 
-De resources server moet ook de tasks selecteren o.b.v. het access token.
+De resources server moet ook de Tasks selecteren o.b.v. het access token.
 Bij de aanvraag voor het access token is meegestuurd welke organisatie de aanvraag doet en voor welke organisatie deze bedoeld is. 
 
 **6.2.1.2** Updaten task resource
 
-Een onderdeel van de eOverdracht is dat de ontvangende partij de status van de task aanpast. 
+Een onderdeel van de eOverdracht is dat de ontvangende partij de status van de Task aanpast. 
 Hiervoor dient het een request te doen zoals beschreven in [§3.2.2 van het Nictiz TO](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_FHIR_eOverdracht#Task_invocations). 
 Omdat het hierbij gaat om de toegang van een enkele resource, is er een [Nuts Authorization Credential](https://nuts-foundation.gitbook.io/drafts/rfc/rfc014-authorization-credential) nodig. 
 Het gaat hierbij om hetzelfde credential als beschreven in de volgende paragraaf. 
