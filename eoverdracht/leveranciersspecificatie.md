@@ -234,7 +234,8 @@ Voor de ontvanger dient een `eOverdracht-receiver` dienst geregistreerd te worde
     "id": "did:nuts:organization_identifier#F1Dsgwngfdg3SH6TpDv0Ta1aOE",
     "type": "eOverdracht-receiver", 
     "serviceEndpoint": {
-        "notification": "did:nuts:vendor_identifier?type=eOverdracht-receiver-fhir"
+        "oauth": "did:nuts:vendor_identifier?type=production-oauth",
+        "notification": "did:nuts:vendor_identifier?type=eOverdracht-receiver-notify"
     }
 }
 ```
@@ -244,8 +245,8 @@ Met het endpoint:
 ```javascript
 {
     "id": "did:nuts:vendor_identifier#F1Dsgwngfdg3SH6TpDv0Ta1aOE",
-    "type": "eOverdracht-receiver-fhir",
-    "serviceEndpoint": "https://notify.example.com/base"
+    "type": "eOverdracht-receiver-notify",
+    "serviceEndpoint": "https://notify.example.com/specific/path"
 }
 ```
 
@@ -361,52 +362,118 @@ Het ophalen van het overdrachtsbericht begint wanneer de verpleegkundige overdra
 
 Voordat de ontvangende partij genotificeerd kan worden is het de taak van de bronhouder om zowel het overdrachtsbericht als de bijbehorende Task resource te prepareren. Het is de bronhouder vrij om deze van tevoren klaar te zetten of ze realtime te genereren. De inhoud van het overdrachtsbericht moet een FHIR Composition resource zijn volgens de definities van het [Nictiz TO](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_FHIR_eOverdracht#FHIR_profiles) De Task resource zal gevuld moeten worden volgens het **eOverdracht-Task** FHIR profiel. Een verwijzing hiernaar is te vinden op de website van [Nictiz](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_FHIR_eOverdracht#Task). Belangrijk hierbij is dat de `Task.status` en `Task.input:nursingHandoff` velden gevuld zijn.
 
-Onderstaand flow diagram toont alle stappen van notificeren tot ophalen. Wanneer er gegevens uitgewisseld worden tussen _Sender_ en _Receiver_ gebeurt dit altijd over een verbinding die is beveiligd met two-way TLS. Zie ook [RFC008](https://nuts-foundation.gitbook.io/drafts/rfc/rfc008-certificate-structure) voor het gebruik van certificaten. De verschillende stappen worden in de volgende paragrafen uitgelegd.
+Onderstaand flow diagram toont alle stappen van notificeren tot ophalen. Wanneer er gegevens uitgewisseld worden tussen _Sender_ en _Receiver_ gebeurt dit altijd over een verbinding die is beveiligd met mutual TLS. Zie ook [RFC008](https://nuts-foundation.gitbook.io/drafts/rfc/rfc008-certificate-structure) voor het gebruik van certificaten. De verschillende stappen worden in de volgende paragrafen uitgelegd.
 
 ![](../.gitbook/assets/etransfer.png)
 
 ### 5.3.1 Registreren autorisatie
 
-1. In de eerste stap wordt het Nuts autorisatie record geregistreerd. Hiervoor dient [RFC014](https://nuts-foundation.gitbook.io/drafts/rfc/rfc014-authorization-credential) gevolgd te worden. Het type grondslag \(_consentType_\) is `implied`, de service is `eOverdracht-sender`, bij het `subject` kan het BSN ingevuld worden en onder `restrictions` wordt het relatieve pad ingevuld van het overdrachtsbericht en van de task. De task wordt in stap 18 geupdate en heeft daarom ook een autorisatie nodig.
-2. Het Nuts netwerk zorgt voor de aflevering van het autorisatie record bij de juiste ontvangende Nuts node.
+2-3. In één van de eerste stappen wordt het Nuts autorisatie record geregistreerd. Hiervoor dient [RFC014](https://nuts-foundation.gitbook.io/drafts/rfc/rfc014-authorization-credential) gevolgd te worden. 
+   Zie §6 voor de invulling van het autorisatie record.
+4. Het Nuts netwerk zorgt voor de aflevering van het autorisatie record bij de juiste ontvangende Nuts node.
 
 ### 5.3.2 Notificatie
 
-1. De bronhouder zoekt in de Nuts node naar het endpoint om de Task notificatie naar toe te sturen. Het base endpoint bevindt zich in het `notification` veld van de `eOverdracht-receiver` service van de ontvangende organisatie. Het endpoint waar de notificatie heen moet is een combinatie van het _base_ endpoint en het relatieve pad zoals gedefinieerd in het TO van Nictiz.
-2. De bronhouder vraagt een security token aan de Nuts node. In hoofdstuk X \(volgt nog\) van [RFC003](https://nuts-foundation.gitbook.io/drafts/rfc/rfc003-oauth2-authorization) staat hoe dit token opgebouwd dient te worden. Het security token wordt aangevraagd in de context van de service.
-3. Er wordt een notificatie gestuurd volgens het Nictiz TO naar het endpoint vanuit stap 3. Het security token uit stap 4 wordt hierbij als header meegestuurd.
-4. Het doelsysteem valideert het token bij de Nuts node.
+5-6. De bronhouder zoekt in de Nuts node naar het endpoint om de Task notificatie naar toe te sturen. Het base endpoint bevindt zich in het `notification` veld van de `eOverdracht-receiver` service van de ontvangende organisatie. Het endpoint waar de notificatie heen moet is een combinatie van het _base_ endpoint en het relatieve pad zoals gedefinieerd in het TO van Nictiz.
+7. De bronhouder vraagt een security token aan de Nuts node. Het token wordt aangevraagd in de context van de beide partijen, de patiënt, de bolt en het autorisatie record. 
+8-10. De node vraagt volgens [RFC003](https://nuts-foundation.gitbook.io/drafts/rfc/rfc003-oauth2-authorization) een access token aan bij de authorization server van de ontvangende partij.
+11. Er wordt een notificatie gestuurd volgens het Nictiz TO naar het endpoint vanuit stap 5. Het security token uit stap 10 wordt hierbij als autorisatie header meegestuurd.
+12. Het doelsysteem valideert het access token bij de Nuts node.
 
 ### 5.3.3 Ophalen Task
 
-1. Het doelsysteem is nu op de hoogte van een nieuwe of gewijzigde Task resource. Het security token dat in stap 5 gebruikt is, bevat het bronsysteem. Het doelsysteem zal ook een security token moeten hebben om de Task daadwerkelijk op te halen. Deze stap is hetzelfde als stap 4, maar dan door het doelsysteem.
-2. De notificatie uit stap 5 bevatte een security header met daarin oa de identifiers van de bronhouder en de ontvangende partij. Het doelsysteem kan hiermee bepalen waar de Task opgehaald moet worden. Het endpoint van de Task FHIR URL is te vinden in het `fhir` veld van de `eOverdracht-sender` service van de bronhouder. Dit is de `base` URL van de FHIR service. Daar moet, zoals beschreven, in het Nictiz TO nog het relatieve pad van de Task resource aan toegevoegd worden. De query parameters `code` en `_lastUpdated` dienen hierbij gebruikt worden en moeten door het bronsysteem volgens de FHIR specificaties verwerkt worden. Het security token gaat net zoals bij stap 5 mee in een header. Het bronsysteem is verantwoordelijk voor het vinden van de juiste Task resources. Omdat het security token geen gebruikersinformatie bevat, mogen er nooit persoonsgegevens meegestuurd worden in de Task.
-3. Het bronsysteem controleert het security token en bepaalt aan de hand daarvan de bronhouder en de opvragende partij. Samen met de gegeven query parameters bevat dit voldoende informatie om de juiste Task resource\(s\) terug te geven.
+Het doelsysteem is nu op de hoogte van een nieuwe of gewijzigde Task resource. Het security token dat in stap 11 gebruikt is, bevat het bronsysteem.
+15-21. De notificatie uit stap 10 bevatte een security header met daarin oa de identifiers van de bronhouder en de ontvangende partij. Het doelsysteem kan hiermee bepalen waar de Task opgehaald moet worden. Het endpoint van de Task FHIR URL is te vinden in het `fhir` veld van de `eOverdracht-sender` service van de bronhouder. Dit is de `base` URL van de FHIR service. Daar moet, zoals beschreven, in het Nictiz TO nog het relatieve pad van de Task resource aan toegevoegd worden. De query parameters `code` en `_lastUpdated` dienen hierbij gebruikt te worden en moeten door het bronsysteem volgens de FHIR specificaties verwerkt worden. Het security token gaat net zoals bij stap 11 mee in een header. Het bronsysteem is verantwoordelijk voor het vinden van de juiste Task resources. Omdat het security token geen gebruikersinformatie bevat, mogen er nooit persoonsgegevens meegestuurd worden in de Task.
+22-24. Het bronsysteem controleert het security token en bepaalt aan de hand daarvan de bronhouder en de opvragende partij. Samen met de gegeven query parameters bevat dit voldoende informatie om de juiste Task resource\(s\) terug te geven.
 
 ### 5.3.4 Authenticatie
 
-1. Het ontvangende systeem zal op verzoek van de gebruiker een authenticatie flow starten met een door de gebruiker gekozen authenticatiemiddel. We nemen in deze beschrijving IRMA als authenticatiemiddel. Andere authenticatiemiddelen zullen een soortgelijke flow gebruiken. Er wordt een authenticatie sessie gestart op de Nuts node. Deze geeft een _contract_ en _sessie ID_ terug. [RFC002](https://nuts-foundation.gitbook.io/drafts/rfc/rfc002-authentication-token) bevat de details.
-2. Het resultaat van stap 10 wordt als QR code weergegeven voor de gebruiker. De gebruiker scant de QR code met de camera van zijn/haar device. Het _contract_ dat in stap 10 is aangemaakt wordt op het device van de gebruiker getoond. De gebruiker ondertekent dit _contract_ met de gevraagde attributen. Het device stuurt het ondertekende contract naar de Nuts node waarna het ontvangende systeem het resultaat zal ophalen. Het ondertekende contract dient opgeslagen te worden in de sessie van de gebruiker. Het contract is voor langere tijd geldig zodat deze stap niet elke keer doorlopen hoeft te worden. Het is ook mogelijk om deze stap als login te gebruiken.
+26-28. Het ontvangende systeem zal op verzoek van de gebruiker een authenticatie flow starten met een door de gebruiker gekozen authenticatiemiddel. We nemen in deze beschrijving IRMA als authenticatiemiddel. Andere authenticatiemiddelen zullen een soortgelijke flow gebruiken. Er wordt een authenticatie sessie gestart op de Nuts node. Deze geeft een _contract_ en _sessie ID_ terug. [RFC002](https://nuts-foundation.gitbook.io/drafts/rfc/rfc002-authentication-token) bevat de details.
+29-31. Het resultaat van stap 10 wordt als QR code weergegeven voor de gebruiker. De gebruiker scant de QR code met de camera van zijn/haar device. Het _contract_ dat in stap 10 is aangemaakt wordt op het device van de gebruiker getoond. De gebruiker ondertekent dit _contract_ met de gevraagde attributen. Het device stuurt het ondertekende contract naar de Nuts node waarna het ontvangende systeem het resultaat zal ophalen. Het ondertekende contract dient opgeslagen te worden in de sessie van de gebruiker. Het contract is voor langere tijd geldig zodat deze stap niet elke keer doorlopen hoeft te worden. Het is ook mogelijk om deze stap als login te gebruiken.
 
 ### 5.3.5 Ophalen overdrachtsbericht
 
-1. Het ontvangende systeem zoekt in de Nuts node naar het endpoint waar het overdrachtsbericht opgehaald kan worden. Het base endpoint bevindt zich in het `fhir` veld van de `eOverdracht-sender` service van de bronhouder.
-2. De URL waar het overdrachtsbericht opgehaald kan worden staat in de opgehaalde Task onder `Task.input:nursingHandoff`. Deze URL zou een combinatie van het _base_ path uit stap 12 en het relatieve pad voor het overdrachtsbericht onder `restrictions` moeten zijn.
-3. Nu bekend is wat het bronsysteem is kan er een access token worden aangevraagd. De URL waar de ontvangende partij deze kan ophalen staat in het `oauth` veld van de in stap 12 gevonden service. De aanvraag voor het access token moet gevuld worden volgens [RFC003](https://nuts-foundation.gitbook.io/drafts/rfc/rfc003-oauth2-authorization). Het autorisatie record, het service ID, de bronhouder, de ontvangende partij en het ondertekende contract zullen allemaal onderdeel zijn van de token aanvraag.
-4. Met het access token in de juiste header kan het overdrachtsbericht opgehaald worden bij de URL zoals aangegeven in de Task resource.
-5. Het bronsysteem laat het access token controleren door de Nuts node. Deze zal o.b.v. de gebruikte autorisatie records ook de restricties teruggeven.
-6. Het bronsysteem kijkt of de gevraagde resource, in dit geval het overdrachtsbericht, onderdeel is van de restricties die zijn teruggegeven door de Nuts node bij het controleren van het access token.
+Het ontvangende systeem zoekt in de Nuts node naar het endpoint waar het overdrachtsbericht opgehaald kan worden. Het base endpoint bevindt zich in het `fhir` veld van de `eOverdracht-sender` service van de bronhouder.
+De URL waar het overdrachtsbericht opgehaald kan worden staat in de opgehaalde Task onder `Task.input:nursingHandoff`. Deze URL zou een combinatie van het _base_ path uit stap 15 en het relatieve pad voor het overdrachtsbericht onder `Task.input:nursingHandoff` moeten zijn.
+32. Nu bekend is wat het bronsysteem is kan er een access token worden aangevraagd. Dit is gelijk aan de stappen 15 t/m 20 m.u.v. dat er nu ook gebruikersinformatie aanwezig moet zijn. Het autorisatie record, het service ID, de bronhouder, de ontvangende partij en het ondertekende contract zullen allemaal onderdeel zijn van de token aanvraag.
+33. Met het access token in de juiste header kan het overdrachtsbericht opgehaald worden bij de URL zoals aangegeven in de Task resource.
+34-37. Het bronsysteem laat het access token controleren door de Nuts node. Deze zal o.b.v. de gebruikte autorisatie records ook de mogelijke resources teruggeven die geraadpleegd mogen worden. Het bronsysteem kijkt of de gevraagde resource, in dit geval het overdrachtsbericht, onderdeel is van die resources.
 
 ### 5.3.6 afronden overdracht
 
-Voor het wijzigen van de task is een access token nodig. Hiervoor kan hetzelfde access token gebruikt worden die ook bij stap 15 is gebruikt indien de geldigheid van het token dit toelaat. Indien het updaten van de task op een later tijdstip plaats vindt of als het token verlopen is, zullen stap 12 t/m 14 nogmaals doorlopen moeten worden. Als ook het contract van de gebruiker niet meer geldig is, dan zullen stappen 10 en 11 ook doorlopen moeten worden.
+Voor het wijzigen van de task is een access token nodig. Hiervoor kan hetzelfde access token gebruikt worden die ook bij stap 32 is gebruikt indien de geldigheid van het token dit toelaat. Indien het updaten van de task op een later tijdstip plaats vindt of als het token verlopen is, zullen stap 15 t/m 20 nogmaals doorlopen moeten worden. Als ook het contract van de gebruiker niet meer geldig is, dan zullen stappen 26 t/m 31 ook doorlopen moeten worden.
 
-1. Het ontvangende systeem wijzigt de `Task.status` van `in-progress` naar `completed`. De task wordt middels een `PUT` request gestuurd naar het juise pad volgens het [Nictiz](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_FHIR_eOverdracht) TO §3.2.2. Het `base` path is afkomstig vanuit het endpoint wat in stap 12 is opgehaald.
-2. Het bronsysteem laat het access token controleren door de Nuts node. Deze zal o.b.v. de gebruikte autorisatie records ook de restricties teruggeven.
-3. Het bronsysteem kijkt of de gevraagde resource, in dit geval de task, onderdeel is van de restricties die zijn teruggegeven door de Nuts node bij het controleren van het access token.
-4. Als de autorisaties het toestaan kan het bronsysteem de task updaten. Het controleert hierbij of alleen de status is aangepast.
+41. Het ontvangende systeem wijzigt de `Task.status` van `in-progress` naar `completed`. De task wordt middels een `PUT` request gestuurd naar het juise pad volgens het [Nictiz](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_FHIR_eOverdracht) TO §3.2.2. Het `base` path is afkomstig vanuit het endpoint wat in stap 15 is opgehaald.
+42-44. Het bronsysteem laat het access token controleren door de Nuts node. Deze zal o.b.v. de gebruikte autorisatie records ook de mogelijke resources teruggeven die geraadpleegd mogen worden. Het bronsysteem kijkt of de gevraagde resource, in dit geval de task resource, onderdeel is van die resources.
+45-46. Het bronsysteem kijkt of de gevraagde resource, in dit geval de task, onderdeel is van de restricties die zijn teruggegeven door de Nuts node bij het controleren van het access token. Als de autorisaties het toestaan kan het bronsysteem de task updaten. Het controleert hierbij of alleen de status is aangepast.
 
-## 6. Integratie
+## 6. Access policy
+
+Deze eOverdracht Bolt omvat twee verschillende access policies. De belangrijkste is de `eOverdracht-sender` policy aangezien die toegang biedt tot daadwerkelijke gegevens. Daarnaast is er nog de `eOverdracht-receiver` policy die toegang regelt voor de notificaties.
+
+### 6.1 eOverdracht-receiver policy
+
+De `eOverdracht-receiver` policy beschrijft alleen de toegang tot het task notificatie endpoint. 
+Bij het aanvragen van een access token op de authorization server zijn geen [Nuts Authorization Credentials](https://nuts-foundation.gitbook.io/drafts/rfc/rfc014-authorization-credential) nodig. 
+Ook is er geen gebruikersinformatie nodig. De `vcs` en `usi` veld in de [JWT grant](https://nuts-foundation.gitbook.io/drafts/rfc/rfc003-oauth2-authorization#4-2-2-payload) mogen dus leeg zijn.
+Het `purposeOfUse` veld moet in ieder geval `eOverdracht-receiver` bevatten.
+
+De resource server van de ontvangende partij moet controleren dat er voor het notificatie endpoint een `POST` request wordt gedaan zonder body. Het gaat hierbij om het exacte pad wat geregistreerd staat onder het `notification` veld in de `eOverdracht-receiver` service.
+
+### 6.2 eOverdracht-sender policy
+
+De `eOverdracht-sender` policy bevat zowel regels voor persoonsgebonden als niet-persoonsgebonden resources. 
+Voor de niet-persoonsgebonden resources geldt hetzelfde als bij §6.1.
+
+#### 6.2.1 Niet-persoonsgebonden resources
+
+**6.2.1.1** Ophalen tasks
+Het ophalen van de gewijzigde tasks valt onder de niet-persoonsgebonden resources. 
+Dat betekent dat deze zonder gebruiker opgehaald kunnen worden. 
+Het gaat hierbij om het pad zoals beschreven in [§3.2.2 van het Nictiz TO](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_FHIR_eOverdracht#Task_invocations). 
+Bij de aanvraag van het access token moet het `purposeOfUse` veld `eOverdracht-sender` bevatten.
+
+De resource server moet controleren of het gevraagde request gelijk is aan:
+
+```
+GET [base]/Task?code=http://snomed.info/sct|308292007&_lastUpdated=[time of last request]
+```
+
+Waarbij `[base]` vervangen moet worden door het pad zoals deze is geregistreerd  onder het `fhir` veld in de `eOverdracht-sender` service. 
+De resources server moet ook de tasks selecteren o.b.v. het access token.
+Bij de aanvraag voor het access token is meegestuurd welke organisatie de aanvraag doet en voor welke organisatie deze bedoeld is. 
+
+**6.2.1.2** Updaten task resource
+
+Een onderdeel van de eOverdracht is dat de ontvangende partij de status van de task aanpast. 
+Hiervoor dient het een request te doen zoals beschreven in [§3.2.2 van het Nictiz TO](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_FHIR_eOverdracht#Task_invocations). 
+Omdat het hierbij gaat om de toegang van een enkele resource, is er een [Nuts Authorization Credential](https://nuts-foundation.gitbook.io/drafts/rfc/rfc014-authorization-credential) nodig. 
+Het gaat hierbij om hetzelfde credential als beschreven in de volgende paragraaf. 
+In tegenstelling tot wat beschreven staat in de volgende paragraaf is er geen gebruikersinformatie nodig voor de update.
+
+#### 6.2.2 Persoonsgebonden resources
+
+Het ophalen van het overdrachtsbericht en alle aanverwante gegevens vereisen een geregistreerde autorisatie in de vorm van een
+[Nuts Authorization Credential](https://nuts-foundation.gitbook.io/drafts/rfc/rfc014-authorization-credential).
+Het credential moet voldoen aan de volgende eisen:
+
+* De `issuer` moet het DID bevatten van de versturende partij.
+* `credentialSubject.id` moet het DID van de ontvangende partij bevatten.
+* `credentialSubject.purposeOfUse` moet gelijk zijn aan `eOverdracht-sender`.
+* `credentialSubject.legalBase.consentType` moet gelijk zijn aan `implied`.
+* `credentialSubject.subject` moet het BSN bevatten als OID: `urn:oid:2.16.840.1.113883.2.4.6.3:999999990`.
+
+De `eOverdracht-sender` policy geeft geen toegang tot gegevens anders dan die onder `resources` vermeld staan in het credential.
+`resources` moet in ieder geval de volgende waardes bevatten:
+
+* path: `/task/[ID]`, operations: `["read", "update"]`, userContext: `false`. `[ID]` moet hierbij vervangen worden door een echt ID. Deze waarde geeft lees en update rechten op de task resource.
+* path: `/compositon/[id]`, operations: `["read", "document"]`, userContext: `true`. `[ID]` moet hierbij vervangen worden door een echt ID. De `document` operatie wordt in FHIR vertaald naar het pad: `/Compositon/[id]/$document`. Dit betreft lees rechten op het overdrachtsbericht.
+* path: `/[path]`, operations: `["read"]`, userContext: `true`. Voor elke FHIR reference die voorkomt in het overdrachtsbericht moet een waarde worden opgenomen. `/[path]` moet daarbij vervangen worden door de FHIR reference.
+
+Bij de aanvraag van het access token moet het credential volgens bovenstaande eisen meegestuurd worden in het `vcs` veld.
+Daarnaast moet er gebruikersinformatie meegestuurd worden in het `usi` veld. Het `purposeOfUse` veld moet de waarde `eOverdracht-sender` bevatten.
+
+## 7. Integratie
 
 Dit hoofdstuk geeft een aantal voorbeelden hoe de concepten uit de eerdere hoofdstukken te vertalen zijn naar verschillende integratie mogelijkheden. Er worden slechts enkele uiteenlopende voorbeelden gegeven om een idee te krijgen van de flexibiliteit van de gekozen richting. Dit hoofdstuk is niet-normatief.
 
@@ -429,41 +496,41 @@ Legenda:
 
 De blauwe pijlen geven interactie van de gebruiker weer en de rode pijlen geven gegevensstromen weer. Het slotje bij een gebruiker wil zeggen dat deze geauthenticeerd is volgens de oauth beschrijving.
 
-### 6.1 Aanbiedende partij
+### 7.1 Aanbiedende partij
 
-#### 6.1.1 Embedded scenario
+#### 7.1.1 Embedded scenario
 
 In het embedded scenario is één leverancier verantwoordelijk voor het bijhouden van het overdrachtsproces en voor het beschikbaar stellen van de benodigde gegevens. Dit is het geval wanneer een XIS/ECD leverancier de benodigde functionaliteit voor de verpleegkundige overdracht implementeert in het XIS/ECD.
 
 ![](https://lh5.googleusercontent.com/O3od8KgnBNyw47gRCXxk_vLf_d8UJkU3heJTq-TuDb7xnhL-uVz7NZPz6fv0VazflwG64hMeDolrnHarvE0_poG0sORWHSRfN8RFDt3qj0spaqWQTGJHzx2mspeoYuxYuOqIFlGd)
 
-#### 6.1.2 Hybride scenario
+#### 7.1.2 Hybride scenario
 
 In het hybride scenario is er een scheiding aangebracht in het beschikbaar stellen van de gegevens en het afhandelen van de verpleegkundige overdracht. Het XIS/ECD beschikt in dit scenario over een resource server die ZIBs over FHIR beschikbaar stelt. In dit scenario komen dergelijke gegevens rechtstreeks uit het XIS/ECD. De broker handelt in dit geval het overdrachtsproces af. De broker maakt het mogelijk via de transfer UI om de ontvangende zorginstellingen te selecteren en om de juiste gegevens te selecteren. Ook het aanmeldbericht en het overdrachtsbericht zijn dan de verantwoordelijkheid voor de broker. Deze hebben echter wel verwijzingen naar resources die bij het XIS/ECD opgeslagen zijn. Om de juiste gegevens te selecteren moet er wel een koppeling zijn tussen broker en XIS/ECD. Hoe die koppeling er uit ziet valt buiten deze specificatie. Bij het selecteren van de juiste gegevens moet de broker ook de juiste grondslag vastleggen zodat de AAA service de juiste autorisatie kan toepassen.
 
 ![](https://lh4.googleusercontent.com/1h7jRP1_heZAwAeRhVNLwfudzuT8aiSk8U38N-0tXwEBnhBuv18CyWHWsDHXmNh9QxHLzgfM_N5a_aSCLGeU2dr3uQMljTt068auyLXuX4Hu8gELfqHG20NGvH9A0_ChOK5-WuRG)
 
-#### 6.1.3 Delegate scenario
+#### 7.1.3 Delegate scenario
 
 Het delegate scenario gaat er van uit dat het XIS/ECD geen enkele ondersteuning heeft en ook niet zal gaan bieden voor het ontsluiten van ZIBs over FHIR. In dit geval handelt de broker en het proces af en voorziet het in de gegevensontsluiting. In de praktijk komen de gegevens wel vanuit het XIS/ECD, maar zal de broker deze omvormen naar ZIBs. De data-proxy handelt dit voor de broker af. Het kan zijn dat het hier gaat om het kopiëren van gegevens, maar ook dat gegevens real-time omgezet worden naar ZIBs. Ook in dit scenario zal de broker bij de gegevens uit het XIS/ECD moeten kunnen om de transfer professional te kunnen ondersteunen.
 
 ![](https://lh5.googleusercontent.com/uqASB5V_px0piuRh_FV59tmeY2F9MaYkjBgmi2KzwUBrwCI3aQhH6Ikc_MKd4E6jWLARHE-GZEULkmEYyxCbKk0vKyYFyYqji5C39YyYRTHHyosWNm6W46HQQpRcqgj_9q86afiY)
 
-### 6.2 Ontvangende partij
+### 7.2 Ontvangende partij
 
-#### 6.2.1 Embedded scenario
+#### 7.2.1 Embedded scenario
 
 Dit is de evenknie van het proces aan de versturende kant. Alle functionaliteit wordt door het XIS/ECD geïmplementeerd. Zowel de professionals die de aanvraag beoordelen als de medische professionals die de zorg opstarten zullen geauthenticeerd moeten zijn volgens de in H4 vermelde methode. Een verschil is dat de beoordelend professional alleen het aanmeldbericht zal hoeven in te zien, terwijl de medisch professional het volledige overdrachtsbericht nodig heeft om dossiervorming te starten. Het synchroniseren van de tasks kan gebruikt worden om de beoordelend professional een signaal te geven dat er een nieuwe overdracht wordt aangeboden. Het updaten van de tasks gaat nog altijd via de versturende kant. Het XIS/ECD kan zelf ZIBs over FHIR verwerken en tonen aan de gebruiker.
 
 ![](https://lh5.googleusercontent.com/igwPdEzndJH1o8HSCTmL7oCEzDDqOAEajbMHUAUp3D5n3V1RsWGWF2xTmXuNISv1llXzkcXGIufoEAbjitRfHrsUZpIlS78FPGvhFaFlIefmknIe6JTNTq5AXCZEJZVP2XbxnubV)
 
-#### 6.2.2 Hybride scenario
+#### 7.2.2 Hybride scenario
 
 Het hybride scenario is voor de ontvangende klant bijna exact hetzelfde als het embedded scenario. Er zou een verschil kunnen zitten in hoe de medisch professional op de hoogte wordt gebracht dat er een nieuwe patiënt is. In het embedded scenario kan het XIS/ECD dit via interne logica regelen, terwijl er in het hybride scenario twee mogelijkheden zijn: De broker notificeert het XIS/ECD via een custom koppeling of het XIS/ECD reageert op het aanwezig zijn van een grondslag omtrent een overdracht waarbij een overdrachtsbericht beschikbaar is gekomen.
 
 ![](https://lh3.googleusercontent.com/kGZEamyRjm__WjL5adWk7AzqhdXgCc8vXfHNp1eNznasS1CiRBtV06rAJSvmLGeQxUK4dxK9beb0kmZ4w41pKDG_kw1MYAD9wcEu06s8RMqHvLQVk4M9lZeRutMLb7Xvf_8gnk-Q)
 
-#### 6.2.3 Delegate scenario
+#### 7.2.3 Delegate scenario
 
 In dit scenario neemt de broker ook het verwerken van de ZIBs over FHIR voor zijn rekening en levert dit aan het XIS/ECD op een verwerkbare manier.
 
