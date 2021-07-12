@@ -360,7 +360,7 @@ Aan dit deel wordt gewerkt.
 
 Het ophalen van het overdrachtsbericht begint wanneer de verpleegkundige overdracht toegewezen is aan een enkele ontvangende partij. Het proces van de voorgaande paragrafen is afgerond of er is sprake van een rechtstreekse overdracht waarbij een cliënt bijvoorbeeld weer terugkeert in zorg na bijvoorbeeld een tijdelijke opname.
 
-Voordat de ontvangende partij genotificeerd kan worden is het de taak van de bronhouder om zowel het overdrachtsbericht als de bijbehorende Task resource te prepareren. Het is de bronhouder vrij om deze van tevoren klaar te zetten of ze realtime te genereren. De inhoud van het overdrachtsbericht moet een FHIR Composition resource zijn volgens de definities van het [Nictiz TO](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_FHIR_eOverdracht#FHIR_profiles) De Task resource zal gevuld moeten worden volgens het **eOverdracht-Task** FHIR profiel. Een verwijzing hiernaar is te vinden op de website van [Nictiz](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_FHIR_eOverdracht#Task). Belangrijk hierbij is dat de `Task.status` en `Task.input:nursingHandoff` velden gevuld zijn.
+Voordat de ontvangende partij genotificeerd kan worden is het de taak van de bronhouder om zowel het overdrachtsbericht als de bijbehorende Task resource te prepareren. Het is de bronhouder vrij om deze van tevoren klaar te zetten of ze realtime te genereren. De inhoud van het overdrachtsbericht moet een FHIR Composition resource zijn volgens de definities van het [Nictiz TO](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_FHIR_eOverdracht#FHIR_profiles). De Task resource zal gevuld moeten worden volgens het **eOverdracht-Task** FHIR profiel. Een verwijzing hiernaar is te vinden op de website van [Nictiz](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_FHIR_eOverdracht#Task). Belangrijk hierbij is dat de `Task.status` en `Task.input:nursingHandoff` velden gevuld zijn.
 
 Onderstaand flow diagram toont alle stappen van notificeren tot ophalen. Wanneer er gegevens uitgewisseld worden tussen _Sender_ en _Receiver_ gebeurt dit altijd over een verbinding die is beveiligd met mutual TLS. Zie ook [RFC008](https://nuts-foundation.gitbook.io/drafts/rfc/rfc008-certificate-structure) voor het gebruik van certificaten. De verschillende stappen worden in de volgende paragrafen uitgelegd.
 
@@ -368,8 +368,7 @@ Onderstaand flow diagram toont alle stappen van notificeren tot ophalen. Wanneer
 
 ### 5.3.1 Registreren autorisatie
 
-**2-3** In één van de eerste stappen wordt het Nuts autorisatie record geregistreerd. Hiervoor dient [RFC014](https://nuts-foundation.gitbook.io/drafts/rfc/rfc014-authorization-credential) gevolgd te worden. 
-   Zie §6 voor de invulling van het autorisatie record.
+**2-3** In één van de eerste stappen wordt het Nuts autorisatie record geregistreerd. Hiervoor dient [RFC014](https://nuts-foundation.gitbook.io/drafts/rfc/rfc014-authorization-credential) gevolgd te worden. Zie §6.2.2 voor de invulling van het autorisatie record.
 
 **4.** Het Nuts netwerk zorgt voor de aflevering van het autorisatie record bij de juiste ontvangende Nuts node.
 
@@ -377,7 +376,7 @@ Onderstaand flow diagram toont alle stappen van notificeren tot ophalen. Wanneer
 
 **5-6** De bronhouder zoekt in de Nuts node naar het endpoint om de Task notificatie naar toe te sturen. Het base endpoint bevindt zich in het `notification` veld van de `eOverdracht-receiver` service van de ontvangende organisatie. Het endpoint waar de notificatie heen moet is een combinatie van het _base_ endpoint en het relatieve pad zoals gedefinieerd in het TO van Nictiz.
 
-**7.** De bronhouder vraagt een access token aan de Nuts node. Het token wordt aangevraagd in de context van de beide partijenen de bolt. 
+**7.** De bronhouder vraagt een access token aan de Nuts node. Het token wordt aangevraagd in de context van de beide partijen en de bolt.
 
 **8-10** De node vraagt volgens [RFC003](https://nuts-foundation.gitbook.io/drafts/rfc/rfc003-oauth2-authorization) een access token aan bij de authorization server van de ontvangende partij.
 
@@ -397,14 +396,13 @@ Het doelsysteem is nu op de hoogte van een nieuwe of gewijzigde Task resource. H
 
 **26-28** Het ontvangende systeem zal op verzoek van de gebruiker een authenticatie flow starten met een door de gebruiker gekozen authenticatiemiddel. We nemen in deze beschrijving IRMA als authenticatiemiddel. Andere authenticatiemiddelen zullen een soortgelijke flow gebruiken. Er wordt een authenticatie sessie gestart op de Nuts node. Deze geeft een _contract_ en _sessie ID_ terug. [RFC002](https://nuts-foundation.gitbook.io/drafts/rfc/rfc002-authentication-token) bevat de details.
 
-**29-31** Het resultaat van stap 10 wordt als QR code weergegeven voor de gebruiker. De gebruiker scant de QR code met de camera van zijn/haar device. Het _contract_ dat in stap 10 is aangemaakt wordt op het device van de gebruiker getoond. De gebruiker ondertekent dit _contract_ met de gevraagde attributen. Het device stuurt het ondertekende contract naar de Nuts node waarna het ontvangende systeem het resultaat zal ophalen. Het ondertekende contract dient opgeslagen te worden in de sessie van de gebruiker. Het contract is voor langere tijd geldig zodat deze stap niet elke keer doorlopen hoeft te worden. Het is ook mogelijk om deze stap als login te gebruiken.
+**29-31** Het resultaat van stap 10 wordt als QR code weergegeven voor de gebruiker. De gebruiker scant de QR code met de camera van zijn/haar device. Het _contract_ dat in stap 27 is aangemaakt wordt op het device van de gebruiker getoond. De gebruiker ondertekent dit _contract_ met de gevraagde attributen. Het device stuurt het ondertekende contract naar de Nuts node waarna het ontvangende systeem het resultaat zal ophalen. Het ondertekende contract dient opgeslagen te worden in de sessie van de gebruiker. Het contract is voor langere tijd geldig zodat deze stap niet elke keer doorlopen hoeft te worden. Het is ook mogelijk om deze stap als login te gebruiken.
 
 ### 5.3.5 Ophalen overdrachtsbericht
 
-Het ontvangende systeem zoekt in de Nuts node naar het endpoint waar het overdrachtsbericht opgehaald kan worden. Het base endpoint bevindt zich in het `fhir` veld van de `eOverdracht-sender` service van de bronhouder.
-De URL waar het overdrachtsbericht opgehaald kan worden staat in de opgehaalde Task onder `Task.input:nursingHandoff`. Deze URL zou een combinatie van het `base` path uit stap 15 en het relatieve pad voor het overdrachtsbericht onder `Task.input:nursingHandoff` moeten zijn.
+Het ontvangende systeem zoekt in de Nuts node naar het endpoint waar het overdrachtsbericht opgehaald kan worden. Het base endpoint bevindt zich in het `fhir` veld van de `eOverdracht-sender` service van de bronhouder. De URL waar het overdrachtsbericht opgehaald kan worden staat in de opgehaalde Task onder `Task.input:nursingHandoff`. Deze URL zou een combinatie van het `base` path uit stap 15 en het relatieve pad voor het overdrachtsbericht onder `Task.input:nursingHandoff` moeten zijn.
 
-**32.** Nu bekend is wat het bronsysteem is kan er een access token worden aangevraagd. Dit is gelijk aan de stappen 15 t/m 20 m.u.v. dat er nu ook gebruikersinformatie  en een autorisatie record aanwezig moet zijn. Het autorisatie record, het service ID, de bronhouder, de ontvangende partij en het ondertekende contract zullen allemaal onderdeel zijn van de access token aanvraag.
+**32.** Nu bekend is wat het bronsysteem is kan er een access token worden aangevraagd. Dit is gelijk aan de stappen 15 t/m 20 m.u.v. dat er nu ook gebruikersinformatie en een autorisatie record aanwezig moeten zijn. Het autorisatie record, het service ID, de bronhouder, de ontvangende partij en het ondertekende contract zullen allemaal onderdeel zijn van de access token aanvraag.
 
 **33.** Met het access token in de juiste header kan het overdrachtsbericht opgehaald worden bij de URL zoals aangegeven in de Task resource.
 
@@ -422,53 +420,41 @@ Voor het wijzigen van de Task is een access token nodig. Hiervoor kan hetzelfde 
 
 ## 6. Access policy
 
+Een onderdeel van een Bolt is de beschrijving van de autorisaties tot bepaalde resources.  De autorisaties worden beschreven in een access policy. Het is de taak van een resource server om de policy te volgen wanneer resources worden opgevraagd.
+
 Deze eOverdracht Bolt omvat twee verschillende access policies. De belangrijkste is de `eOverdracht-sender` policy aangezien die toegang biedt tot daadwerkelijke gegevens. Daarnaast is er nog de `eOverdracht-receiver` policy die toegang regelt voor de notificaties.
 
 ### 6.1 eOverdracht-receiver policy
 
-De `eOverdracht-receiver` policy beschrijft alleen de toegang tot het Task notificatie endpoint. 
-Bij het aanvragen van een access token op de authorization server zijn geen [Nuts Authorization Credentials](https://nuts-foundation.gitbook.io/drafts/rfc/rfc014-authorization-credential) nodig. 
-Ook is er geen gebruikersinformatie nodig. De `vcs` en `usi` veld in de [JWT grant](https://nuts-foundation.gitbook.io/drafts/rfc/rfc003-oauth2-authorization#4-2-2-payload) mogen dus leeg zijn.
-Het `purposeOfUse` veld moet in ieder geval `eOverdracht-receiver` bevatten.
+De `eOverdracht-receiver` policy beschrijft alleen de toegang tot het Task notificatie endpoint. Bij het aanvragen van een access token op de authorization server zijn geen [Nuts Authorization Credentials](https://nuts-foundation.gitbook.io/drafts/rfc/rfc014-authorization-credential) nodig. Ook is er geen gebruikersinformatie nodig. De `vcs` en `usi` velden in de [JWT grant](https://nuts-foundation.gitbook.io/drafts/rfc/rfc003-oauth2-authorization#4-2-2-payload) mogen dus leeg zijn. Het `purposeOfUse` veld moet in ieder geval `eOverdracht-receiver` bevatten.
 
 De resource server van de ontvangende partij moet controleren dat er voor het notificatie endpoint een `POST` request wordt gedaan zonder body. Het gaat hierbij om het exacte pad wat geregistreerd staat onder het `notification` veld in de `eOverdracht-receiver` service.
 
 ### 6.2 eOverdracht-sender policy
 
-De `eOverdracht-sender` policy bevat zowel regels voor persoonsgebonden als niet-persoonsgebonden resources. 
-Voor de niet-persoonsgebonden resources geldt hetzelfde als bij §6.1.
+De `eOverdracht-sender` policy bevat zowel regels voor persoonsgebonden als niet-persoonsgebonden resources. Voor de niet-persoonsgebonden resources geldt hetzelfde als bij §6.1: de `vcs` en `usi` velden in de [JWT grant](https://nuts-foundation.gitbook.io/drafts/rfc/rfc003-oauth2-authorization#4-2-2-payload) mogen leeg zijn.
 
 #### 6.2.1 Niet-persoonsgebonden resources
 
-**6.2.1.1** Ophalen tasks
-Het ophalen van de gewijzigde tasks valt onder de niet-persoonsgebonden resources. 
-Dat betekent dat deze zonder gebruiker opgehaald kunnen worden. 
-Het gaat hierbij om het pad zoals beschreven in [§3.2.2 van het Nictiz TO](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_FHIR_eOverdracht#Task_invocations). 
-Bij de aanvraag van het access token moet het `purposeOfUse` veld `eOverdracht-sender` bevatten.
+**6.2.1.1 Ophalen tasks** 
+
+Het ophalen van de gewijzigde tasks valt onder de niet-persoonsgebonden resources. Dat betekent dat deze zonder gebruiker opgehaald kunnen worden. Het gaat hierbij om het pad zoals beschreven in [§3.2.2 van het Nictiz TO](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_FHIR_eOverdracht#Task_invocations). Bij de aanvraag van het access token moet het `purposeOfUse` veld `eOverdracht-sender` bevatten.
 
 De resource server moet controleren of het gevraagde request gelijk is aan:
 
-```
+```text
 GET [base]/Task?code=http://snomed.info/sct|308292007&_lastUpdated=[time of last request]
 ```
 
-Waarbij `[base]` vervangen moet worden door het pad zoals deze is geregistreerd  onder het `fhir` veld in de `eOverdracht-sender` service. 
-De resources server moet ook de Tasks selecteren o.b.v. het access token.
-Bij de aanvraag voor het access token is meegestuurd welke organisatie de aanvraag doet en voor welke organisatie deze bedoeld is. 
+Waarbij `[base]` vervangen moet worden door het pad zoals deze is geregistreerd onder het `fhir` veld in de `eOverdracht-sender` service. De resources server moet ook de Tasks selecteren o.b.v. het access token. Bij de aanvraag voor het access token is meegestuurd welke organisatie de aanvraag doet en voor welke organisatie deze bedoeld is.
 
-**6.2.1.2** Updaten task resource
+**6.2.1.2** **Updaten task resource**
 
-Een onderdeel van de eOverdracht is dat de ontvangende partij de status van de Task aanpast. 
-Hiervoor dient het een request te doen zoals beschreven in [§3.2.2 van het Nictiz TO](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_FHIR_eOverdracht#Task_invocations). 
-Omdat het hierbij gaat om de toegang van een enkele resource, is er een [Nuts Authorization Credential](https://nuts-foundation.gitbook.io/drafts/rfc/rfc014-authorization-credential) nodig. 
-Het gaat hierbij om hetzelfde credential als beschreven in de volgende paragraaf. 
-In tegenstelling tot wat beschreven staat in de volgende paragraaf is er geen gebruikersinformatie nodig voor de update.
+Een onderdeel van de eOverdracht is dat de ontvangende partij de status van de Task aanpast. Hiervoor dient het een request te doen zoals beschreven in [§3.2.2 van het Nictiz TO](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_FHIR_eOverdracht#Task_invocations). Omdat het hierbij gaat om de toegang van een enkele resource, is er een [Nuts Authorization Credential](https://nuts-foundation.gitbook.io/drafts/rfc/rfc014-authorization-credential) nodig. Het gaat hierbij om hetzelfde credential als beschreven in de volgende paragraaf. In tegenstelling tot wat beschreven staat in de volgende paragraaf is er geen gebruikersinformatie nodig voor de update.
 
 #### 6.2.2 Persoonsgebonden resources
 
-Het ophalen van het overdrachtsbericht en alle aanverwante gegevens vereisen een geregistreerde autorisatie in de vorm van een
-[Nuts Authorization Credential](https://nuts-foundation.gitbook.io/drafts/rfc/rfc014-authorization-credential).
-Het credential moet voldoen aan de volgende eisen:
+Het ophalen van het overdrachtsbericht en alle aanverwante gegevens vereisen een geregistreerde autorisatie in de vorm van een [Nuts Authorization Credential](https://nuts-foundation.gitbook.io/drafts/rfc/rfc014-authorization-credential). Het credential moet voldoen aan de volgende eisen:
 
 * De `issuer` moet het DID bevatten van de versturende partij.
 * `credentialSubject.id` moet het DID van de ontvangende partij bevatten.
@@ -476,15 +462,13 @@ Het credential moet voldoen aan de volgende eisen:
 * `credentialSubject.legalBase.consentType` moet gelijk zijn aan `implied`.
 * `credentialSubject.subject` moet het BSN bevatten als OID: `urn:oid:2.16.840.1.113883.2.4.6.3:999999990`.
 
-De `eOverdracht-sender` policy geeft geen toegang tot gegevens anders dan die onder `resources` vermeld staan in het credential.
-`resources` moet in ieder geval de volgende waardes bevatten:
+De `eOverdracht-sender` policy geeft geen toegang tot gegevens anders dan die onder `resources` vermeld staan in het credential. `resources` moet in ieder geval de volgende waardes bevatten:
 
 * path: `/task/[ID]`, operations: `["read", "update"]`, userContext: `false`. `[ID]` moet hierbij vervangen worden door een echt ID. Deze waarde geeft lees en update rechten op de task resource.
 * path: `/compositon/[id]`, operations: `["read", "document"]`, userContext: `true`. `[ID]` moet hierbij vervangen worden door een echt ID. De `document` operatie wordt in FHIR vertaald naar het pad: `/Compositon/[id]/$document`. Dit betreft lees rechten op het overdrachtsbericht.
 * path: `/[path]`, operations: `["read"]`, userContext: `true`. Voor elke FHIR reference die voorkomt in het overdrachtsbericht moet een waarde worden opgenomen. `/[path]` moet daarbij vervangen worden door de FHIR reference.
 
-Bij de aanvraag van het access token moet het credential volgens bovenstaande eisen meegestuurd worden in het `vcs` veld.
-Daarnaast moet er gebruikersinformatie meegestuurd worden in het `usi` veld. Het `purposeOfUse` veld moet de waarde `eOverdracht-sender` bevatten.
+Bij de aanvraag van het access token moet het credential volgens bovenstaande eisen meegestuurd worden in het `vcs` veld. Daarnaast moet er gebruikersinformatie meegestuurd worden in het `usi` veld. Het `purposeOfUse` veld moet de waarde `eOverdracht-sender` bevatten.
 
 ## 7. Integratie
 
