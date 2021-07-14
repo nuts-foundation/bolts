@@ -472,7 +472,7 @@ Bij de aanvraag van het access token moet het credential volgens bovenstaande ei
 
 ## Appendix A. Integratie voorbeelden
 
-Dit hoofdstuk geeft een aantal voorbeelden hoe de concepten uit de eerdere hoofdstukken te vertalen zijn naar verschillende integratie mogelijkheden. Er worden slechts enkele uiteenlopende voorbeelden gegeven om een idee te krijgen van de flexibiliteit van de gekozen richting. Dit hoofdstuk is niet-normatief.
+Deze bijlage geeft een aantal voorbeelden hoe de concepten uit de eerdere hoofdstukken te vertalen zijn naar verschillende integratie mogelijkheden. Er worden slechts enkele uiteenlopende voorbeelden gegeven om een idee te krijgen van de flexibiliteit van de gekozen richting. Deze bijlage is niet-normatief.
 
 Voor zowel de ontvangende als de versturende kant zijn drie voorbeelden opgenomen, deze dragen dezelfde namen, maar zijn geen afhankelijkheid van elkaar. De ontvangende staat volledig los van de versturende kant.
 
