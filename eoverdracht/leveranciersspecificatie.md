@@ -470,7 +470,7 @@ De `eOverdracht-sender` policy geeft geen toegang tot gegevens anders dan die on
 
 Bij de aanvraag van het access token moet het credential volgens bovenstaande eisen meegestuurd worden in het `vcs` veld. Daarnaast moet er gebruikersinformatie meegestuurd worden in het `usi` veld. Het `purposeOfUse` veld moet de waarde `eOverdracht-sender` bevatten.
 
-## 7. Integratie
+## Appendix A. Integratie voorbeelden
 
 Dit hoofdstuk geeft een aantal voorbeelden hoe de concepten uit de eerdere hoofdstukken te vertalen zijn naar verschillende integratie mogelijkheden. Er worden slechts enkele uiteenlopende voorbeelden gegeven om een idee te krijgen van de flexibiliteit van de gekozen richting. Dit hoofdstuk is niet-normatief.
 
@@ -493,41 +493,41 @@ Legenda:
 
 De blauwe pijlen geven interactie van de gebruiker weer en de rode pijlen geven gegevensstromen weer. Het slotje bij een gebruiker wil zeggen dat deze geauthenticeerd is volgens de oauth beschrijving.
 
-### 7.1 Aanbiedende partij
+### A.1 Aanbiedende partij
 
-#### 7.1.1 Embedded scenario
+#### A.1.1 Embedded scenario
 
 In het embedded scenario is één leverancier verantwoordelijk voor het bijhouden van het overdrachtsproces en voor het beschikbaar stellen van de benodigde gegevens. Dit is het geval wanneer een XIS/ECD leverancier de benodigde functionaliteit voor de verpleegkundige overdracht implementeert in het XIS/ECD.
 
 ![](https://lh5.googleusercontent.com/O3od8KgnBNyw47gRCXxk_vLf_d8UJkU3heJTq-TuDb7xnhL-uVz7NZPz6fv0VazflwG64hMeDolrnHarvE0_poG0sORWHSRfN8RFDt3qj0spaqWQTGJHzx2mspeoYuxYuOqIFlGd)
 
-#### 7.1.2 Hybride scenario
+#### A.1.2 Hybride scenario
 
 In het hybride scenario is er een scheiding aangebracht in het beschikbaar stellen van de gegevens en het afhandelen van de verpleegkundige overdracht. Het XIS/ECD beschikt in dit scenario over een resource server die ZIBs over FHIR beschikbaar stelt. In dit scenario komen dergelijke gegevens rechtstreeks uit het XIS/ECD. De broker handelt in dit geval het overdrachtsproces af. De broker maakt het mogelijk via de transfer UI om de ontvangende zorginstellingen te selecteren en om de juiste gegevens te selecteren. Ook het aanmeldbericht en het overdrachtsbericht zijn dan de verantwoordelijkheid voor de broker. Deze hebben echter wel verwijzingen naar resources die bij het XIS/ECD opgeslagen zijn. Om de juiste gegevens te selecteren moet er wel een koppeling zijn tussen broker en XIS/ECD. Hoe die koppeling er uit ziet valt buiten deze specificatie. Bij het selecteren van de juiste gegevens moet de broker ook de juiste grondslag vastleggen zodat de AAA service de juiste autorisatie kan toepassen.
 
 ![](https://lh4.googleusercontent.com/1h7jRP1_heZAwAeRhVNLwfudzuT8aiSk8U38N-0tXwEBnhBuv18CyWHWsDHXmNh9QxHLzgfM_N5a_aSCLGeU2dr3uQMljTt068auyLXuX4Hu8gELfqHG20NGvH9A0_ChOK5-WuRG)
 
-#### 7.1.3 Delegate scenario
+#### A.1.3 Delegate scenario
 
 Het delegate scenario gaat er van uit dat het XIS/ECD geen enkele ondersteuning heeft en ook niet zal gaan bieden voor het ontsluiten van ZIBs over FHIR. In dit geval handelt de broker en het proces af en voorziet het in de gegevensontsluiting. In de praktijk komen de gegevens wel vanuit het XIS/ECD, maar zal de broker deze omvormen naar ZIBs. De data-proxy handelt dit voor de broker af. Het kan zijn dat het hier gaat om het kopiëren van gegevens, maar ook dat gegevens real-time omgezet worden naar ZIBs. Ook in dit scenario zal de broker bij de gegevens uit het XIS/ECD moeten kunnen om de transfer professional te kunnen ondersteunen.
 
 ![](https://lh5.googleusercontent.com/uqASB5V_px0piuRh_FV59tmeY2F9MaYkjBgmi2KzwUBrwCI3aQhH6Ikc_MKd4E6jWLARHE-GZEULkmEYyxCbKk0vKyYFyYqji5C39YyYRTHHyosWNm6W46HQQpRcqgj_9q86afiY)
 
-### 7.2 Ontvangende partij
+### A.2 Ontvangende partij
 
-#### 7.2.1 Embedded scenario
+#### A.2.1 Embedded scenario
 
 Dit is de evenknie van het proces aan de versturende kant. Alle functionaliteit wordt door het XIS/ECD geïmplementeerd. Zowel de professionals die de aanvraag beoordelen als de medische professionals die de zorg opstarten zullen geauthenticeerd moeten zijn volgens de in H4 vermelde methode. Een verschil is dat de beoordelend professional alleen het aanmeldbericht zal hoeven in te zien, terwijl de medisch professional het volledige overdrachtsbericht nodig heeft om dossiervorming te starten. Het synchroniseren van de tasks kan gebruikt worden om de beoordelend professional een signaal te geven dat er een nieuwe overdracht wordt aangeboden. Het updaten van de tasks gaat nog altijd via de versturende kant. Het XIS/ECD kan zelf ZIBs over FHIR verwerken en tonen aan de gebruiker.
 
 ![](https://lh5.googleusercontent.com/igwPdEzndJH1o8HSCTmL7oCEzDDqOAEajbMHUAUp3D5n3V1RsWGWF2xTmXuNISv1llXzkcXGIufoEAbjitRfHrsUZpIlS78FPGvhFaFlIefmknIe6JTNTq5AXCZEJZVP2XbxnubV)
 
-#### 7.2.2 Hybride scenario
+#### A.2.2 Hybride scenario
 
 Het hybride scenario is voor de ontvangende klant bijna exact hetzelfde als het embedded scenario. Er zou een verschil kunnen zitten in hoe de medisch professional op de hoogte wordt gebracht dat er een nieuwe patiënt is. In het embedded scenario kan het XIS/ECD dit via interne logica regelen, terwijl er in het hybride scenario twee mogelijkheden zijn: De broker notificeert het XIS/ECD via een custom koppeling of het XIS/ECD reageert op het aanwezig zijn van een grondslag omtrent een overdracht waarbij een overdrachtsbericht beschikbaar is gekomen.
 
 ![](https://lh3.googleusercontent.com/kGZEamyRjm__WjL5adWk7AzqhdXgCc8vXfHNp1eNznasS1CiRBtV06rAJSvmLGeQxUK4dxK9beb0kmZ4w41pKDG_kw1MYAD9wcEu06s8RMqHvLQVk4M9lZeRutMLb7Xvf_8gnk-Q)
 
-#### 7.2.3 Delegate scenario
+#### A.2.3 Delegate scenario
 
 In dit scenario neemt de broker ook het verwerken van de ZIBs over FHIR voor zijn rekening en levert dit aan het XIS/ECD op een verwerkbare manier.
 
