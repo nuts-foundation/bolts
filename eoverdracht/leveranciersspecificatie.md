@@ -279,7 +279,7 @@ De verschillende processtappen in de verpleegkundige overdracht vereisen een bep
 * Rejected    → alle toegang ingetrokken
 * Cancelled    → alle toegang ingetrokken
 * In-progress → toegang tot overdrachtsbericht
-* Completed    → toegang tot overdrachtsbericht
+* Completed    → alle toegang ingetrokken
 
 Het concept van een grondslag verbindt welke ontvangende partij toegang krijgt tot welke gegevens bij welke bronhouder inzake welke patiënt. En hoewel er voor het aanmeldbericht dus geen valide grondslag is om persoonsgegevens te verwerken, is het voor de implementatie wel handig om beide berichten via eenzelfde mechanisme toegankelijk te maken. De grondslag is onderdeel van een speciaal autorisatie record, deze is beschreven in [RFC014](https://nuts-foundation.gitbook.io/drafts/rfc/rfc014-authorization-credential).
 
@@ -469,6 +469,10 @@ De `eOverdracht-sender` policy geeft geen toegang tot gegevens anders dan die on
 * path: `/[path]`, operations: `["read"]`, userContext: `true`. Voor elke FHIR reference die voorkomt in het overdrachtsbericht moet een waarde worden opgenomen. `/[path]` moet daarbij vervangen worden door de FHIR reference.
 
 Bij de aanvraag van het access token moet het credential volgens bovenstaande eisen meegestuurd worden in het `vcs` veld. Daarnaast moet er gebruikersinformatie meegestuurd worden in het `usi` veld. Het `purposeOfUse` veld moet de waarde `eOverdracht-sender` bevatten.
+
+### 6.3 Intrekken autorisatie
+
+Wanneer de overdracht voltooid is, is het niet langer nodig voor de ontvangende partij om gegevens op te halen. Het autorisatie credential kan dan ingetrokken worden. Wanneer de status van de Task geupdate wordt naar completed, dan moet de verzendende partij het credential intrekken. Indien de ontvangende partij vergeet om het proces af te ronden dan staat het de verzendende partij vrij om het credential na een redelijke periode in te trekken.
 
 ## Appendix A. Integratie voorbeelden
 
