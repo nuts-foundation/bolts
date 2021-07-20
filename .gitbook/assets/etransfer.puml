@@ -68,7 +68,7 @@ end
 
 group "Retrieve eTransfer"
   group "Endpoint authorization"
-   Receiver <-> SenderNode: Steps (15-20)
+   Receiver <-> SenderNode: Steps 15-20
   end
   Receiver -> Sender: request eTransfer <<accessToken>>
   activate Sender
@@ -85,7 +85,7 @@ group "Complete transfer"
   Bob --> Receiver: complete
   activate Receiver
   group "Endpoint authorization"
-    Receiver <-> SenderNode: steps (15-20)
+    Receiver <-> SenderNode: steps 15-20
   end
   Receiver -> Sender: update Task <<accessToken>>
   activate Sender
@@ -94,7 +94,13 @@ group "Complete transfer"
   Sender -> Sender: Task in resources?
   Sender -> Sender: update Task
   Sender --> Receiver: Ok
-  deactivate Sender
   deactivate Receiver
+  Sender -> SenderNode: revoke eTransfer authorization
+  SenderNode --> Sender: Ok
+  SenderNode -> ReceiverNode: sync authorizations
+  group "Notify"
+    Sender -> Receiver: steps 5-14
+  end
+  deactivate Sender
 end
 @enduml

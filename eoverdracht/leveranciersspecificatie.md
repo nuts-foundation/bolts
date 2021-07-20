@@ -396,7 +396,7 @@ Het doelsysteem is nu op de hoogte van een nieuwe of gewijzigde Task resource. H
 
 **26-28** Het ontvangende systeem zal op verzoek van de gebruiker een authenticatie flow starten met een door de gebruiker gekozen authenticatiemiddel. We nemen in deze beschrijving IRMA als authenticatiemiddel. Andere authenticatiemiddelen zullen een soortgelijke flow gebruiken. Er wordt een authenticatie sessie gestart op de Nuts node. Deze geeft een _contract_ en _sessie ID_ terug. [RFC002](https://nuts-foundation.gitbook.io/drafts/rfc/rfc002-authentication-token) bevat de details.
 
-**29-31** Het resultaat van stap 10 wordt als QR code weergegeven voor de gebruiker. De gebruiker scant de QR code met de camera van zijn/haar device. Het _contract_ dat in stap 27 is aangemaakt wordt op het device van de gebruiker getoond. De gebruiker ondertekent dit _contract_ met de gevraagde attributen. Het device stuurt het ondertekende contract naar de Nuts node waarna het ontvangende systeem het resultaat zal ophalen. Het ondertekende contract dient opgeslagen te worden in de sessie van de gebruiker. Het contract is voor langere tijd geldig zodat deze stap niet elke keer doorlopen hoeft te worden. Het is ook mogelijk om deze stap als login te gebruiken.
+**29-31** Het resultaat van stap 10 wordt als QR code weergegeven voor de gebruiker. De gebruiker scant de QR code met de camera van zijn/haar device. Het _contract_ dat in stap 27 is aangemaakt wordt op het device van de gebruiker getoond. De gebruiker ondertekent dit _contract_ met de gevraagde attributen. Het device stuurt het ondertekende contract naar de Nuts node waarna het ontvangende systeem het resultaat zal ophalen. Het ondertekende contract dient opgeslagen te worden in de sessie van de gebruiker. Het contract is voor langere tijd geldig zodat deze stap niet elke keer doorlopen hoeft te worden. 
 
 ### 5.3.5 Ophalen overdrachtsbericht
 
@@ -417,6 +417,10 @@ Voor het wijzigen van de Task is een access token nodig. Hiervoor kan hetzelfde 
 **42-44** Het bronsysteem laat het access token controleren door de Nuts node. Deze zal o.b.v. de gebruikte autorisatie records ook de mogelijke resources teruggeven die geraadpleegd mogen worden. Het bronsysteem kijkt of de gevraagde resource, in dit geval de Task resource, onderdeel is van die resources.
 
 **45-46** Als de autorisaties het toestaan kan het bronsysteem de task updaten. Het controleert hierbij of alleen de status is aangepast.
+
+**47-49** Nu de overdracht voltooid is kan het bronsysteem de relevante autorisatie records intrekken. De Nuts node zorgt er dan voor dat de intrekkingen bekend zijn bij andere nodes.
+
+**50** Het updaten van de Task zorgt er tenslotte voor dat er een notificatie naar het ontvangende systeem gaat.
 
 ## 6. Access policy
 
