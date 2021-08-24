@@ -203,13 +203,13 @@ Diensten kunnen per leverancier en/of organisatie geregistreerd worden volgens d
   "id": "did:nuts:organization_identifier#F1Dsgwngfdg3SH6TpDv0Ta1aOE",
   "type": "eOverdracht-sender", 
   "serviceEndpoint": {
-    "oauth": "did:nuts:vendor_identifier?type=production-oauth",
-    "fhir": "did:nuts:vendor_identifier?type=eOverdracht-sender-fhir"
+    "oauth": "did:nuts:vendor_identifier/serviceEndpoint?type=production-oauth",
+    "fhir": "did:nuts:vendor_identifier/serviceEndpoint?type=eOverdracht-sender-fhir"
   }
 }
 ```
 
-het `type` moet hierin `eOverdracht-sender` zijn. Het `id` zal volgens de specificatie moeten worden opgesteld. Het `serviceEndpoint` moet de velden `oauth` en `fhir` bevatten. Beide waardes moeten een dynamische verwijzing hebben naar een endpoint. Het endpoint waarnaar verwezen wordt vanuit het `fhir` veld moet een `serviceEndpoint` hebben welke verwijst naar het fhir `[base]` path zoals beschreven in de technische specificatie van Nictiz. Het endpoint waarnaar verwezen wordt vanuit het `oauth` veld moet een `serviceEndpoint` hebben welke verwijst naar het `accesstoken` endpoint van een OAuth authentication server. Het type in het query veld mag daarbij door de leverancier zelf gekozen worden. De dynamische verwijzingen uit het voorbeeld verwijzen bijvoorbeeld naar de endpoints die de leverancier geregistreerd heeft:
+het `type` moet hierin `eOverdracht-sender` zijn. Het `id` zal volgens de specificatie moeten worden opgesteld. Het `serviceEndpoint` moet de velden `oauth` en `fhir` bevatten. Beide waardes moeten een dynamische verwijzing hebben naar een endpoint zoals gespecificeerd in [RFC006](https://nuts-foundation.gitbook.io/drafts/rfc/rfc006-distributed-registry). Het endpoint waarnaar verwezen wordt vanuit het `fhir` veld moet een `serviceEndpoint` hebben welke verwijst naar het fhir `[base]` path zoals beschreven in de technische specificatie van Nictiz. Het endpoint waarnaar verwezen wordt vanuit het `oauth` veld moet een `serviceEndpoint` hebben welke verwijst naar het `accesstoken` endpoint van een OAuth authentication server. Het type in het query veld mag daarbij door de leverancier zelf gekozen worden. De dynamische verwijzingen uit het voorbeeld verwijzen bijvoorbeeld naar de endpoints die de leverancier geregistreerd heeft:
 
 ```javascript
 {
@@ -234,8 +234,8 @@ Voor de ontvanger dient een `eOverdracht-receiver` dienst geregistreerd te worde
     "id": "did:nuts:organization_identifier#F1Dsgwngfdg3SH6TpDv0Ta1aOE",
     "type": "eOverdracht-receiver", 
     "serviceEndpoint": {
-        "oauth": "did:nuts:vendor_identifier?type=production-oauth",
-        "notification": "did:nuts:vendor_identifier?type=eOverdracht-receiver-notify"
+        "oauth": "did:nuts:vendor_identifier/serviceEndpoint?type=production-oauth",
+        "notification": "did:nuts:vendor_identifier/serviceEndpoint?type=eOverdracht-receiver-notify"
     }
 }
 ```
