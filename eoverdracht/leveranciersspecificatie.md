@@ -223,7 +223,7 @@ het `type` moet hierin `eOverdracht-sender` zijn. Het `id` zal volgens de specif
 {
     "id": "did:nuts:vendor_identifier#F1Dsgwngfdg3SH6TpDv0Ta1aOE",
     "type": "production-oauth",
-    "serviceEndpoint": "https://nuts.example.com/public/auth/v1/accesstoken"
+    "serviceEndpoint": "https://nuts.example.com/n2n/auth/v1/accesstoken"
 }
 ```
 
