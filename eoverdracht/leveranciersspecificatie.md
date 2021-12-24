@@ -440,7 +440,7 @@ De `eOverdracht-sender` policy bevat zowel regels voor persoonsgebonden als niet
 **6.2.1.1 Ophalen task** 
 
 Het ophalen van de gewijzigde task valt onder de niet-persoonsgebonden resources.
-Omdat het hierbij gaat om de toegang van een enkele resource, is er een [Nuts Authorization Credential](https://nuts-foundation.gitbook.io/drafts/rfc/rfc014-authorization-credential) nodig. Het credential moet voldoen aan de volgende eisen:
+Omdat het hierbij gaat om de toegang tot een enkele resource, is er een [Nuts Authorization Credential](https://nuts-foundation.gitbook.io/drafts/rfc/rfc014-authorization-credential) nodig. Het credential moet voldoen aan de volgende eisen:
 
 * De `issuer` moet het DID bevatten van de versturende partij.
 * `credentialSubject.id` moet het DID van de ontvangende partij bevatten.
