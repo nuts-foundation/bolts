@@ -429,7 +429,7 @@ Deze eOverdracht Bolt omvat twee verschillende access policies. De belangrijkste
 
 De `eOverdracht-receiver` policy beschrijft alleen de toegang tot het Task notificatie endpoint. Bij het aanvragen van een access token op de authorization server zijn geen [Nuts Authorization Credentials](https://nuts-foundation.gitbook.io/drafts/rfc/rfc014-authorization-credential) nodig. Ook is er geen gebruikersinformatie nodig. De `vcs` en `usi` velden in de [JWT grant](https://nuts-foundation.gitbook.io/drafts/rfc/rfc003-oauth2-authorization#4-2-2-payload) mogen dus leeg zijn. Het `purposeOfUse` veld moet in ieder geval `eOverdracht-receiver` bevatten.
 
-De resource server van de ontvangende partij moet controleren dat er voor het notificatie endpoint een `POST` request wordt gedaan zonder body. Het gaat hierbij om relatief pad t.o.v. wat er geregistreerd staat onder het `notification` veld in de `eOverdracht-receiver` service. Achter dit pad mag alleen nog een resource identifier staan.
+De resource server van de ontvangende partij moet controleren dat er voor het notificatie endpoint een `POST` request wordt gedaan zonder body. Het gaat hierbij om een relatief pad t.o.v. wat er geregistreerd staat onder het `notification` veld in de `eOverdracht-receiver` service. Achter dit pad mag alleen nog een resource identifier staan.
 
 ### 6.2 eOverdracht-sender policy
 
