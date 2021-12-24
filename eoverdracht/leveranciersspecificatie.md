@@ -250,16 +250,19 @@ Met het endpoint:
 }
 ```
 
-Dit laatste endpoint dient het `[base]` path te zien waarop notificaties ontvangen kunnen worden middels de `Task` resource. De volgende paragraaf beschrijft het notificatie mechanisme. Het betreft dus een notificatie dat er een nieuwe \(of gewijzigde\) `Task` resource klaar staat bij verzendende partij.
+Dit laatste endpoint dient het `[base]` path te zijn waarop notificaties ontvangen kunnen worden middels de `Task` resource. De volgende paragraaf beschrijft het notificatie mechanisme. Het betreft dus een notificatie dat er een nieuwe \(of gewijzigde\) `Task` resource klaar staat bij verzendende partij. Het path dient zonder `/` geregistreerd te worden.
 
 #### 4.1.3 Notificatie protocol
 
 Het FHIR STU3 notificatie en [subscriptions](http://hl7.org/fhir/STU3/subscription.html) model geeft onvoldoende ondersteuning voor deze bolt.
+Zonder een verwijzing naar de specifieke Task zal een FHIR *search* operatie moeten plaats vinden. 
+Task resources in een FHIR database zijn alleen te relateren aan FHIR *Organizations*. 
+Binnen de security context van waaruit de call gedaan wordt zijn deze niet beschikbaar.   
 Er is daarom gekozen om de specfieke Task identifier op te nemen in het notificatie pad.
 Dit wordt heroverwogen wanneer FHIR versie 5 gebruikt gaat worden.
 Het Task notificatie endpoint is specifiek voor deze bolt en zou niet voor andere doeleinden gebruikt moeten worden.
 
-Wanneer er een task wordt toegevoegd zal het bronsysteem een notificatie \(lege POST volgens FHIR documentatie\) sturen naar het eerder geregistreerde endpoint van het doelsysteem. Dit is een signaal aan het doelsysteem om de FHIR task resource op te halen. Deze task kan opgehaald worden zonder geïdentificeerde gebruiker. Dit betekent dat de task resource geen persoonsgegevens bevat en dat eventuele referenties naar persoonsgegevens natuurlijk een geautoriseerde gebruiker vereisen.
+Wanneer er een task wordt toegevoegd zal het bronsysteem een notificatie \(lege POST volgens FHIR documentatie\) sturen naar het eerder geregistreerde endpoint van het doelsysteem. Dit is een signaal aan het doelsysteem om de FHIR task resource op te halen. Deze task kan opgehaald worden zonder geïdentificeerde gebruiker. Dit betekent dat de task resource geen persoonsgegevens (of referenties waarmee een persoon uniek geidentificeerd kan worden) mag bevatten.
 
 De beveiliging zal geschieden volgens [RFC003](https://nuts-foundation.gitbook.io/drafts/rfc/rfc003-oauth2-authorization).
 
@@ -284,7 +287,7 @@ Het concept van een grondslag verbindt welke ontvangende partij toegang krijgt t
 
 In het kader van de verpleegkundige overdracht zal de autorisatie een verwijzing bevatten naar het aanmeldbericht. Dit is dan ook meteen de scope waartoe de ontvanger van de grondslag toegang heeft.
 
-Naast het eerder genoemde voordeel van herbruikbaarheid is een ander voordeel van het gebruik van autorisaties dat de patiënt dit ook inzichtelijk zou kunnen krijgen in een PGO. De patiënt zou op basis van de autorisaties een overzicht kunnen krijgen van wie zijn of haar gegevens kan inzien, en waarom.
+Een ander voordeel van autorisaties is dat de ook de patient een overzicht in het PGO kan krijgen wie welke gegevens waarom kan inzien.
 
 #### 4.2.2 Inhoud
 
@@ -371,7 +374,7 @@ Onderstaand flow diagram toont alle stappen van notificeren tot ophalen. Wanneer
 
 ### 5.3.2 Notificatie
 
-**5-6** De bronhouder zoekt in de Nuts node naar het endpoint om de Task notificatie naar toe te sturen. Het base endpoint bevindt zich in het `notification` veld van de `eOverdracht-receiver` service van de ontvangende organisatie. Het endpoint waar de notificatie heen moet is een combinatie van het _base_ endpoint en de task identifier, bijv: `base/7EA74998-6A5F-4455-B35E-B6D36B9A0EA3`
+**5-6** De bronhouder zoekt in de Nuts node naar het endpoint om de Task notificatie naar toe te sturen. Het base endpoint bevindt zich in het `notification` veld van de `eOverdracht-receiver` service van de ontvangende organisatie. Het endpoint waar de notificatie heen moet is een combinatie van het _base_ endpoint en de task identifier, bijv: `base/7EA74998-6A5F-4455-B35E-B6D36B9A0EA3`. Zie ook [§4.1.2](leveranciersspecificatie.md#412-organisatie-endpoint-discovery)
 
 **7.** De bronhouder vraagt een access token aan de Nuts node. Het token wordt aangevraagd in de context van de beide partijen en de bolt.
 
