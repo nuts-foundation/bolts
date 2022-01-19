@@ -250,7 +250,7 @@ Met het endpoint:
 }
 ```
 
-Dit laatste endpoint dient het `[base]` path te zijn waarop notificaties ontvangen kunnen worden middels de `Task` resource. De volgende paragraaf beschrijft het notificatie mechanisme. Het betreft dus een notificatie dat er een nieuwe \(of gewijzigde\) `Task` resource klaar staat bij verzendende partij. Het path dient zonder `/` geregistreerd te worden.
+Dit laatste endpoint dient het `[base]` path te zijn waarop notificaties ontvangen kunnen worden middels de `Task` resource. De volgende paragraaf beschrijft het notificatie mechanisme. Het betreft dus een notificatie dat er een nieuwe \(of gewijzigde\) `Task` resource klaar staat bij verzendende partij. Het path mag niet geregistreerd worden met een `/` op het einde.
 
 #### 4.1.3 Notificatie protocol
 
