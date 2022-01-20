@@ -250,19 +250,21 @@ Met het endpoint:
 }
 ```
 
-Dit laatste endpoint dient het `[base]` path te zien waarop notificaties ontvangen kunnen worden middels de `Task` resource. De volgende paragraaf beschrijft het notificatie mechanisme. Het betreft dus een notificatie dat er een nieuwe \(of gewijzigde\) `Task` resource klaar staat bij verzendende partij.
+Dit laatste endpoint dient het `[base]` path te zijn waarop notificaties ontvangen kunnen worden middels de `Task` resource. De volgende paragraaf beschrijft het notificatie mechanisme. Het betreft dus een notificatie dat er een nieuwe \(of gewijzigde\) `Task` resource klaar staat bij verzendende partij. Het path mag niet geregistreerd worden met een `/` op het einde.
 
 #### 4.1.3 Notificatie protocol
 
-Het voorstel is om het notificatie mechanisme compatible te houden met [FHIR subscriptions](http://hl7.org/fhir/STU3/subscription.html). Bij een volledige implementatie van FHIR subscriptions neemt het doelsysteem een abonnement op een FHIR search query bij een bronsysteem. Daarmee wordt expliciet vastgelegd wanneer een doelsysteem genotificeerd moet worden.
+Het FHIR STU3 notificatie en [subscriptions](http://hl7.org/fhir/STU3/subscription.html) model geeft onvoldoende ondersteuning voor deze bolt.
+Zonder een verwijzing naar de specifieke Task zal een FHIR *search* operatie moeten plaats vinden. 
+Task resources in een FHIR database zijn alleen te relateren aan FHIR *Organizations*. 
+Binnen de security context van waaruit de call gedaan wordt zijn deze niet beschikbaar.   
+Er is daarom gekozen om de specfieke Task identifier op te nemen in het notificatie pad.
+Dit wordt heroverwogen wanneer FHIR versie 5 gebruikt gaat worden.
+Het Task notificatie endpoint is specifiek voor deze bolt en zou niet voor andere doeleinden gebruikt moeten worden.
 
-Echter, wanneer een organisatie maar één generiek FHIR subscriptions endpoint kan registreren terwijl er verschillende systemen gebruikt worden voor de eOverdracht en andere Bolts of niet-Nuts processen, dan moeten subscriptions doorgestuurd worden naar verschillende applicaties, met alle complicaties van dien. Daarom is het voorstel om de specifieke notificatie endpoints voor verschillende use-cases apart te registreren en uit te wisselen.
+Wanneer er een task wordt toegevoegd zal het bronsysteem een notificatie \(lege POST volgens FHIR documentatie\) sturen naar het eerder geregistreerde endpoint van het doelsysteem. Dit is een signaal aan het doelsysteem om de FHIR task resource op te halen. Deze task kan opgehaald worden zonder geïdentificeerde gebruiker. Dit betekent dat de task resource geen persoonsgegevens (of referenties waarmee een persoon uniek geidentificeerd kan worden) mag bevatten.
 
-De keuze blijft aan de leverancier om deze registratie te implementeren in een echte FHIR subscription of een oplossing op maat te maken.
-
-Wanneer er een task wordt toegevoegd zal het bronsysteem een notificatie \(lege POST volgens FHIR documentatie\) sturen naar het eerder geregistreerde endpoint van het doelsysteem. Dit is een signaal aan het doelsysteem om een FHIR search request uit te voeren op de task resource. Dit levert een of meerdere task records op. Deze task records kunnen opgehaald worden zonder geïdentificeerde gebruiker. Dit betekent dat de task resource geen persoonsgegevens bevat en dat eventuele referenties naar persoonsgegevens natuurlijk een geautoriseerde gebruiker vereisen.
-
-De beveiliging zal geschieden volgens [RFC003](https://nuts-foundation.gitbook.io/drafts/rfc/rfc003-oauth2-authorization). TODO: uitwerking in RFC opnemen voor [https://github.com/nuts-foundation/nuts-specification/issues/55](https://github.com/nuts-foundation/nuts-specification/issues/55).
+De beveiliging zal geschieden volgens [RFC003](https://nuts-foundation.gitbook.io/drafts/rfc/rfc003-oauth2-authorization).
 
 ### 4.2 Data uitwisselingen
 
@@ -283,11 +285,9 @@ De verschillende processtappen in de verpleegkundige overdracht vereisen een bep
 
 Het concept van een grondslag verbindt welke ontvangende partij toegang krijgt tot welke gegevens bij welke bronhouder inzake welke patiënt. En hoewel er voor het aanmeldbericht dus geen valide grondslag is om persoonsgegevens te verwerken, is het voor de implementatie wel handig om beide berichten via eenzelfde mechanisme toegankelijk te maken. De grondslag is onderdeel van een speciaal autorisatie record, deze is beschreven in [RFC014](https://nuts-foundation.gitbook.io/drafts/rfc/rfc014-authorization-credential).
 
-In het kader van de verpleegkundige overdracht zal de grondslag een verwijzing bevatten naar het aanmeldbericht. Dit is dan ook meteen de scope waartoe de ontvanger van de grondslag toegang heeft.
+In het kader van de verpleegkundige overdracht zal de autorisatie een verwijzing bevatten naar het aanmeldbericht. Dit is dan ook meteen de scope waartoe de ontvanger van de grondslag toegang heeft.
 
-Naast het eerder genoemde voordeel van herbruikbaarheid is een ander voordeel van het gebruik van grondslagen dat de patiënt dit ook inzichtelijk zou kunnen krijgen in een PGO. De patiënt zou op basis van de grondslagen een overzicht kunnen krijgen van wie zijn of haar gegevens kan inzien, en waarom.
-
-Er wordt momenteel gewerkt aan een specificatie voor het automatisch uitwisselen van grondslagen.
+Een ander voordeel van autorisaties is dat de ook de patient een overzicht in het PGO kan krijgen wie welke gegevens waarom kan inzien.
 
 #### 4.2.2 Inhoud
 
@@ -374,21 +374,23 @@ Onderstaand flow diagram toont alle stappen van notificeren tot ophalen. Wanneer
 
 ### 5.3.2 Notificatie
 
-**5-6** De bronhouder zoekt in de Nuts node naar het endpoint om de Task notificatie naar toe te sturen. Het base endpoint bevindt zich in het `notification` veld van de `eOverdracht-receiver` service van de ontvangende organisatie. Het endpoint waar de notificatie heen moet is een combinatie van het _base_ endpoint en het relatieve pad zoals gedefinieerd in het TO van Nictiz.
+**5-6** De bronhouder zoekt in de Nuts node naar het endpoint om de Task notificatie naar toe te sturen. Het base endpoint bevindt zich in het `notification` veld van de `eOverdracht-receiver` service van de ontvangende organisatie. Het endpoint waar de notificatie heen moet is een combinatie van het _base_ endpoint en de task identifier, bijv: `base/7EA74998-6A5F-4455-B35E-B6D36B9A0EA3`. Zie ook [§4.1.2](leveranciersspecificatie.md#412-organisatie-endpoint-discovery)
 
 **7.** De bronhouder vraagt een access token aan de Nuts node. Het token wordt aangevraagd in de context van de beide partijen en de bolt.
 
 **8-10** De node vraagt volgens [RFC003](https://nuts-foundation.gitbook.io/drafts/rfc/rfc003-oauth2-authorization) een access token aan bij de authorization server van de ontvangende partij.
 
-**11.** Er wordt een notificatie gestuurd volgens het Nictiz TO naar het endpoint vanuit stap 5. Het security token uit stap 10 wordt hierbij als autorisatie header meegestuurd.
+**11.** Er wordt een notificatie gestuurd middels een lege POST naar het endpoint vanuit stap 5. Het security token uit stap 10 wordt hierbij als autorisatie header meegestuurd. De `Accept` header moet gezet worden conform de eisen van een FHIR API call.
 
 **12.** Het doelsysteem valideert het access token bij de Nuts node.
+
+**14.** Bij een correct verwerking zal de ontvangende partij een `202 Accepted` teruggeven met een lege body. Bij een incorrecte verwerking kan de ontvangende partij een `40x` of `50x` HTTP status code teruggeven. Bij een `400` status code mag de ontvangende partij een body meegeven, indien dit gedaan wordt dan moet dit een FHIR STU3 [OperationOutcome](http://hl7.org/fhir/STU3/operationoutcome.html) zijn.
 
 ### 5.3.3 Ophalen Task
 
 Het doelsysteem is nu op de hoogte van een nieuwe of gewijzigde Task resource. Het security token dat in stap 11 gebruikt is, bevat het bronsysteem.
 
-**15-21** De notificatie uit stap 11 bevatte een autorisatie header met daarin oa de identifiers van de bronhouder en de ontvangende partij. Het doelsysteem kan hiermee bepalen waar de Task opgehaald moet worden. Het endpoint van de Task FHIR URL is te vinden in het `fhir` veld van de `eOverdracht-sender` service van de bronhouder. Dit is de `base` URL van de FHIR service. Daar moet, zoals beschreven, in het Nictiz TO nog het relatieve pad van de Task resource aan toegevoegd worden. De query parameters `code` en `_lastUpdated` dienen hierbij gebruikt te worden en moeten door het bronsysteem volgens de FHIR specificaties verwerkt worden. Het access token gaat net zoals bij stap 11 mee in een header. Het bronsysteem is verantwoordelijk voor het vinden van de juiste Task resources. Omdat het security token geen gebruikersinformatie bevat, mogen er nooit persoonsgegevens meegestuurd worden in de Task.
+**15-21** De notificatie uit stap 11 bevatte een autorisatie header met daarin oa de identifiers van de bronhouder en de ontvangende partij. Het doelsysteem kan hiermee bepalen waar de Task opgehaald moet worden. Het endpoint van de Task FHIR URL is te vinden in het `fhir` veld van de `eOverdracht-sender` service van de bronhouder. Dit is de `base` URL van de FHIR service. Daar moet nog het relatieve pad van de Task resource (`Task`) en de specifieke identifier aan toegevoegd worden. Het access token gaat net zoals bij stap 11 mee in een header. Het bronsysteem is verantwoordelijk voor het vinden van de juiste Task resource. Omdat het security token geen gebruikersinformatie bevat, mogen er nooit persoonsgegevens meegestuurd worden in de Task.
 
 **22-24** Het bronsysteem controleert het access token en bepaalt aan de hand daarvan de bronhouder en de opvragende partij. Samen met de gegeven query parameters bevat dit voldoende informatie om de juiste Task resource\(s\) terug te geven.
 
@@ -432,7 +434,7 @@ Deze eOverdracht Bolt omvat twee verschillende access policies. De belangrijkste
 
 De `eOverdracht-receiver` policy beschrijft alleen de toegang tot het Task notificatie endpoint. Bij het aanvragen van een access token op de authorization server zijn geen [Nuts Authorization Credentials](https://nuts-foundation.gitbook.io/drafts/rfc/rfc014-authorization-credential) nodig. Ook is er geen gebruikersinformatie nodig. De `vcs` en `usi` velden in de [JWT grant](https://nuts-foundation.gitbook.io/drafts/rfc/rfc003-oauth2-authorization#4-2-2-payload) mogen dus leeg zijn. Het `purposeOfUse` veld moet in ieder geval `eOverdracht-receiver` bevatten.
 
-De resource server van de ontvangende partij moet controleren dat er voor het notificatie endpoint een `POST` request wordt gedaan zonder body. Het gaat hierbij om het exacte pad wat geregistreerd staat onder het `notification` veld in de `eOverdracht-receiver` service.
+De resource server van de ontvangende partij moet controleren dat er voor het notificatie endpoint een `POST` request wordt gedaan zonder body. Het gaat hierbij om een relatief pad t.o.v. wat er geregistreerd staat onder het `notification` veld in de `eOverdracht-receiver` service. Achter dit pad mag alleen nog een resource identifier staan.
 
 ### 6.2 eOverdracht-sender policy
 
@@ -440,21 +442,28 @@ De `eOverdracht-sender` policy bevat zowel regels voor persoonsgebonden als niet
 
 #### 6.2.1 Niet-persoonsgebonden resources
 
-**6.2.1.1 Ophalen tasks** 
+**6.2.1.1 Ophalen task** 
 
-Het ophalen van de gewijzigde tasks valt onder de niet-persoonsgebonden resources. Dat betekent dat deze zonder gebruiker opgehaald kunnen worden. Het gaat hierbij om het pad zoals beschreven in [§3.2.2 van het Nictiz TO](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_FHIR_eOverdracht#Task_invocations). Bij de aanvraag van het access token moet het `purposeOfUse` veld `eOverdracht-sender` bevatten.
+Het ophalen van de gewijzigde task valt onder de niet-persoonsgebonden resources.
+Omdat het hierbij gaat om de toegang tot een enkele resource, is er een [Nuts Authorization Credential](https://nuts-foundation.gitbook.io/drafts/rfc/rfc014-authorization-credential) nodig. Het credential moet voldoen aan de volgende eisen:
+
+* De `issuer` moet het DID bevatten van de versturende partij.
+* `credentialSubject.id` moet het DID van de ontvangende partij bevatten.
+* `credentialSubject.purposeOfUse` moet gelijk zijn aan `eOverdracht-sender`.
+* `credentialSubject.legalBase.consentType` moet gelijk zijn aan `implied`.
+* `credentialSubject.resources` moet de specifieke Task bevatten: `/Task/[id]`.
 
 De resource server moet controleren of het gevraagde request gelijk is aan:
 
 ```text
-GET [base]/Task?code=http://snomed.info/sct|308292007&_lastUpdated=[time of last request]
+GET [base]/Task/[id]
 ```
 
-Waarbij `[base]` vervangen moet worden door het pad zoals deze is geregistreerd onder het `fhir` veld in de `eOverdracht-sender` service. De resources server moet ook de Tasks selecteren o.b.v. het access token. Bij de aanvraag voor het access token is meegestuurd welke organisatie de aanvraag doet en voor welke organisatie deze bedoeld is.
+Waarbij `[base]` vervangen moet worden door het pad zoals deze is geregistreerd onder het `fhir` veld in de `eOverdracht-sender` service. De resources server moet ook de Task selecteren o.b.v. het access token. Bij de aanvraag voor het access token is meegestuurd welke organisatie de aanvraag doet en voor welke organisatie deze bedoeld is.
 
 **6.2.1.2** **Updaten task resource**
 
-Een onderdeel van de eOverdracht is dat de ontvangende partij de status van de Task aanpast. Hiervoor dient het een request te doen zoals beschreven in [§3.2.2 van het Nictiz TO](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_FHIR_eOverdracht#Task_invocations). Omdat het hierbij gaat om de toegang van een enkele resource, is er een [Nuts Authorization Credential](https://nuts-foundation.gitbook.io/drafts/rfc/rfc014-authorization-credential) nodig. Het gaat hierbij om hetzelfde credential als beschreven in de volgende paragraaf. In tegenstelling tot wat beschreven staat in de volgende paragraaf is er geen gebruikersinformatie nodig voor de update.
+Een onderdeel van de eOverdracht is dat de ontvangende partij de status van de Task aanpast. Hiervoor dient het een request te doen zoals beschreven in [§3.2.2 van het Nictiz TO](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_FHIR_eOverdracht#Task_invocations). Omdat het hierbij gaat om de toegang van een enkele resource, is er een [Nuts Authorization Credential](https://nuts-foundation.gitbook.io/drafts/rfc/rfc014-authorization-credential) nodig. Het gaat hierbij om hetzelfde credential als beschreven in de vorige paragraaf.
 
 #### 6.2.2 Persoonsgebonden resources
 

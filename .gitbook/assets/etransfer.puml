@@ -46,10 +46,10 @@ group "Retrieve Task"
     SenderNode -> ReceiverNode: <<accessToken>>
     ReceiverNode -> Receiver: <<accessToken>>
   end
-  Receiver -> Sender: Task search <<accessToken>>
+  Receiver -> Sender: GET Task <<accessToken>>
   Sender -> SenderNode: Validate <<accessToken>>
   SenderNode --> Sender: Ok
-  Sender -> Receiver: <<tasks>>
+  Sender -> Receiver: <<task>>
   Receiver --> Bob: Notify
   deactivate Receiver
 end
