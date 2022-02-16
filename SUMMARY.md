@@ -4,7 +4,8 @@
 
 ## eOverdracht
 
-* [Leveranciersspecificatie](eoverdracht/leveranciersspecificatie.md)
+* [Functionele beschrijving (nl)](eoverdracht/functionele_beschrijving.md)
+* [Technical specification (en)](eoverdracht/specification.md)
 
 ## zorginzage
 
