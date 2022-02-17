@@ -1,0 +1,30 @@
+@startuml
+autonumber
+skinparam ParticipantPadding 30
+skinparam BoxPadding 20
+
+Box Sender
+  participant "Sender System" as Sender
+  participant SenderNode
+end box
+Box Receiver
+  participant ReceiverNode
+  participant "Receiving System" as Receiver
+end box
+
+activate Sender
+group "Notify"
+  Sender -> SenderNode: Find eOverdracht-receiver service
+  SenderNode -> Sender: <<Service>>
+  Sender -> SenderNode: Request accessToken
+  SenderNode -> ReceiverNode:Request accessToken <<jwt-grant>>
+  ReceiverNode -> SenderNode: <<accessToken>>
+  SenderNode -> Sender: <<accessToken>>
+  Sender -> Receiver: Notify
+  Receiver -> ReceiverNode: Validate <<accessToken>>
+  ReceiverNode --> Receiver: Ok
+  Receiver --> Sender: Ok
+  deactivate Sender
+end
+
+@enduml

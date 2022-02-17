@@ -195,21 +195,33 @@ This signals the target system to fetch the FHIR task resource. This resource ma
 
 The endpoint must be secured according to [RFC003](https://nuts-foundation.gitbook.io/drafts/rfc/rfc003-oauth2-authorization).
 
-TODO add part of the puml diagram
+The diagram below shows the notification process in a sequence diagram. The individual steps are described below the diagram.
 
-**5-6** De bronhouder zoekt in de Nuts node naar het endpoint om de Task notificatie naar toe te sturen. Het base endpoint bevindt zich in het `notification` veld van de `eOverdracht-receiver` service van de ontvangende organisatie. Het endpoint waar de notificatie heen moet is een combinatie van het _base_ endpoint en de task identifier, bijv: `base/7EA74998-6A5F-4455-B35E-B6D36B9A0EA3`. Zie ook [§4.1.2](leveranciersspecificatie.md#412-organisatie-endpoint-discovery)
+![](../.gitbook/assets/etransfer-notification.png)
 
-**7.** De bronhouder vraagt een access token aan de Nuts node. Het token wordt aangevraagd in de context van de beide partijen en de bolt.
+**1-2** The custodian searches for the `eOverdracht-receiver` service in the Nuts node. The service contains two endpoints: `notification` and `oauth`. The `oauth` endpoint is used to request the access token. The `notification` endpoint is used to send the notification to.
 
-**8-10** De node vraagt volgens [RFC003](https://nuts-foundation.gitbook.io/drafts/rfc/rfc003-oauth2-authorization) een access token aan bij de authorization server van de ontvangende partij.
+**3-6** The custodian requests an access token from the receiving system. In the diagram this is done by the Nuts node. This does not need to be the case.
+The sender system could do the request itself and the receiver could implement its own authorization server. Steps **4-5** are described in [RFC003](https://nuts-foundation.gitbook.io/drafts/rfc/rfc003-oauth2-authorization). Steps **3,6** are specific for the node implementation. The access token request does not require the presence of a user identity (`usi` field) and verifiable credentials (`vcs` field).
 
-**11.** Er wordt een notificatie gestuurd middels een lege POST naar het endpoint vanuit stap 5. Het security token uit stap 10 wordt hierbij als autorisatie header meegestuurd. De `Accept` header moet gezet worden conform de eisen van een FHIR API call.
+**7** The sender system sends the notification to the notification endpoint using an empty HTTP POST message. The base endpoint is listed under the `notification` field of the `eOverdracht-receiver` service of the receiving organization. The complete path for the notification consists of the _base_ endpoint and the task identifier. For example: when an organization has published the notification endpoint under `https://prod.example.com/fhir/notification` and the Task identifier is `7EA74998-6A5F-4455-B35E-B6D36B9A0EA3`, the complete call would be:
 
-**12.** Het doelsysteem valideert het access token bij de Nuts node.
+```
+POST `https://prod.example.com/fhir/notification/7EA74998-6A5F-4455-B35E-B6D36B9A0EA3`
+Authorization: bearer 029345u8dksfg20...423509uifrlfkj==
+Accept: Application/fhir+json
+```
 
-**14.** Bij een correct verwerking zal de ontvangende partij een `202 Accepted` teruggeven met een lege body. Bij een incorrecte verwerking kan de ontvangende partij een `40x` of `50x` HTTP status code teruggeven. Bij een `400` status code mag de ontvangende partij een body meegeven, indien dit gedaan wordt dan moet dit een FHIR STU3 [OperationOutcome](http://hl7.org/fhir/STU3/operationoutcome.html) zijn.
+The access token from step 6 is added to the `Authorization` header as bearer token. The `Accept` header must be set correctly for a FHIR API call.
+
+**8-9** The receiving system validates the call. It checks the access token and makes sure the notification is intended for one of its customers. It may do additional validations if needed. In the diagram the validation is handled by the Nuts node.
+
+**10** If all is well, the receiving system must answer with a `202 Accepted` HTTP status code. If something went wrong, the receiving system may return a `40x` or `50x` HTTP status code. When returning a `400` status code, a body may be included. If a body is included, this must be a FHIR STU3 [OperationOutcome](http://hl7.org/fhir/STU3/operationoutcome.html). The `Content-Type` header must be set accordingly.
 
 ### 5. Task retrieval & updates
+
+
+### 6. Data retrieval
 
 ### 4.2 Data uitwisselingen
 
