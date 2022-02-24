@@ -1,0 +1,30 @@
+@startuml
+autonumber
+skinparam ParticipantPadding 30
+skinparam BoxPadding 20
+
+Box Sender
+  participant "Sender System" as Sender
+  participant SenderNode
+end box
+Box Receiver
+  participant ReceiverNode
+  participant "Receiving System" as Receiver
+end box
+
+activate Sender
+
+Sender -> SenderNode: Find service
+SenderNode -> Sender: <<Service>>
+Sender -> SenderNode: Request accessToken
+activate SenderNode
+SenderNode -> ReceiverNode:Request accessToken <<jwt-grant>>
+activate ReceiverNode
+ReceiverNode -> SenderNode: <<accessToken>>
+deactivate ReceiverNode
+SenderNode -> Sender: <<accessToken>>
+deactivate SenderNode
+
+deactivate Sender
+
+@enduml

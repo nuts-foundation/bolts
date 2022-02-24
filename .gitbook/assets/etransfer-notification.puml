@@ -13,18 +13,21 @@ Box Receiver
 end box
 
 activate Sender
-group "Notify"
-  Sender -> SenderNode: Find eOverdracht-receiver service
-  SenderNode -> Sender: <<Service>>
-  Sender -> SenderNode: Request accessToken
-  SenderNode -> ReceiverNode:Request accessToken <<jwt-grant>>
-  ReceiverNode -> SenderNode: <<accessToken>>
-  SenderNode -> Sender: <<accessToken>>
-  Sender -> Receiver: Notify
-  Receiver -> ReceiverNode: Validate <<accessToken>>
-  ReceiverNode --> Receiver: Ok
-  Receiver --> Sender: Ok
-  deactivate Sender
+Sender -> SenderNode: Find eOverdracht-receiver service
+SenderNode -> Sender: <<Service>>
+group "Request access token"
+  Sender <-> ReceiverNode: Request access token
 end
+
+Sender -> Receiver: Notify
+activate Receiver
+Receiver -> ReceiverNode: Validate <<accessToken>>
+activate ReceiverNode
+ReceiverNode --> Receiver: Ok
+deactivate ReceiverNode
+Receiver --> Sender: Ok
+deactivate Receiver
+deactivate Sender
+
 
 @enduml

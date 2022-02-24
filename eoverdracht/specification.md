@@ -110,41 +110,47 @@ Any patient data is requested in a certain context. This context is essential fo
 3. From which target system in the request coming?
 4. Which custodian makes the data available?
 
-These point are covered by  [RFC003](https://nuts-foundation.gitbook.io/drafts/rfc/rfc003-oauth2-authorization)
+These point are covered by [RFC003](https://nuts-foundation.gitbook.io/drafts/rfc/rfc003-oauth2-authorization).
 
 ### 3.1 Secured connection
 
-All requests must be done over a mTLS connection. We'll make use of PKIoverheid certificates according to [RFC008](https://nuts-foundation.gitbook.io/drafts/rfc/rfc008-certificate-structure).
+All requests must be done over a mTLS connection. We'll make use of PKIoverheid certificates according to [RFC008](https://nuts-foundation.gitbook.io/drafts/rfc/rfc008-certificate-structure). This includes both FHIR and authorization requests.
 
 ### 3.2 Authentication & authorization
 
-Als bronsysteem heb je de verantwoordelijkheid de data te beschermen van de bronhouder. Het is dus van groot belang een degelijk autorisatie en authenticatie model te hebben. Dit hoofdstuk beschrijft de techniek om de FHIR endpoints te beveiligen middels de veelgebruikte OAuth 2.0 specificatie \[[RFC6749](https://tools.ietf.org/html/rfc6749)\].
+The source system has the responsibility to protect the data of the custodian. It's therefore important to have a decent authentication and authorization
+policy. This chapter describes the OAuth flow to be used in context of this Bolt \[[RFC6749](https://tools.ietf.org/html/rfc6749)\]. The complete Nuts authorization model is specified in [RFC003](https://nuts-foundation.gitbook.io/drafts/rfc/rfc003-oauth2-authorization). The mandatory access policy is described in chapter TODO.
 
-Voor het verkrijgen van een authorization token biedt OAuth 2.0 diverse type flows. In tegenstelling tot de veel gebruikte gebruikersnaam en wachtwoord flow, moet een identiteit verstuurd worden die onomstotelijk kan worden bewezen door middel van cryptografie. Hierdoor is het mogelijk dat de third-party cliënt \(in ons geval het doelsysteem\) de gebruiker identificeert en diens identiteit, ondertekend met een certificaat, doorstuurt naar de authorization server \(beheerd door het bronsysteem\). Deze OAuth flow wordt beschreven in [RFC7523](https://tools.ietf.org/html/rfc7523).
+To obtain an access token, OAuth 2.0 offers several flows. OAuth flows typically redirect a user to a login portal where he/she can enter its credentials. This can't be used in a Nuts context since the source system does not have user accounts for users of the target system. Nuts uses a cryptographic signed identity of the user that can be checked by the other system. To pass this information in the access token request, the flow from [RFC7523](https://tools.ietf.org/html/rfc7523) is used.
 
-In het request staat:
+The request contains:
 
-* Een identiteit van de gebruiker
-* Een bewijs dat de gebruiker voor de opvragende partij werkt
-* Een beperking in tijd
-* Een beperking in scope
-* Een digitale handtekening van het doelsysteem
+* The identity of the user
+* A list of verifiable credentials that prove access is granted to certain resources
+* A limitation in time
+* A limited scope
+* A digital signature from the requesting system
 
-Gegeven deze informatie en de aanwezige vertrouwensinformatie in het bronsysteem kan vastgesteld worden dat de gebruiker, de opvragende partij en het doelsysteem gerelateerd zijn.
+The information in the request combined with upfront knowledge on organizational public keys proves that the combination of user, source system and target system are related and authorized to exchange resources. Upon verification, an access token is returned. This access token can be used in requests for actual resources. 
 
-De gegevens van het request worden na succesvolle verificatie omgezet in een signed access token en teruggestuurd. Dit access token kan dan in de volgende requests gebruikt worden om toegang te krijgen tot de juiste informatie. Hiervoor hoeft alleen de handtekening van het access token gecontroleerd te worden.
+The list of verifiable credentials passed in the access token request are issued by the source system and prove a legal base is present for exchanging data. Multiple of these credentials can be combined to provide access to a larger set of resources.
 
-Wanneer er is vastgesteld wie toegang wil hebben tot welke gegevens kan aan de hand van de uitgegeven grondslagen gecontroleerd worden of dit is toegestaan. In de grondslag staat immers welke opvragende partij bij welke resource mag. Verschillende grondslagen kunnen natuurlijk gecombineerd worden zodat een gebruiker van een opvragende partij toegang krijgt tot meerdere resources. Dit mechanisme ondersteunt dus automatisch ook meer use cases dan enkel de verpleegkundige overdracht.
+The diagram below shows the access token request in a sequence diagram. The individual steps are described below the diagram.
 
-Zie [RFC003](https://nuts-foundation.gitbook.io/drafts/rfc/rfc003-oauth2-authorization) voor de volledige specificatie.
+![](../.gitbook/assets/etransfer-oauth.png)
+
+**1-2** The custodian searches for a particular service in the Nuts node. The service contains multiple endpoints of which one would be `oauth`. The `oauth` endpoint is used to request the access token.
+
+**3-6** The custodian requests an access token from the receiving system. In the diagram this is done by the Nuts node. This does not need to be the case.
+The sender system could do the request itself and the receiver could implement its own authorization server. Steps **4-5** are described in [RFC003](https://nuts-foundation.gitbook.io/drafts/rfc/rfc003-oauth2-authorization). Steps **3,6** are specific for the node implementation. The access token request does not require the presence of a user identity (`usi` field) and verifiable credentials (`vcs` field). This requirement depends on the request being made.
 
 ### 3.3 Logging
 
-Omdat de identiteit van de gebruiker en de opvragende partij zijn vastgelegd in het access token kunnen deze ook worden gelogd door het bronsysteem, waarmee voldaan is aan de NEN7513 eisen inzake logging. Deze logging kan dan ook \(bijvoorbeeld via een PGO\) inzichtelijk gemaakt worden voor de patiënt.
+The access token represents a specific user and requesting party. These identities are either captured within the access token or stored at the authorization server. In the case the Nuts node is used, the identities are stored within the access token. The availablility of these identities allows the source system to conform to the NEN7513 logging requirements. 
 
 #### 3.4 Service authorization
 
-Vanuit [RFC014](https://nuts-foundation.gitbook.io/drafts/rfc/rfc014-authorization-credential) is er de verplichting om voor elke Bolt een access policy te definiëren. Een policy beschrijft hoe het autorisatie record opgesteld moet worden en waar het vervolgens toegang tot geeft. Alleen de bronhouder moet een autorisatie record aanmaken \(`eOverdracht-sender`\). Een autorisatie record voor de service `eOverdracht-sender` geeft geen algemene rechten tot resources. Alleen de resources die onder de restricties worden geregistreerd zijn toegankelijk. [H6] beschrijft de access policies.
+[RFC014](https://nuts-foundation.gitbook.io/drafts/rfc/rfc014-authorization-credential) states that each Bolt must define an access policy. The access policy describes how the authorization credentials must be constructed and how these give access to resources. Only the source system is required to create authorization records. The `purposeOfUse` for these credentials must be `eOverdracht-sender`. Chapter TODO further describes how access to resources should be granted.
 
 ## 4. Notification
 
@@ -191,7 +197,8 @@ This shall be reevaluated when FHIR version 5 is adopted.
 The Task notification endpoint is specific for this bolt and should not be reused for other purposes.
 
 When a task is added to the source system, a notification \(empty POST according to FHIR documentation\) is sent to the registered endpoint of the target system.
-This signals the target system to fetch the FHIR task resource. This resource may be fetched without an authenticated user. This means that the task resources may not contain any personal information (or references that can uniquely identify a person).
+This signals the target system to fetch the FHIR task resource. This resource may be fetched without an authenticated user. 
+This means that the task resources may not contain any personal information (or references that can uniquely identify a person).
 
 The endpoint must be secured according to [RFC003](https://nuts-foundation.gitbook.io/drafts/rfc/rfc003-oauth2-authorization).
 
@@ -201,10 +208,9 @@ The diagram below shows the notification process in a sequence diagram. The indi
 
 **1-2** The custodian searches for the `eOverdracht-receiver` service in the Nuts node. The service contains two endpoints: `notification` and `oauth`. The `oauth` endpoint is used to request the access token. The `notification` endpoint is used to send the notification to.
 
-**3-6** The custodian requests an access token from the receiving system. In the diagram this is done by the Nuts node. This does not need to be the case.
-The sender system could do the request itself and the receiver could implement its own authorization server. Steps **4-5** are described in [RFC003](https://nuts-foundation.gitbook.io/drafts/rfc/rfc003-oauth2-authorization). Steps **3,6** are specific for the node implementation. The access token request does not require the presence of a user identity (`usi` field) and verifiable credentials (`vcs` field).
+**3** The custodian requests an access token from the receiving system. Details are described in §3.2. The access token request does not require the presence of a user identity (`usi` field) and verifiable credentials (`vcs` field).
 
-**7** The sender system sends the notification to the notification endpoint using an empty HTTP POST message. The base endpoint is listed under the `notification` field of the `eOverdracht-receiver` service of the receiving organization. The complete path for the notification consists of the _base_ endpoint and the task identifier. For example: when an organization has published the notification endpoint under `https://prod.example.com/fhir/notification` and the Task identifier is `7EA74998-6A5F-4455-B35E-B6D36B9A0EA3`, the complete call would be:
+**4** The sender system sends the notification to the notification endpoint using an empty HTTP POST message. The base endpoint is listed under the `notification` field of the `eOverdracht-receiver` service of the receiving organization. The complete path for the notification consists of the _base_ endpoint and the task identifier. For example: when an organization has published the notification endpoint under `https://prod.example.com/fhir/notification` and the Task identifier is `7EA74998-6A5F-4455-B35E-B6D36B9A0EA3`, the complete call would be:
 
 ```
 POST `https://prod.example.com/fhir/notification/7EA74998-6A5F-4455-B35E-B6D36B9A0EA3`
@@ -212,16 +218,21 @@ Authorization: bearer 029345u8dksfg20...423509uifrlfkj==
 Accept: Application/fhir+json
 ```
 
-The access token from step 6 is added to the `Authorization` header as bearer token. The `Accept` header must be set correctly for a FHIR API call.
+The access token from step 3 is added to the `Authorization` header as bearer token. The `Accept` header must be set correctly for a FHIR API call.
 
-**8-9** The receiving system validates the call. It checks the access token and makes sure the notification is intended for one of its customers. It may do additional validations if needed. In the diagram the validation is handled by the Nuts node.
+**5-6** The receiving system validates the call. It checks the access token and makes sure the notification is intended for one of its customers. It may do additional validations if needed. In the diagram the validation is handled by the Nuts node.
 
-**10** If all is well, the receiving system must answer with a `202 Accepted` HTTP status code. If something went wrong, the receiving system may return a `40x` or `50x` HTTP status code. When returning a `400` status code, a body may be included. If a body is included, this must be a FHIR STU3 [OperationOutcome](http://hl7.org/fhir/STU3/operationoutcome.html). The `Content-Type` header must be set accordingly.
+**7** If all is well, the receiving system must answer with a `202 Accepted` HTTP status code. If something went wrong, the receiving system may return a `40x` or `50x` HTTP status code. When returning a `400` status code, a body may be included. If a body is included, this must be a FHIR STU3 [OperationOutcome](http://hl7.org/fhir/STU3/operationoutcome.html). The `Content-Type` header must be set accordingly.
 
 ### 5. Task retrieval & updates
 
 
+
 ### 6. Data retrieval
+
+### 7. Aanmeldbericht
+
+### 8. Overdrachtsbericht•
 
 ### 4.2 Data uitwisselingen
 
