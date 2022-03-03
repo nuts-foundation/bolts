@@ -22,7 +22,7 @@ All chapters are normative unless otherwise stated.
 * Bolt — A practical application of Nuts ideology and open standards to facilitate a use-case in healthcare.
 * Nursing handoff — The administrative process of transferring care for a patient from one care organization to another.
 * eTransfer — The process of transfer of patient data to facilitate the nursing handoff.
-* Custodian — The care organization from which the patient is being transferred. From an eTransfer perspective it's the organization that holds the requested patient data.
+* Custodian/sending party — The care organization from which the patient is being transferred. From an eTransfer perspective it's the organization that holds the requested patient data.
 * Source system — The software system that holds the custodians data.
 * Subject — The patient being transferred.
 * Requesting/receiving party — The care organization that receives the patient and therefore has an information need from the custodian.
@@ -170,9 +170,9 @@ The target system will get notified and will be able to retrieve the task. The s
 ### 4.2 Task state change
 
 [§3.4](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_FHIR_eOverdracht) of the Nictiz technical design describes the basic workflow and state changes of the task resource.
-The diagrams only specify the happy flow. Some state changes are missing in the design. The diagram belows shows the complete set of state changes.
+The diagrams only specifies the happy flow. Some state changes are missing in the design. The diagram belows shows the complete set of state changes.
 
-TODO puml state changes
+<img src="../.gitbook/assets/etransfer-states.png" width="400">
 
 The task resource can contain a reference to the _AdvanceNotice_ as well as the _NursingHandoff_. If the state changes to `in-progress`, the _NursingHandoff_ can be added to the task.
 This eliminates the requirement for an additional task resource.
@@ -224,27 +224,53 @@ The access token from step 3 is added to the `Authorization` header as bearer to
 
 **7** If all is well, the receiving system must answer with a `202 Accepted` HTTP status code. If something went wrong, the receiving system may return a `40x` or `50x` HTTP status code. When returning a `400` status code, a body may be included. If a body is included, this must be a FHIR STU3 [OperationOutcome](http://hl7.org/fhir/STU3/operationoutcome.html). The `Content-Type` header must be set accordingly.
 
-### 5. Task retrieval & updates
+### 5. Task resource
 
+A task resource is used to track the workflow state between the sending and receiving party. For each potential receiving party a task resource is created. [§4.2](specification.md#42-task-state-change) describes the possible state changes. For each change to the task resource, the sending system will send a notification. The receiving system may update the state of the task by sending an update to the sender system.
 
+#### 5.1 Retrieval
+
+After the receiving system has received the notification, it can retrieve the task resource. In the access token request, the correct [Nuts Authorization Credential](https://nuts-foundation.gitbook.io/drafts/rfc/rfc014-authorization-credential) needs to be included. This credential can easily be found by searching on the following fields:
+
+* The `issuer` must be equal to the DID of the sending party. This DID was included in the access token used for the notification.
+* `credentialSubject.id` must contain the DID of the receiving party.
+* `credentialSubject.purposeOfUse` must equal `eOverdracht-sender`.
+* `credentialSubject.resources.#.Path` must contain the specific task: `/Task/[id]`. Where the `id` is taken from the notification URL.
+
+The URL for retrieving the task resource will then be:
+
+```text
+GET [base]/Task/[id]
+```
+
+Where `[base]` needs to be replaced with the path as registered under the `fhir` field in the `eOverdracht-sender` service of the sending party.
+
+The sequence diagram below shows the flow followed by the receiving system after a notification has been received.
+
+![](../.gitbook/assets/etransfer-task-retrieval.png)
+
+**1-2** The receiving system searches for the `eOverdracht-sender` service in the Nuts node. The service contains two endpoints: `fhir` and `oauth`. The `oauth` endpoint is used to request the access token. The `fhir` endpoint is used to retrieve the task. Note that the flow is started by the receiving system, not the user. This means that no user authentication is required to retrieve the task.
+
+**3-4** The receiving system finds the relevant Nuts authorization credential using the information described previously. If the sending system created the authorization credential correctly and if it has been received by the receiving node, it'll be found. The notification and synchronization of credentials are done in parallel so it's possible that the notification arrives before the credential has arrived.
+
+**5** The found credential is used in requesting an access token.
+
+**6-9** After receiving the access token, the receiving system van fetch the task resources. The sender system will validate the access token and check if the requested resources is listed in the provided authorization credential. If there's a match on resource and if the access token is valid, the task may be returned. If something went wrong, the receiving system may return a `40x` or `50x` HTTP status code. When returning a `40x` status code, a body may be included. If a body is included, this must be a FHIR STU3 [OperationOutcome](http://hl7.org/fhir/STU3/operationoutcome.html). The `Content-Type` header must be set accordingly.
+
+#### 5.2 Update
+
+As described earlier, the task resource is used to track the workflow state between sender and receiver. It's expected from the receiving system to update the task resource. There's a limit to what the receiving system may update on the task. The [Nictiz TO §3.4](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_FHIR_eOverdracht#FHIR_profiles) lists the expected changes. The receiving system will change the state of the task from `requested` to `on-hold`, `accepted` or `rejected` and from `in-progress` to `completed`. The other state changes can only be made by the sending system. The receiving system may only update the `status` field and the `output:alternativeDate` field when changing state to `on-hold`, no other changes may be made or accepted by the sender system. The complete sequence diagram is below. It's almost identical to the retrieval diagram, instead of retrieving the task a **7** the task is updated through a PUT operation. After the update succeeded, the sending system is also required to send a new notification (**11**).
+
+![](../.gitbook/assets/etransfer-task-update.png)
 
 ### 6. Data retrieval
 
-### 7. Aanmeldbericht
+### 7. Advance Notice
 
-### 8. Overdrachtsbericht•
+### 8. Nursing handoff
 
 ### 4.2 Data uitwisselingen
 
-#### 4.2.1 Grondslag
-
-
-
-Het concept van een grondslag verbindt welke ontvangende partij toegang krijgt tot welke gegevens bij welke bronhouder inzake welke patiënt. En hoewel er voor het aanmeldbericht dus geen valide grondslag is om persoonsgegevens te verwerken, is het voor de implementatie wel handig om beide berichten via eenzelfde mechanisme toegankelijk te maken. De grondslag is onderdeel van een speciaal autorisatie record, deze is beschreven in [RFC014](https://nuts-foundation.gitbook.io/drafts/rfc/rfc014-authorization-credential).
-
-In het kader van de verpleegkundige overdracht zal de autorisatie een verwijzing bevatten naar het aanmeldbericht. Dit is dan ook meteen de scope waartoe de ontvanger van de grondslag toegang heeft.
-
-Een ander voordeel van autorisaties is dat de ook de patient een overzicht in het PGO kan krijgen wie welke gegevens waarom kan inzien.
 
 #### 4.2.2 Inhoud
 

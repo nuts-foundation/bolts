@@ -1,0 +1,29 @@
+@startuml
+hide empty description
+
+state "in-progress" as inprogress #lightblue
+state cancelled #red
+state completed #lightgreen
+state "Advance notice flow" as substate #white {
+  state "on-hold" as onhold #yellow
+  state requested #lightblue
+  state accepted #lightblue
+  state rejected #red
+}
+
+[*] --> requested
+[*] --> inprogress
+cancelled --> [*]
+
+requested --> accepted
+requested --> rejected
+requested -> onhold
+onhold -> requested
+substate -> cancelled
+accepted -> inprogress
+inprogress --> completed
+
+rejected --> [*]
+completed --> [*]
+
+@enduml

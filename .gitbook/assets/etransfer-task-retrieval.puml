@@ -1,0 +1,35 @@
+@startuml
+autonumber
+skinparam ParticipantPadding 30
+skinparam BoxPadding 20
+
+Box Sender
+  participant "Sender System" as Sender
+  participant SenderNode
+end box
+Box Receiver
+  participant ReceiverNode
+  participant "Receiving System" as Receiver
+  actor Bob
+end box
+
+Receiver -> ReceiverNode: Find eOverdracht-sender service
+activate Receiver
+ReceiverNode -> Receiver: <<Service>>
+
+group "Find authorization credentials"
+  Receiver -> ReceiverNode: Search credentials <<receiverDID, "eOverdracht-sender", taskID>>
+  ReceiverNode -> Receiver: Ok <<credentials>>
+end
+
+group "Request access token"
+  Receiver <-> SenderNode: Request access token <<credentials>>
+end
+Receiver -> Sender: GET Task <<accessToken>>
+Sender -> SenderNode: Validate <<accessToken>>
+SenderNode --> Sender: Ok
+Sender -> Receiver: <<task>>
+Receiver --> Bob: Notify
+deactivate Receiver
+
+@enduml
