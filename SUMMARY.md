@@ -2,6 +2,11 @@
 
 * [Bolts](README.md)
 
+## Autorisatieverzoek
+
+* [Overzicht](autorisatie-request/overzicht.md)
+* [Technical description](autorisatie-request/specification.md)
+
 ## eOverdracht
 
 * [Leveranciersspecificatie](eoverdracht/leveranciersspecificatie.md)
