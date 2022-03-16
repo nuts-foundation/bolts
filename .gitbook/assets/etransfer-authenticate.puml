@@ -1,0 +1,24 @@
+@startuml
+autonumber
+skinparam ParticipantPadding 30
+skinparam BoxPadding 20
+
+Box Receiver
+  participant ReceiverNode
+  participant "Receiving System" as Receiver
+  actor Bob
+end box
+
+group "Authenticate"
+  Bob --> Receiver: start
+  activate Bob
+  activate Receiver
+  Receiver -> ReceiverNode: Auth
+  ReceiverNode -> Receiver: Auth challenge
+  Receiver -> Bob: Show QR code
+  Bob -> ReceiverNode: Sign Auth
+  deactivate Bob
+  ReceiverNode -> Receiver: <<Signed contract>>
+end
+
+@enduml

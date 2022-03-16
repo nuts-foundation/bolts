@@ -263,9 +263,41 @@ As described earlier, the task resource is used to track the workflow state betw
 
 ![](../.gitbook/assets/etransfer-task-update.png)
 
-### 6. Data retrieval
+### 6. Authenticated data retrieval
 
-### 7. Advance Notice
+For auditing and security purposes, the identity of the user must be known to the sending system when medical data is retrieved. A short paragraph on the user authentication is described before the paragraph on data retrieval.
+
+### 6.1 Authentication flow
+
+Nuts allows a user to authenticate with its own system. The resulting identity can then be checked by any other system. The sequence diagram below shows the authentication flow.
+
+<img src="../.gitbook/assets/etransfer-authenticate.png" width="400">
+
+**1-4** The receiving system starts an authentication flow on request of the user. Several authentication means are supported. Each means will use its own way of providing the user with a challenge to sign. In this example we'll use IRMA as means. The receiving system will start an authentication session on the Nuts node. The node returns a _challenge_ and _session ID_. [RFC002](https://nuts-foundation.gitbook.io/drafts/rfc/rfc002-authentication-token) contains the details on the contents. 
+
+**5-6** The challenge is shown as a QR code to the user. The user scans the QR code with the IRMA app. The app will show a small contract that can be signed by the user. The user signs the contract with the requested attributes. The IRMA app sends the signed contract to the Nuts node. The receiving system will notice the updated session and will be able to retrieve the signed contract. The signed contract must be stored in the user's session. It can be used for a longer period of time over multiple access token requests.
+
+#### 6.2 Data retrieval
+
+Retrieving personal and/or medical data is almost identical to retrieving the task resources. The only difference is the presence of the user identity and optional subject in the access token request. This is reflected by the sequence diagram below. The subject should not be present in the case of retrieving data in the _Advance Notice_ flow but must be present in the _Nursing handoff_ flow.
+
+![](../.gitbook/assets/etransfer-data-retrieval.png)
+
+**1** The flow is initiated by Bob based on a received Task. The metadata sent with the task notification contains the ID of the sending organization.
+
+**2-5** Finding the correct service and credentials is similar to [§5.1](specification.md#51-retrieval)
+
+**6-7** User authentication is described in [§6.1](specification.md#61-authentication-flow).
+
+**8** Getting the access token is described in [§3.2](specification.md#32-authentication--authorization). The `subject` is only required in the case of the _Nursing handoff_ flow.
+
+**9-12** The task that was taken as starting point in **1** contains a reference to either the _Advance notice_ or the _Nursing handoff_. The authorization credential found at step **4-5** also contain these references. The base url from step **3** combined with these relative paths give the full URLs that need to be queried. The access token from step **8** can be used for each of these queries. If a request fails, the sender system must respond with a `400` status code and a FHIR STU3 [OperationOutcome](http://hl7.org/fhir/STU3/operationoutcome.html). The resource listed in the `task.input` field returns a composition that may contain references to other FHIR resources. These resources will also be listed in the authorization credential.
+
+**13** The information can be shown to Bob.
+
+Please refer to [this table](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_FHIR_eOverdracht#HCIMs) on the complete set of ZIBs to FHIR profile mappings.
+
+### 7. Advance notice
 
 ### 8. Nursing handoff
 
