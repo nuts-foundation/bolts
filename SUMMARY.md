@@ -8,7 +8,7 @@
 
 ## zorginzage
 
-* [Overzicht](zorginzage/overzicht.md)
+* [Zorginzage 2020](<zorginzage/versie 2020.md>)
 * [🔩 Zorginzage 2022](zorginzage/zorginzage-2022.md)
 
 ## Keteninformatie kwaliteit verpleeghuiszorg
