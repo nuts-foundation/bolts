@@ -1,4 +1,3 @@
 # Kwaliteitsinformatie
 
-De specificaties voor keteninformatie kwaliteit verpleeghuiszorg zijn verhuist naar: [https://kik-v.github.io/datastation/](https://kik-v.github.io/datastation/) 
-
+De specificaties voor keteninformatie kwaliteit verpleeghuiszorg zijn verhuist naar: [https://gitlab.com/data-en-techniek/explainers/implementatiegids-kik-v-met-een-nuts-node](https://gitlab.com/data-en-techniek/explainers/implementatiegids-kik-v-met-een-nuts-node)&#x20;
