@@ -247,11 +247,11 @@ De Bolt Zorginzage heeft als kern het raadplegen van gegevens die bij een bronho
 
 Deze specifieke afspraken worden per zorgtoepassing vastgelegd in het zorgtoepassingprofiel. Ieder zorgtoepassingprofiel beschrijft afspraken die aanvullend zijn aan de inhoud de Bolt Zorginzage. Voor afspraken over informatie en data wordt waar mogelijk verwezen naar Nictiz informatiestandaarden. Zie hieronder een overzicht van zorgtoepassingen, identifiers en zorgtoepassingprofielen. Dit overzicht kan eenvoudig worden uitgebreid met andere zorgtoepassingen.
 
-| **Zorgtoepassing**                | **Identifier**                     | **Profiel**                                                                   |
-| --------------------------------- | ---------------------------------- | ----------------------------------------------------------------------------- |
-| Geboortezorg                      | zorginzage-geboortezorg            | Zorgtoepassingprofiel Afsprakenstelsel Interoperabiliteit Geboortezorg: LINK. |
-| Uitwisseling thuiszorg- huisarts  | zorginzage-huisartsinzagethuiszorg | n.t.b.                                                                        |
-| AMO (Actueel Medicatie Overzicht) | zorginzage-amo                     | n.t.b.                                                                        |
+| **Zorgtoepassing**                | **Identifier**                     | **Profiel**                                                                                                                                                  |
+| --------------------------------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Geboortezorg                      | zorginzage-geboortezorg            | [Zorgtoepassingprofiel Geboortezorg](https://babyconnect.atlassian.net/wiki/spaces/VBC/pages/906166273/) in Afsprakenstelsel Interoperabiliteit Geboortezorg |
+| Uitwisseling thuiszorg- huisarts  | zorginzage-huisartsinzagethuiszorg | n.t.b.                                                                                                                                                       |
+| AMO (Actueel Medicatie Overzicht) | zorginzage-amo                     | n.t.b.                                                                                                                                                       |
 
 De technische ontwerpen van de Nictiz informatiestandaarden bevatten veel inhoudelijke aspecten van de gegevensuitwisseling (datastructuren en data-interface). De Bolt Zorginzage vult dit aan met 'infrastructurele' zaken: authenticatie, autorisatie, lokalisatie, adressering en logging. Sommige onderdelen zijn op dit moment verder uitgewerkt dan andere. Waar mogelijk wordt verwezen naar bestaande standaarden. Waar een onderdeel nog niet voldoende is uitgewerkt zal worden besproken wat er nog mist en hoe tot een oplossing kan worden gekomen. Het is mogelijk dat het vinden van een oplossingsrichting in een later stadium onderdeel moet worden van de verdere samenwerking tussen de verschillende leveranciers.
 
