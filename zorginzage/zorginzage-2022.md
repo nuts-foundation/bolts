@@ -35,7 +35,7 @@ Voor de keuze van de diverse rollen hebben we zoveel mogelijk gebruik gemaakt va
 * Bronsysteem: Een geheel van applicaties dat de gegevens van de bronhouder beheert.
 * Gebruiker: Zorgverlener of andere medewerker die vanuit de context van een afnemer dossiergegevens over een betrokkene raadpleegt bij een of meerdere bronhouders.
 * Grondslag: Een wettelijke basis voor het mogen doorbreken van het beroepsgeheim van de bronhouder.
-* Nuts: Een samenwerkingsverband van partijen in de zorg om tot een breed gedragen, open, decentraal vertrouwensnetwerk te komen ten behoeve van de uitwisseling van gegevens in de zorg en andere hieraan gerelateerde domeinen. Zie[ www.nuts.nl](http://www.nuts.nl).
+* Nuts: Een samenwerkingsverband van partijen in de zorg om tot een breed gedragen, open, decentraal vertrouwensnetwerk te komen ten behoeve van de uitwisseling van gegevens in de zorg en andere hieraan gerelateerde domeinen. Zie[ www.nuts.nl](http://www.nuts.nl/).
 * Zorgaanbieder: Zorgorganisatie
 * Zorgtoepassing: Een specifiek zorgproces waarin gegevensbeschikbaarheid een rol speelt. Voorbeelden hiervan zijn geboortezorg, huisartsinzage in thuiszorgdossier en actueel medicatieoverzicht.
 * Zorgtoepassingprofiel: Beschrijving van afspraken die gelden voor een specifieke zorgtoepassing. Deze afspraken zijn aanvullend aan de inhoud van de Bolt Zorginzage.
@@ -389,7 +389,7 @@ Deze onderdelen worden in onderstaand diagram weergegeven en vervolgens nader ui
 
 **4.9.2.1 Authenticeren gebruiker**
 
-Het daadwerkelijke ophalen van gegevens bij een bronhouder is een handeling die niet zonder tussenkomst van een gebruiker kan plaatsvinden (zie o.a. paragraaf 3.3). De gebruiker, die handelt vanuit de context van de afnemer, dient te worden geauthenticeerd op een manier die door de bronhouder wordt vertrouwd.
+Het daadwerkelijke ophalen van gegevens bij een bronhouder gebeurt door het afnemersysteem namens een gebruiker (zie o.a. paragraaf 3.3). De gebruiker, die handelt vanuit de context van de afnemer, dient te worden geauthenticeerd op een manier die door de bronhouder wordt vertrouwd.
 
 | Stap     |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
