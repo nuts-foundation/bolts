@@ -438,7 +438,7 @@ De resource server van de ontvangende partij moet controleren dat er voor het no
 
 ### 6.2 eOverdracht-sender policy
 
-De `eOverdracht-sender` policy bevat zowel regels voor persoonsgebonden als niet-persoonsgebonden resources. Voor de niet-persoonsgebonden resources geldt hetzelfde als bij §6.1: de `vcs` en `usi` velden in de [JWT grant](https://nuts-foundation.gitbook.io/drafts/rfc/rfc003-oauth2-authorization#4-2-2-payload) mogen leeg zijn.
+De `eOverdracht-sender` policy bevat zowel regels voor persoonsgebonden als niet-persoonsgebonden resources. Voor de niet-persoonsgebonden resources geldt dat het `usi` veld in de [JWT grant](https://nuts-foundation.gitbook.io/drafts/rfc/rfc003-oauth2-authorization#4-2-2-payload) leeg mag zijn.
 
 #### 6.2.1 Niet-persoonsgebonden resources
 
