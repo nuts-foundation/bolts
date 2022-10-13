@@ -450,7 +450,6 @@ Omdat het hierbij gaat om de toegang tot een enkele resource, is er een [Nuts Au
 * De `issuer` moet het DID bevatten van de versturende partij.
 * `credentialSubject.id` moet het DID van de ontvangende partij bevatten.
 * `credentialSubject.purposeOfUse` moet gelijk zijn aan `eOverdracht-sender`.
-* `credentialSubject.legalBase.consentType` moet gelijk zijn aan `implied`.
 * `credentialSubject.resources` moet de specifieke Task bevatten: `/Task/[id]`.
 
 De resource server moet controleren of het gevraagde request gelijk is aan:
@@ -472,7 +471,6 @@ Het ophalen van het overdrachtsbericht en alle aanverwante gegevens vereisen een
 * De `issuer` moet het DID bevatten van de versturende partij.
 * `credentialSubject.id` moet het DID van de ontvangende partij bevatten.
 * `credentialSubject.purposeOfUse` moet gelijk zijn aan `eOverdracht-sender`.
-* `credentialSubject.legalBase.consentType` moet gelijk zijn aan `implied`.
 * `credentialSubject.subject` moet het BSN bevatten als OID: `urn:oid:2.16.840.1.113883.2.4.6.3:999999990`.
 
 De `eOverdracht-sender` policy geeft geen toegang tot gegevens anders dan die onder `resources` vermeld staan in het credential. `resources` moet in ieder geval de volgende waardes bevatten:
