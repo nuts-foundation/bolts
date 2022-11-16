@@ -278,10 +278,12 @@ De verschillende processtappen in de verpleegkundige overdracht vereisen een bep
 
 * Requested    → toegang tot aanmeldbericht
 * Accepted    → toegang tot aanmeldbericht
-* Rejected    → alle toegang ingetrokken
-* Cancelled    → alle toegang ingetrokken
+* Rejected    → toegang tot aanmeldbericht en overdrachtsbericht ingetrokken
+* Cancelled    → toegang tot aanmeldbericht en overdrachtsbericht ingetrokken
 * In-progress → toegang tot overdrachtsbericht
-* Completed    → alle toegang ingetrokken
+* Completed    → toegang tot aanmeldbericht en overdrachtsbericht ingetrokken
+
+nb: de toegang tot de Task resource blijft wel behouden, deze verloopt vanzelf na een jaar.
 
 Het concept van een grondslag verbindt welke ontvangende partij toegang krijgt tot welke gegevens bij welke bronhouder inzake welke patiënt. En hoewel er voor het aanmeldbericht dus geen valide grondslag is om persoonsgegevens te verwerken, is het voor de implementatie wel handig om beide berichten via eenzelfde mechanisme toegankelijk te maken. De grondslag is onderdeel van een speciaal autorisatie record, deze is beschreven in [RFC014](https://nuts-foundation.gitbook.io/drafts/rfc/rfc014-authorization-credential).
 
@@ -368,7 +370,7 @@ Onderstaand flow diagram toont alle stappen van notificeren tot ophalen. Wanneer
 
 ### 5.3.1 Registreren autorisatie
 
-**2-3** In één van de eerste stappen wordt het Nuts autorisatie record geregistreerd. Hiervoor dient [RFC014](https://nuts-foundation.gitbook.io/drafts/rfc/rfc014-authorization-credential) gevolgd te worden. Zie §6.2.2 voor de invulling van het autorisatie record.
+**2-3** In één van de eerste stappen worden twee Nuts autorisatie records geregistreerd. Hiervoor dient [RFC014](https://nuts-foundation.gitbook.io/drafts/rfc/rfc014-authorization-credential) gevolgd te worden. Zie §6.2.2 voor de invulling van de autorisatie records.
 
 **4.** Het Nuts netwerk zorgt voor de aflevering van het autorisatie record bij de juiste ontvangende Nuts node.
 
@@ -412,7 +414,7 @@ Het ontvangende systeem zoekt in de Nuts node naar het endpoint waar het overdra
 
 ### 5.3.6 afronden overdracht
 
-Voor het wijzigen van de Task is een access token nodig. Hiervoor kan hetzelfde access token gebruikt worden die ook bij stap 32 is gebruikt indien de geldigheid van het access token dit toelaat. Indien het updaten van de Task op een later tijdstip plaats vindt of als het token verlopen is, zullen stap 15 t/m 20 nogmaals doorlopen moeten worden. Als ook het contract van de gebruiker niet meer geldig is, dan zullen stappen 26 t/m 31 ook doorlopen moeten worden.
+Voor het wijzigen van de Task is een access token nodig. De rechten om de Task te wijzigen bevinden zich in een ander autorisatie record dan bij stap 32, daarom zullen stap 15 t/m 20 nogmaals doorlopen moeten worden. Als ook het contract van de gebruiker niet meer geldig is, dan zullen stappen 26 t/m 31 ook doorlopen moeten worden.
 
 **41.** Het ontvangende systeem wijzigt de `Task.status` van `in-progress` naar `completed`. De Task wordt middels een `PUT` request gestuurd naar het juiste pad volgens het [Nictiz](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_FHIR_eOverdracht) TO §3.2.2. Het `base` path is afkomstig vanuit het endpoint wat in stap 15 is opgehaald.
 
@@ -460,6 +462,8 @@ GET [base]/Task/[id]
 
 Waarbij `[base]` vervangen moet worden door het pad zoals deze is geregistreerd onder het `fhir` veld in de `eOverdracht-sender` service. De resources server moet ook de Task selecteren o.b.v. het access token. Bij de aanvraag voor het access token is meegestuurd welke organisatie de aanvraag doet en voor welke organisatie deze bedoeld is.
 
+Het authorization credential voor de Task staat los van de authorization credential van de overige resources. Toegang tot de Task is namelijk nodig nadat de toegang tot de overige resources reeds is ingetrokken. Dit credential moet 1 jaar geldig zijn. 
+
 **6.2.1.2** **Updaten task resource**
 
 Een onderdeel van de eOverdracht is dat de ontvangende partij de status van de Task aanpast. Hiervoor dient het een request te doen zoals beschreven in [§3.2.2 van het Nictiz TO](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_FHIR_eOverdracht#Task_invocations). Omdat het hierbij gaat om de toegang van een enkele resource, is er een [Nuts Authorization Credential](https://nuts-foundation.gitbook.io/drafts/rfc/rfc014-authorization-credential) nodig. Het gaat hierbij om hetzelfde credential als beschreven in de vorige paragraaf.
@@ -479,11 +483,13 @@ De `eOverdracht-sender` policy geeft geen toegang tot gegevens anders dan die on
 * path: `/compositon/[id]`, operations: `["read", "document"]`, userContext: `true`. `[ID]` moet hierbij vervangen worden door een echt ID. De `document` operatie wordt in FHIR vertaald naar het pad: `/Compositon/[id]/$document`. Dit betreft lees rechten op het overdrachtsbericht.
 * path: `/[path]`, operations: `["read"]`, userContext: `true`. Voor elke FHIR reference die voorkomt in het overdrachtsbericht moet een waarde worden opgenomen. `/[path]` moet daarbij vervangen worden door de FHIR reference.
 
-Bij de aanvraag van het access token moet het credential volgens bovenstaande eisen meegestuurd worden in het `vcs` veld. Daarnaast moet er gebruikersinformatie meegestuurd worden in het `usi` veld. Het `purposeOfUse` veld moet de waarde `eOverdracht-sender` bevatten.
+Bij de aanvraag van het access token moet het credential volgens deze eisen meegestuurd worden in het `vcs` veld. Daarnaast moet er gebruikersinformatie meegestuurd worden in het `usi` veld. Het `purposeOfUse` veld moet de waarde `eOverdracht-sender` bevatten.
+
+Dit credential wordt als losstaande credential van de Task aangemaakt.
 
 ### 6.3 Intrekken autorisatie
 
-Wanneer de overdracht voltooid is, is het niet langer nodig voor de ontvangende partij om gegevens op te halen. Het autorisatie credential kan dan ingetrokken worden. Wanneer de status van de Task geupdate wordt naar completed, dan moet de verzendende partij het credential intrekken. Indien de ontvangende partij vergeet om het proces af te ronden dan staat het de verzendende partij vrij om het credential na een redelijke periode in te trekken.
+Wanneer de overdracht voltooid is, is het niet langer nodig voor de ontvangende partij om gegevens op te halen. Wanneer de status van de Task geupdate wordt naar completed, dan moet de verzendende partij het credential intrekken welke toegang geeft tot de medische gegevens. Het credential voor de Task resource blijft gewoon geldig. Indien de ontvangende partij vergeet om het proces af te ronden dan staat het de verzendende partij vrij om het credential na een redelijke periode in te trekken.
 
 ## Appendix A. Integratie voorbeelden
 
