@@ -297,15 +297,18 @@ De ZIBs beschrijven de benodigde data, maar beschrijven niet hoe deze door compu
 
 Volgens de specificatie is het mogelijk om persoonsgegevens op te nemen in het aanmeldbericht. Dit is niet altijd toegestaan vanuit de wetgeving. De verzendende partij moet hier rekening mee houden. Zie ook [§2.2.2](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_Ontwerp_eOverdracht) van het Nictiz functioneel ontwerp.
 
-##### 4.2.2.1 Aanvullende documenten
+##### 4.2.2.1 Document secties
 
-Niet alle informatie uit de eOverdracht ZIBs kunnen gestructureerd worden verzonden. Nictiz heeft in de [Informatiestandaard](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_FHIR_eOverdracht#Exchanging_data_as_unstructured_text) gedefineerd hoe deze informatie in één PDF/a kan worden toegevoegd aan de eOverdracht.
+Binnen de eOverdracht wordt niet alle informatie gestructureerd uitgewisseld, dat wil zeggen door ZIBs met bijbehorende FHIR profielen. 
+Hiervoor kunnen PDF/a's worden toegevoegd aan een bericht door middel van een [FHIR DocumentReference](http://hl7.org/fhir/stu3/documentreference.html) met daarin een verwijzing naar een [FHIR Binary](http://hl7.org/fhir/stu3/binary.html). Deze FHIR resources kunnen geautoriseerd worden middels een Nuts Authorization Credential.
 
-Aanvullende op de specificatie van Nictiz zal de referentie in de [FHIR DocumentReference](http://hl7.org/fhir/stu3/documentreference.html) een referentie naar een [FHIR Binary](http://hl7.org/fhir/stu3/binary.html) moeten bevatten. Andere niet-FHIR verwijzingen zijn niet toegestaan in verband met het Nuts Authorization Credential.
+De DocumentReference wordt opgenomen als entry in een sectie in de Composition
+Door gebruik te maken van een DocumentReference waarbij deze een referentie naar de Binary bevat, zal de $document call op de Composition de DocumentReference wel opnemen in de Bundle, maar de Binary met de PDF/a niet. Deze moet apart opgehaald worden.
 
-Aanvullende zal deze bolt voorzien om gegevens te versturen die buiten de eOverdracht gegevens liggen. Deze worden optioneel toegevoegd aan het aanmeld- of overdrachtsbericht \(FHIR Compostion\). Hiervoor kan de verzender in een extra sectie DocumentReference entries toevoegen aan de Composition. De DocumentReference moet een verwijzing hebben naar een Binary. De code voor deze sectie is snomed code '397966007' \(Documents\). De Binary mag alleen een PDF/a zijn. 
+Er zijn twee usecases voor PDF/a's: 
 
-Door gebruik te maken van een DocumentReference waarbij deze een referentie naar de Binary bevat, zal de $document call op de composition de DocumentReference wel opnemen in de Bundle, maar de Binary met de PDF/a niet. Deze moet apart opgehaald worden.
+1. Informatie binnen de eOverdracht ZIBs die niet gestructureerd overgedragen kan worden. Hiervoor heeft Nictiz in de [Informatiestandaard](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_FHIR_eOverdracht#Exchanging_data_as_unstructured_text) opgenomen hoe deze informatie in één PDF/a kan worden toegevoegd aan de eOverdracht.
+2. Informatie buiten de eOverdracht ZIBs die wenselijk is om over te dragen. Hierin voorziet deze bolt om aanvullende documenten mee te sturen in het aanmeld- of overdrachtsbericht. Deze documenten worden toegevoegd in de Composition in een optionele sectie met snomed code '397966007' \(Documents\). 
 
 #### 4.2.3 Context
 
