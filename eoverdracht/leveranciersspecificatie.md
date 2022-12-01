@@ -304,8 +304,8 @@ Volgens de specificatie is het mogelijk om persoonsgegevens op te nemen in het a
 Binnen de eOverdracht wordt niet alle informatie gestructureerd uitgewisseld, dat wil zeggen door ZIBs met bijbehorende FHIR profielen. 
 Hiervoor kunnen PDF/a's worden toegevoegd aan een bericht door middel van een [FHIR DocumentReference](http://hl7.org/fhir/stu3/documentreference.html) met daarin een verwijzing naar een [FHIR Binary](http://hl7.org/fhir/stu3/binary.html). Deze FHIR resources kunnen geautoriseerd worden middels een Nuts Authorization Credential.
 
-De DocumentReference wordt opgenomen als entry in een sectie in de Composition
-Door gebruik te maken van een DocumentReference waarbij deze een referentie naar de Binary bevat, zal de $document call op de Composition de DocumentReference wel opnemen in de Bundle, maar de Binary met de PDF/a niet. Deze moet apart opgehaald worden.
+De DocumentReference wordt opgenomen als entry in een sectie in de Composition.
+Door gebruik te maken van een DocumentReference met een referentie naar de Binary, zal de $document call op de Composition de DocumentReference wel opnemen in de Bundle, maar de Binary met de PDF/a niet. Deze moet apart opgehaald worden.
 
 Er zijn twee usecases voor PDF/a's: 
 
