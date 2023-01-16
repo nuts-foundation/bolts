@@ -100,6 +100,7 @@ Het voordeel van deze aanpak boven enkel een pull mechanisme is timing en eenvou
 Het concept van notified pull is daarom de enige manier om alle gevraagde functionaliteit te ondersteunen, privacy te waarborgen en auditing op de juiste manier toe te passen. Het voorkomt onnodig kopiëren van gegevens tussen systemen en de bronhouder behoudt de volledige controle over wie er toegang krijgt tot gegevens.
 
 De notificatie kan door de ontvangende partij gebruikt worden om direct een gebruiker te notificeren of andere processen in gang te zetten. De notificatie moet zo “dun” mogelijk zijn en geen persoons- en/of medische gegevens bevatten, om in verschillende stadia van het proces bruikbaar te zijn en vanwege het juridische kader dat we in de volgende paragraaf zullen beschrijven.
+Additionele notificaties kunnen de ontvangende partij ook op de hoogte stellen van gegevens die veranderd of toegevoegd zijn.
 
 ### 3.2 Wetgeving
 
@@ -170,8 +171,6 @@ Er wordt zo veel mogelijk uitgegaan van breed toepasbare en gestandaardiseerde o
 
 Het [technisch ontwerp](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_FHIR_eOverdracht) van Nictiz bevat veel inhoudelijke aspecten van de gegevensuitwisselingen. Deze Bolt omschrijving vult dit aan met infrastructurele zaken.
 
-Sommige onderdelen zijn op dit moment verder uitgewerkt dan andere. Waar mogelijk wordt verwezen naar bestaande standaarden. Waar een onderdeel nog niet voldoende is uitgewerkt zal besproken worden wat er nog mist en hoe tot een oplossing gekomen kan worden. Het is mogelijk dat het vinden van een oplossingsrichting in een later stadium onderdeel moet worden van de verdere samenwerking tussen de verschillende leveranciers.
-
 ### 4.1 Proces tracking
 
 De juiste doelsystemen moeten genotificeerd worden, zodat de ontvangende partijen weten dat er een overdracht naar de organisatie gedaan zou kunnen worden. Het notificeren zal zowel voor het aanmeldbericht als het daadwerkelijke overdrachtsbericht plaatsvinden. Bij het aanmeldbericht dient deze notificatie ertoe dat het aanbod ter verificatie geëvalueerd kan worden. De notificatie voor het overdrachtsbericht heeft als doel de ontvangende partij te notificeren dat er meer gegevens beschikbaar zijn.
@@ -180,9 +179,13 @@ Ook is het noodzakelijk om de voortgang van het proces te kunnen monitoren. Elk 
 
 #### 4.1.1 Task resource
 
-De [task resource](https://www.hl7.org/fhir/task.html) wordt gebruikt om de voortgang van een uitgezette taak bij te houden. De bronhouder is verantwoordelijk voor het uitzetten van de taak. Wanneer de bronhouder met meerdere partijen een aanmeldbericht wil delen, zal voor elke ontvangende partij een task moeten worden aangemaakt. De bronhouder is ervoor verantwoordelijk dat voor gerelateerde tasks er uiteindelijk maar één toegewezen wordt aan een ontvangende partij. Vanwege deze verantwoordelijkheid en vanwege het principe van gegevens aan de bron zal de task opgeslagen worden in het bronsysteem. Het doelsysteem wordt genotificeerd en kan de task ophalen. Bij elke wijziging in de task zal het bronsysteem een notificatie sturen.
+De [task resource](https://www.hl7.org/fhir/task.html) wordt gebruikt om de voortgang van een uitgezette taak bij te houden. De bronhouder is verantwoordelijk voor het uitzetten van de taak. Wanneer de bronhouder met meerdere partijen een aanmeldbericht wil delen, zal voor elke ontvangende partij een task moeten worden aangemaakt. De bronhouder is ervoor verantwoordelijk dat voor gerelateerde tasks er uiteindelijk maar één toegewezen wordt aan een ontvangende partij. Vanwege deze verantwoordelijkheid en vanwege het principe van gegevens aan de bron zal de task opgeslagen worden in het bronsysteem. Het doelsysteem wordt genotificeerd en kan de task ophalen. 
+Het bronsysteem stuurt een notificatie als:
+- de task resource is gewijzigd
+- er meer of minder gegevens beschikbaar zijn
+- de autorisaties aangepast zijn
 
-Zie [§3.4](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_FHIR_eOverdracht) van de technische specificatie.
+Zie [§3.4](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_FHIR_eOverdracht) van de Nictiz technische specificatie voor de specifieke inhoud van de task resource.
 
 Qua gegevens kan de task een referentie bevatten naar het aanmeldbericht. Als de task de status `in-progress` krijgt kan tevens een referentie naar het overdrachtsbericht worden toegevoegd. Voor het overdrachtsbericht is dan geen aparte task nodig.
 
