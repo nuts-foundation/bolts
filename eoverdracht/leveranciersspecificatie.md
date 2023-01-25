@@ -358,6 +358,7 @@ Omdat de identiteit van de gebruiker en de opvragende partij zijn vastgelegd in 
 #### 4.2.7 Service autorisatie
 
 Vanuit [RFC014](https://nuts-foundation.gitbook.io/drafts/rfc/rfc014-authorization-credential) is er de verplichting om voor elke Bolt een access policy te definiëren. Een policy beschrijft hoe het autorisatie record opgesteld moet worden en waar het vervolgens toegang tot geeft. Alleen de bronhouder moet een autorisatie record aanmaken \(`eOverdracht-sender`\). Een autorisatie record voor de service `eOverdracht-sender` geeft geen algemene rechten tot resources. Alleen de resources die onder de restricties worden geregistreerd zijn toegankelijk. H6 beschrijft de access policies.
+Autorisatie records hebben een uitgifte datum en een geldigheidsdatum. Alle uitgegeven autorisatie records moeten minimaal 5 dagen geldig zijn.
 
 ## 5. Implementatie
 
