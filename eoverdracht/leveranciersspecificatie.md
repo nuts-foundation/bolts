@@ -396,7 +396,7 @@ Onderstaand flow diagram toont alle stappen van notificeren tot ophalen. Wanneer
 
 **8-10** De node vraagt volgens [RFC003](https://nuts-foundation.gitbook.io/drafts/rfc/rfc003-oauth2-authorization) een access token aan bij de authorization server van de ontvangende partij.
 
-**11.** Er wordt een notificatie gestuurd middels een lege POST naar het endpoint vanuit stap 5. Het security token uit stap 10 wordt hierbij als autorisatie header meegestuurd. De `Accept` header moet gezet worden conform de eisen van een FHIR API call.
+**11.** Er wordt een notificatie gestuurd middels een lege POST naar het endpoint vanuit stap 5. Het access token uit stap 10 wordt hierbij als autorisatie header meegestuurd. De `Accept` header moet gezet worden conform de eisen van een FHIR API call.
 
 **12.** Het doelsysteem valideert het access token bij de Nuts node.
 
@@ -404,9 +404,9 @@ Onderstaand flow diagram toont alle stappen van notificeren tot ophalen. Wanneer
 
 ### 5.3.3 Ophalen Task
 
-Het doelsysteem is nu op de hoogte van een nieuwe of gewijzigde Task resource. Het security token dat in stap 11 gebruikt is, bevat het bronsysteem.
+Het doelsysteem is nu op de hoogte van een nieuwe of gewijzigde Task resource. Het access token dat in stap 11 gebruikt is, bevat het bronsysteem.
 
-**15-21** De notificatie uit stap 11 bevatte een autorisatie header met daarin oa de identifiers van de bronhouder en de ontvangende partij. Het doelsysteem kan hiermee bepalen waar de Task opgehaald moet worden. Het endpoint van de Task FHIR URL is te vinden in het `fhir` veld van de `eOverdracht-sender` service van de bronhouder. Dit is de `base` URL van de FHIR service. Daar moet nog het relatieve pad van de Task resource (`Task`) en de specifieke identifier aan toegevoegd worden. Het access token gaat net zoals bij stap 11 mee in een header. Het bronsysteem is verantwoordelijk voor het vinden van de juiste Task resource. Omdat het security token geen gebruikersinformatie bevat, mogen er nooit persoonsgegevens meegestuurd worden in de Task.
+**15-21** De notificatie uit stap 11 bevatte een autorisatie header met daarin oa de identifiers van de bronhouder en de ontvangende partij. Het doelsysteem kan hiermee bepalen waar de Task opgehaald moet worden. Het endpoint van de Task FHIR URL is te vinden in het `fhir` veld van de `eOverdracht-sender` service van de bronhouder. Dit is de `base` URL van de FHIR service. Daar moet nog het relatieve pad van de Task resource (`Task`) en de specifieke identifier aan toegevoegd worden. Het access token gaat net zoals bij stap 11 mee in een header. Het bronsysteem is verantwoordelijk voor het vinden van de juiste Task resource. Omdat het access token geen gebruikersinformatie bevat, mogen er nooit persoonsgegevens meegestuurd worden in de Task.
 
 **22-24** Het bronsysteem controleert het access token en bepaalt aan de hand daarvan de bronhouder en de opvragende partij. Samen met de gegeven query parameters bevat dit voldoende informatie om de juiste Task resource\(s\) terug te geven.
 
