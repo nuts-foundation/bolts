@@ -1,4 +1,4 @@
-# Toepassingen op Nuts
+# Toepassingen op Nuts (Bolts)
 
 Een “Toepassing op Nuts” [Nuts](https://nuts.nl/documentatie/) is een specifieke toepassing die gebruik maakt van de Nuts-specificatie en waarover partijen aanvullende openbare eisen en specificaties hebben afgesproken. Omdat het Nuts-netwerk als vertrouwenslaag dient, is het geschikt voor vele toepassingen. Iedereen kan een toepassing op het Nuts netwerk maken. Een Toepassing op Nuts is dan ook een praktische toepassing van het [Nuts gedachtengoed](https://nuts.nl/manifest) en [open technologie](https://nuts-foundation.gitbook.io/) om een tastbare usecase in de zorg mogelijk te maken.
 
