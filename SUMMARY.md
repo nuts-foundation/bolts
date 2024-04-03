@@ -17,4 +17,5 @@
 
 ## ANW
 
-* [Avond-, nacht- en weekendzorg (ANW)](anw/avond-nacht-en-weekendzorg-anw.md)
+* [Avond-, nacht- en weekendzorg (ANW) v2022](anw/avond-nacht-en-weekendzorg-anw.md)
+* [Avond-, nacht- en weekendzorg (ANW) v2024](anw/v2024.1.md)
