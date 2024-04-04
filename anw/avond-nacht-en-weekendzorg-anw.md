@@ -1,8 +1,8 @@
 ---
-description: 'Let op: Deze specificatie verkeert nog in de status DRAFT!'
+description: 'Let op: Deze specificatie is vervangen door een nieuwe versie v2024.1'
 ---
 
-# Avond-, nacht- en weekendzorg (ANW)
+# Avond-, nacht- en weekendzorg (ANW) v2022
 
 ## 1. Inleiding
 
