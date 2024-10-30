@@ -6,7 +6,7 @@ title Sequentie voor autorisatie en notificatie aan ANW medewerker
 autonumber
 actor ZMWANW as "Medewerker \nANW-regisseur"<<geauthenticeerd>>
 participant ANWSystem as "Applicatie \nANW-Regisseur"
-actor ANWEmpl as "ANW \nmedewerker \nANW-organisatie"<<geauthenticeerd>>
+actor ANWEmpl as "medewerker \nANW-zorgverlener"<<geauthenticeerd>>
 control nNodeB as "Nuts-Node \nANW-Zorgverlener"
 participant VVTA as "ECD \nANW-zorgverlener"
 participant VVTB as "ECD \nANW-Bronhouder"
@@ -22,15 +22,15 @@ ANWSystem -> VVTB++: Notificeert dat er een nieuwe Task is aangemaakt voor Clien
 VVTB --> ANWSystem: Haalt Task op
 VVTB -> VVTB: Creëert benodige credentials \nvoor ANW-Zorgverlener uit Task
 VVTB --> ANWSystem --: Update de Task met VC-ID en status "ready"
-ANWSystem -> VVTA ++: Notificatie dat er een Task klaar staat voor Zorgverlener
+ANWSystem -> VVTA ++: Notificatie dat er een Task klaar staat voor zorgverlener
 VVTA --> ANWSystem: Haalt Task op
 VVTA -> ANWEmpl ++: Notificatie van nieuwe zorgtoewijzimg
 
-ANWEmpl -> VVTA: Opent ANW dossier
+ANWEmpl -> VVTA: Opent ANW-dossier
 VVTA -> nNodeB: Zoekt VC met VC-ID uit Task
 nNodeB --> VVTA: VC
 VVTA -> VVTB ++: Haalt dossier op
-return dossier volgens ANW specificiaties
-VVTA --> ANWEmpl: Toont ANW dossier
+return dossier volgens ANW-specificiaties
+VVTA --> ANWEmpl: Toont ANW-dossier
 
 @enduml
