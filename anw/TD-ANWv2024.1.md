@@ -26,6 +26,7 @@
       * [Voorbeeld verifiable credential bronhouder (informatie opvragen)](#voorbeeld-verifiable-credential-bronhouder-informatie-opvragen)
       * [Endpoints voor data overdracht](#endpoints-voor-data-overdracht)
       * [Sequentie diagram](#sequentie-diagram-1)
+        * [Toelichting per stap](#toelichting-per-stap)
   * [Logging](#logging)
   * [Nuts register](#nuts-register)
     * [ANW-Regisseur](#anw-regisseur)
@@ -664,7 +665,7 @@ Deze wordt uitgegeven door de bronhouder. Hiermee kan de ontvanger het cliëntdo
 #### Endpoints voor data overdracht
 
 Hieronder staan de endpoints die beschikbaar gesteld moeten worden door de partijen die toegang tot het ophalen en
-wegschrijven van data aan partijen die ANW zorg verlenen.
+wegschrijven van data aan partijen die ANW-zorg verlenen.
 
 | ZIB                                                           | Method | Endpoint                                                                                                                               | Profiel                                                                                                                                                              |
 |:--------------------------------------------------------------|--------|:---------------------------------------------------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -684,6 +685,18 @@ wegschrijven van data aan partijen die ANW zorg verlenen.
 #### Sequentie diagram
 
 ![](../.gitbook/assets/ANW_koppel_sequence.png)
+
+##### Toelichting per stap
+
+| Stapnr. | Toelichting                                                                                                                                                                                 |
+|---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| 7       | Gebruikt hierbij het notificatie-endpoint dat gevonden is met de service "ANW-Bronhouder". In het AccessToken gebruik je de purposeOfUse "ANW-Bronhouder-RegisseurToegang"                  |
+| 8       | Gebruikt hierbij het fhir-endpoint dat gevonden is met de service "ANW-Regisseur". In het AccessToken gebruik je de purposeOfUse "ANW-Regisseur-Autorisatieverzoek"                         |
+| 10      | Gebruikt hierbij het fhir-endpoint dat gevonden is met de service "ANW-Regisseur". In het AccessToken gebruik je de purposeOfUse "ANW-Regisseur-Autorisatieverzoek"                         |
+| 11      | Gebruikt hierbij het notificatie-endpoint dat gevonden is met de service "ANW-Zorgverlener". In het AccessToken gebruik je de purposeOfUse "ANW-Zorgverlener-RegisseurToegang"              |
+| 12      | Gebruikt hierbij het fhir-endpoint dat gevonden is met de service "ANW-Regisseur". In het AccessToken gebruik je de purposeOfUse "ANW-Regisseur-Autorisatieverzoek"                         |
+| 15      | Het VC-ID dat in de uit stap 12 opgehaalde task kan gebruikt worden om de bijbehorende Verifiable credential te vinden.                                                                     |
+| 17      | Zie de [GET endpoints](#Endpoints-voor-data-overdracht). Afhankelijk van de implementatie per leverancier wanneer de GET requests worden uitgevoerd voor het opbouwen van het "ANW-Dossier" |
 
 ## Logging
 
