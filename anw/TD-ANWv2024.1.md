@@ -44,7 +44,7 @@
   ontsluiten van de planning.
 * Er is een samenwerkingsverband tussen de regisseur en de zorgaanbieders.
 * Wij maken gebruik van directe aanroepen en niet van compositions. Hiervoor is gekozen omdat er “live” data
-  nodig is voor de ANW use-case.
+  nodig is voor de ANW-usecase.
 
 ### Woordenlijst
 
@@ -60,7 +60,7 @@
 ### NUTS-adresboek
 
 De regisseur heeft toegang tot het NUTS-adresboek, hierin kunnen de leveranciers voor elke organisatie die onderdeel uit
-zal maken het ANW-netwerk aanduiden dat de betreffende organisatie gebruik maakt van de use case “ANW-Zorgverlener”
+zal maken het ANW-netwerk aanduiden dat de betreffende organisatie gebruik maakt van de usecase “ANW-Zorgverlener”
 en “ANW-Bronhouder”. De regisseur is zelf ook te vinden in het adresboek voor de bronhouder en zorgverlener om toegang
 te geven tot deze regisseur met als service “ANW-Regisseur”.
 
@@ -76,7 +76,7 @@ Het uitgangspunt is dat de regisseur een eigen NUTS-node heeft draaien. Deze nod
 de verschillende leveranciers. De regisseur kan met behulp van zijn eigen node een JWT-token opvragen om hiermee de
 cliënt- en medewerkergegevens van de verschillende zorgaanbieders op te vragen.
 
-Deze zorgaanbieders vinden de regisseur door binnen het NUTS-adresboek op de use case “ANW-Bronhouder” en
+Deze zorgaanbieders vinden de regisseur door binnen het NUTS-adresboek op de usecase “ANW-Bronhouder” en
 “ANW-Zorgverlener” te filteren. Hiervan krijgt hij de endpoints terug die gebruikt kunnen worden om de informatie mee op
 te vragen.
 
@@ -86,16 +86,16 @@ regisseur geïnitialiseerd. Dit kan op eender welk moment plaatsvinden met een d
 De frequentie is hierbij een redelijk aantal requests per dag.
 
 Op basis van het ontvangen JWT-token kan de zorgaanbieder bepalen tot welke endpoints de regisseur toegang heeft. Dit
-zal voor deze use case volgende twee: [Endpoints voor data regisseur](#endpoints-voor-data-regisseur)
+zal voor deze usecase volgende twee: [Endpoints voor data regisseur](#endpoints-voor-data-regisseur)
 
 Als query wordt er een op voorhand afgesproken term “ANW-zorg” meegegeven. Hiermee kan de zorgaanbieder bepalen welke
 cliënten/medewerkers teruggestuurd moeten worden.
 
 Elke leverancier zal zelf in het ECD voorzien dat medewerkers en cliënten als ”ANW” cliënt gekenmerkt worden. Afspraak
-is dat alleen “In zorg” zijnde cliënten teruggegeven worden voor de ANW use case en ook alleen “In dienst (actief
-contract)” zijnde medewerkers teruggegeven worden voor de ANW use case.
+is dat alleen “In zorg” zijnde cliënten teruggegeven worden voor de ANW-usecase en ook alleen “In dienst (actief
+contract)” zijnde medewerkers teruggegeven worden voor de ANW-usecase.
 
-Via de bovengenoemde endpoints is het vervolgens alleen mogelijk ANW medewerkers / cliënten op te vragen als de tag
+Via de bovengenoemde endpoints is het vervolgens alleen mogelijk ANW-medewerkers / cliënten op te vragen als de tag
 “ANW-zorg” meegegeven wordt. Elk ECD logt zelf wie deze gegevens heeft opgevraagd als bewijsvoering.
 
 Alle gekenmerkte cliënten worden teruggeven, onafhankelijk of er een BSN staat geregistreerd of niet. Het is de
@@ -279,7 +279,7 @@ Onderstaand is een voorbeeld van een POST voor het aanmaken van deze credential:
 ```
 
 Voor het aanmaken van deze credentials moet door de leverancier een functionaliteit ontwikkeld worden waar voor de twee
-use cases rechten wordt verleend aan een regissuer.
+usecases rechten wordt verleend aan een regissuer.
 
 ### Regisseur kent medewerker toe aan cliënt
 
@@ -339,7 +339,7 @@ Zodra het token opgehaald is, kan de ontvanger bij het bronsysteem de gegevens o
 de ontvanger gemachtigd is via het credential om de gegevens op te halen. Dit gebeurt via de profielen in het
 credential. Indien de ontvanger niet gemachtigd is voor een endpoint krijgt hij hierop een “403 forbidden” terug.
 
-Ervan uitgaande dat de ontvanger rechten heeft tot alle gegevens vastgesteld voor de ANW-use-case, worden de opgevraagde
+Ervan uitgaande dat de ontvanger rechten heeft tot alle gegevens vastgesteld voor de ANW-usecase, worden de opgevraagde
 gegevens teruggestuurd naar de ontvanger. De ontvanger kan vervolgens de gegevens op een door hem gekozen manier tonen
 in zijn eigen ECD.
 
