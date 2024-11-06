@@ -59,24 +59,24 @@
 
 ### NUTS-adresboek
 
-De regisseur heeft toegang tot het NUTS adresboek, hierin kunnen de leveranciers voor elke organisatie die onderdeel uit
-zal maken het het ANW netwerk aanduiden dat de betreffende organisatie gebruik maakt van de use case “ANW-Zorgverlener”
+De regisseur heeft toegang tot het NUTS-adresboek, hierin kunnen de leveranciers voor elke organisatie die onderdeel uit
+zal maken het ANW-netwerk aanduiden dat de betreffende organisatie gebruik maakt van de use case “ANW-Zorgverlener”
 en “ANW-Bronhouder”. De regisseur is zelf ook te vinden in het adresboek voor de bronhouder en zorgverlener om toegang
-te geven tot deze regiseur met als service “ANW-Regisseur”.
+te geven tot deze regisseur met als service “ANW-Regisseur”.
 
 ### Regisseur vraagt de cliënt / medewerker gegevens op in alle ECD’s
 
 #### Omschrijving
 
 De regisseur heeft een functionaliteit tot zijn beschikking waarmee hij eenvoudig cliënten en medewerkers met elkaar kan
-koppelen. Dit kan zowel zijn eigen ecd zijn als een applicatie van derden, zie onderstaande afbeelding.
+koppelen. Dit kan zowel zijn eigen ECD zijn als een applicatie van derden, zie onderstaande afbeelding.
 
 ![][image1]  
-Het uitgangspunt is dat de regisseur een eigen NUTS node heeft draaien. Deze node wordt “getrust” door de NUTS nodes van
-de verschillende leveranciers. De regisseur kan met behulp van zijn eigen node een JWT token opvragen om hiermee de
-cliënt en medewerker gegevens van de verschillende zorgaanbieders op te vragen.
+Het uitgangspunt is dat de regisseur een eigen NUTS-node heeft draaien. Deze node wordt “getrust” door de NUTS-nodes van
+de verschillende leveranciers. De regisseur kan met behulp van zijn eigen node een JWT-token opvragen om hiermee de
+cliënt- en medewerkergegevens van de verschillende zorgaanbieders op te vragen.
 
-Deze zorgaanbieders vindt de regisseur door binnen het NUTS adresboek op de use case “ANW-Bronhouder” en
+Deze zorgaanbieders vinden de regisseur door binnen het NUTS-adresboek op de use case “ANW-Bronhouder” en
 “ANW-Zorgverlener” te filteren. Hiervan krijgt hij de endpoints terug die gebruikt kunnen worden om de informatie mee op
 te vragen.
 
@@ -295,7 +295,7 @@ De task houdt volgende in:
 | Veld           | Beschrijving                                                                       | Nuts                                            | Data type |
 |:---------------|:-----------------------------------------------------------------------------------|:------------------------------------------------|:----------|
 | Requester      | Wie de autorisatie will aanmaken(ANW regisseur app)                                | Organization DID Regisseur App                  | DID       |
-| Authorizer     | Bron systeem van wie de data(patient) is                                           | Organization DID bron systeem                   | DID       |
+| Authorizer     | Bron systeem van wie de data(patient) is                                           | Organization DID bronsysteem                    | DID       |
 | Accessor       | Systeem wat de data gaat bevragen en tonen in een weergave (eigenaar Practitioner) | Organization DID partij met toegang tot de data | DID       |
 | PractitionerId | MedewerkerId die toegang heeft tot het systeem                                     |                                                 | ID        |
 | PatientId      | Patiënt waar toegang voor verleend moet worden                                     |                                                 | ID        |
@@ -318,8 +318,8 @@ id van de uitgegeven verifiable credential mee in de PUT van de task. Deze id ka
 om het juiste VC te zoeken en mee te sturen naar het bronsysteem. Hiermee wordt voorkomen dat meerdere VC’s door de
 zorgverlener worden verstuurd indien aan één cliënt meerdere medewerkers worden toegekend.
 
-Zodra de task de status “Ready” krijgt stuurt de regisseur een “Notify” naar de ontvanger. Binnen deze “Notify” is de
-task id gedefinieerd waaronder het credential is aangemaakt. De notify specificeert richting de ontvanger dat medewerker
+Zodra de task de status “Ready” krijgt, stuurt de regisseur een “Notify” naar de ontvanger. Binnen deze “Notify” is de
+task-id gedefinieerd waaronder het credential is aangemaakt. De notify specificeert richting de ontvanger dat medewerker
 X de gegevens van cliënt Y kan gaan opvragen in het bronsysteem.
 
 ### Medewerker haalt gegevens op bij het bronsysteem
@@ -336,20 +336,15 @@ credential”. Voor nu houden wij hier de eerder gespecificeerde endpoints voor
 aan: [Endpoints voor data regisseur](#ANW-Regisseur)
 
 Zodra het token opgehaald is, kan de ontvanger bij het bronsysteem de gegevens ophalen. Het bronsysteem gaat kijken of
-de ontvanger gemachtigd is via het credential om de gegevens op te halen. Dit zal via de profielen in het credential
-gebeuren. Indien de ontvanger niet gemachtigd is voor een endpoint zal hij hierop een “403 forbidden” terugkrijgen.
+de ontvanger gemachtigd is via het credential om de gegevens op te halen. Dit gebeurt via de profielen in het
+credential. Indien de ontvanger niet gemachtigd is voor een endpoint krijgt hij hierop een “403 forbidden” terug.
 
-Ervan uitgaande dat de ontvanger rechten heeft tot alle gegevens vastgesteld voor de ANW use case, worden de opgevraagde
+Ervan uitgaande dat de ontvanger rechten heeft tot alle gegevens vastgesteld voor de ANW-use-case, worden de opgevraagde
 gegevens teruggestuurd naar de ontvanger. De ontvanger kan vervolgens de gegevens op een door hem gekozen manier tonen
 in zijn eigen ECD.
 
-~~Het ontvangende systeem zet de “Task” van de regisseur op de
-status “[Completed](https://www.hl7.org/fhir/STU3/valueset-task-status.html)” zodra het dossier voor het eerst ingezien
-is geworden door de medewerker.~~
-
-~~De regisseur verzendt vervolgens een notificatie richting de bronhouder dat de taks “Completed” is.~~
-
-Voor nu is het bovenstaande buiten scope gelaten omdat het functioneel niet helder is.
+Voor nu is het bijwerken van de Task naar "Voltooid" buiten scope gelaten omdat het functionele gevolg hiervan nog niet
+helder is.
 
 #### Voorbeeld task
 
