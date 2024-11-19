@@ -3,36 +3,38 @@
 # Inhoudsopgave
 
 <!-- TOC -->
+
 * [ANW](#anw)
 * [Inhoudsopgave](#inhoudsopgave)
-  * [Uitgeschreven proces flow](#uitgeschreven-proces-flow)
-    * [Uitgangspunten](#uitgangspunten)
-    * [Woordenlijst](#woordenlijst)
-    * [NUTS-adresboek](#nuts-adresboek)
-    * [Regisseur vraagt de cliënt / medewerker gegevens op in alle ECD’s](#regisseur-vraagt-de-cliënt--medewerker-gegevens-op-in-alle-ecds)
-      * [Omschrijving](#omschrijving)
-      * [Endpoints voor data regisseur](#endpoints-voor-data-regisseur)
-      * [Sequentie diagram](#sequentie-diagram)
-      * [Voorbeeld verifiable credential Regisseur (om cliënten/medewerkers op te halen)](#voorbeeld-verifiable-credential-regisseur-om-cliëntenmedewerkers-op-te-halen)
-    * [Onderstaande credential geeft het inzagesysteem uit.](#onderstaande-credential-geeft-het-inzagesysteem-uit)
-    * [Regisseur kent medewerker toe aan cliënt](#regisseur-kent-medewerker-toe-aan-cliënt)
-      * [Omschrijving](#omschrijving-1)
-    * [Medewerker haalt gegevens op bij het bronsysteem](#medewerker-haalt-gegevens-op-bij-het-bronsysteem)
-      * [Voorbeeld task](#voorbeeld-task)
-      * [Voorbeeld update task](#voorbeeld-update-task)
-      * [Voorbeeld verifiable credential Regisseur (get/put op task)](#voorbeeld-verifiable-credential-regisseur-getput-op-task)
-        * [Bronhouder](#bronhouder)
-        * [Zorgverlener](#zorgverlener)
-      * [Voorbeeld verifiable credential bronhouder (informatie opvragen)](#voorbeeld-verifiable-credential-bronhouder-informatie-opvragen)
-      * [Endpoints voor data overdracht](#endpoints-voor-data-overdracht)
-      * [Sequentie diagram](#sequentie-diagram-1)
-        * [Toelichting per stap](#toelichting-per-stap)
-  * [Logging](#logging)
-  * [Nuts register](#nuts-register)
-    * [ANW-Regisseur](#anw-regisseur)
-    * [ANW-Bronhouder](#anw-bronhouder)
-    * [ANW-Zorgverlener](#anw-zorgverlener)
-  * [Openstaande punten](#openstaande-punten)
+    * [Uitgeschreven proces flow](#uitgeschreven-proces-flow)
+        * [Uitgangspunten](#uitgangspunten)
+        * [Woordenlijst](#woordenlijst)
+        * [NUTS-adresboek](#nuts-adresboek)
+        * [Regisseur vraagt de cliënt / medewerker gegevens op in alle ECD’s](#regisseur-vraagt-de-cliënt--medewerker-gegevens-op-in-alle-ecds)
+            * [Omschrijving](#omschrijving)
+            * [Endpoints voor data regisseur](#endpoints-voor-data-regisseur)
+            * [Sequentie diagram](#sequentie-diagram)
+            * [Voorbeeld verifiable credential Regisseur (om cliënten/medewerkers op te halen)](#voorbeeld-verifiable-credential-regisseur-om-cliëntenmedewerkers-op-te-halen)
+        * [Onderstaande credential geeft het inzagesysteem uit.](#onderstaande-credential-geeft-het-inzagesysteem-uit)
+        * [Regisseur kent medewerker toe aan cliënt](#regisseur-kent-medewerker-toe-aan-cliënt)
+            * [Omschrijving](#omschrijving-1)
+        * [Medewerker haalt gegevens op bij het bronsysteem](#medewerker-haalt-gegevens-op-bij-het-bronsysteem)
+            * [Voorbeeld task](#voorbeeld-task)
+            * [Voorbeeld update task](#voorbeeld-update-task)
+            * [Voorbeeld verifiable credential Regisseur (get/put op task)](#voorbeeld-verifiable-credential-regisseur-getput-op-task)
+                * [Bronhouder](#bronhouder)
+                * [Zorgverlener](#zorgverlener)
+            * [Voorbeeld verifiable credential bronhouder (informatie opvragen)](#voorbeeld-verifiable-credential-bronhouder-informatie-opvragen)
+            * [Endpoints voor data overdracht](#endpoints-voor-data-overdracht)
+            * [Sequentie diagram](#sequentie-diagram-1)
+                * [Toelichting per stap](#toelichting-per-stap)
+    * [Logging](#logging)
+    * [Nuts register](#nuts-register)
+        * [ANW-Regisseur](#anw-regisseur)
+        * [ANW-Bronhouder](#anw-bronhouder)
+        * [ANW-Zorgverlener](#anw-zorgverlener)
+    * [Openstaande punten](#openstaande-punten)
+
 <!-- TOC -->
 
 ## Uitgeschreven proces flow
@@ -660,22 +662,23 @@ Deze wordt uitgegeven door de bronhouder. Hiermee kan de ontvanger het cliëntdo
 #### Endpoints voor data overdracht
 
 Hieronder staan de endpoints die beschikbaar gesteld moeten worden door de partijen die toegang tot het ophalen en
-wegschrijven van data aan partijen die ANW-zorg verlenen.
+wegschrijven van data aan partijen die ANW-zorg verlenen. Ter verheldering zijn de colommen Sort en Count toegevoegd om
+aan te tonen hoeveel resultaten er geretourneerd worden en op welke manier deze worden gesorteerd.
 
-| ZIB                                                           | Method | Endpoint                                                                                                                               | Profiel                                                                                                                                                              |
-|:--------------------------------------------------------------|--------|:---------------------------------------------------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Patiënt, Contactpersoon, Behandelaar(huisarts), Zorgaanbieder | GET    | /fhir/Patient?\_id={patientId}&\_include=Patient:general-practitioner&\_include:iterate=PractitionerRole:organization                  | [https://simplifier.net/packages/nictiz.fhir.nl.stu3.zib2017/2.2.10/files/1954638](https://simplifier.net/packages/nictiz.fhir.nl.stu3.zib2017/2.2.10/files/1954638) |
-| Bloeddruk                                                     | GET    | /fhir/Observation?patient={patientId}&\_profile=http://nictiz.nl/fhir/StructureDefinition/zib-PulseRate&\_sort=-date&\_count=5         | [https://simplifier.net/packages/nictiz.fhir.nl.stu3.zib2017/2.2.10/files/1954945](https://simplifier.net/packages/nictiz.fhir.nl.stu3.zib2017/2.2.10/files/1954945) |
-| Lichaamstemperatuur                                           | GET    | /fhir/Observation?patient={patientId}&\_profile=http://nictiz.nl/fhir/StructureDefinition/zib-BodyTemperature&\_sort=-date&\_count=5   | [https://simplifier.net/packages/nictiz.fhir.nl.stu3.zib2017/2.2.10/files/1954748](https://simplifier.net/packages/nictiz.fhir.nl.stu3.zib2017/2.2.10/files/1954748) |
-| Lichaamslengte                                                | GET    | /fhir/Observation?patient={patientId}&\_profile=http://nictiz.nl/fhir/StructureDefinition/zib-BodyHeight&\_sort=-date&\_count=5        | [https://simplifier.net/packages/nictiz.fhir.nl.stu3.zib2017/2.2.10/files/1954746](https://simplifier.net/packages/nictiz.fhir.nl.stu3.zib2017/2.2.10/files/1954746) |
-| Lichaamsgewicht                                               | GET    | /fhir/Observation?patient={patientId}&\_profile=http://nictiz.nl/fhir/StructureDefinition/zib-BodyWeight&\_sort=-date&\_count=5        | [https://simplifier.net/packages/nictiz.fhir.nl.stu3.zib2017/2.2.10/files/1954750](https://simplifier.net/packages/nictiz.fhir.nl.stu3.zib2017/2.2.10/files/1954750) |
-| Respiration                                                   | GET    | /fhir/Observation?patient={patientId}&\_profile=http://nictiz.nl/fhir/StructureDefinition/zib-Respiration&\_sort=-date&\_count=5       | [https://simplifier.net/packages/nictiz.fhir.nl.stu3.zib2017/2.2.10/files/1954947](https://simplifier.net/packages/nictiz.fhir.nl.stu3.zib2017/2.2.10/files/1954947) |
-| Rapportage                                                    | GET    | /fhir/Observation?patient={patientId}&\_profile=https://nuts.nl/fhir/StructureDefinition/nl-core-nursingreport&\_sort=-date&\_count=10 | [https://simplifier.net/anw/nl-core-nursi ngreport](https://simplifier.net/anw/nl-core-nursingreport)                                                                |
-| Rapportage (aanmaken)                                         | POST   | /fhir/Observation                                                                                                                      | [https://simplifier.net/anw/nl-core-nursingreport](https://simplifier.net/anw/nl-core-nursingreport)                                                                 |
-| Woonsituatie                                                  | GET    | /fhir/Observation?patient={patientId}&\_profile=http://nictiz.nl/fhir/StructureDefinition/zib-LivingSituation                          | [https://simplifier.net/packages/nictiz.fhir.nl.stu3.zib2017/2.2.10/files/1954848](https://simplifier.net/packages/nictiz.fhir.nl.stu3.zib2017/2.2.10/files/1954848) |
-| Alerts                                                        | GET    | /fhir/Flag?patient={patientId}}&\_profile=http://nictiz.nl/fhir/StructureDefinition/zib-Alert                                          | [https://simplifier.net/packages/nictiz.fhir.nl.stu3.zib2017/2.2.10/files/1954733](https://simplifier.net/packages/nictiz.fhir.nl.stu3.zib2017/2.2.10/files/1954733) |
-| Wilsverklaring                                                | GET    | /fhir/Consent?patient={patientId}&\_profile=http://nictiz.nl/fhir/StructureDefinition/zib-AdvanceDirective                             | [https://simplifier.net/packages/nictiz.fhir.nl.stu3.zib2017/2.2.10/files/1954726](https://simplifier.net/packages/nictiz.fhir.nl.stu3.zib2017/2.2.10/files/1954726) |
-| Allergie                                                      | GET    | /fhir/AllergyIntolerance?patient={patientId}&\_profile=http://nictiz.nl/fhir/StructureDefinition/zib-AllergyIntolerance                | [http://nictiz.nl/fhir/StructureDefinition/zib-AllergyIntolerance](http://nictiz.nl/fhir/StructureDefinition/zib-AllergyIntolerance)                                 |
+| ZIB                                                           | Method | Sort      | Count | Endpoint                                                                                                                               | Profiel                                                                                                                                                              |
+|:--------------------------------------------------------------|--------|-----------|-------|:---------------------------------------------------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Patiënt, Contactpersoon, Behandelaar(huisarts), Zorgaanbieder | GET    |           |       | /fhir/Patient?\_id={patientId}&\_include=Patient:general-practitioner&\_include:iterate=PractitionerRole:organization                  | [https://simplifier.net/packages/nictiz.fhir.nl.stu3.zib2017/2.2.10/files/1954638](https://simplifier.net/packages/nictiz.fhir.nl.stu3.zib2017/2.2.10/files/1954638) |
+| Bloeddruk                                                     | GET    | Date DESC | 5     | /fhir/Observation?patient={patientId}&\_profile=http://nictiz.nl/fhir/StructureDefinition/zib-PulseRate&\_sort=-date&\_count=5         | [https://simplifier.net/packages/nictiz.fhir.nl.stu3.zib2017/2.2.10/files/1954945](https://simplifier.net/packages/nictiz.fhir.nl.stu3.zib2017/2.2.10/files/1954945) |
+| Lichaamstemperatuur                                           | GET    | Date DESC | 5     | /fhir/Observation?patient={patientId}&\_profile=http://nictiz.nl/fhir/StructureDefinition/zib-BodyTemperature&\_sort=-date&\_count=5   | [https://simplifier.net/packages/nictiz.fhir.nl.stu3.zib2017/2.2.10/files/1954748](https://simplifier.net/packages/nictiz.fhir.nl.stu3.zib2017/2.2.10/files/1954748) |
+| Lichaamslengte                                                | GET    | Date DESC | 5     | /fhir/Observation?patient={patientId}&\_profile=http://nictiz.nl/fhir/StructureDefinition/zib-BodyHeight&\_sort=-date&\_count=5        | [https://simplifier.net/packages/nictiz.fhir.nl.stu3.zib2017/2.2.10/files/1954746](https://simplifier.net/packages/nictiz.fhir.nl.stu3.zib2017/2.2.10/files/1954746) |
+| Lichaamsgewicht                                               | GET    | Date DESC | 5     | /fhir/Observation?patient={patientId}&\_profile=http://nictiz.nl/fhir/StructureDefinition/zib-BodyWeight&\_sort=-date&\_count=5        | [https://simplifier.net/packages/nictiz.fhir.nl.stu3.zib2017/2.2.10/files/1954750](https://simplifier.net/packages/nictiz.fhir.nl.stu3.zib2017/2.2.10/files/1954750) |
+| Respiration                                                   | GET    | Date DESC | 5     | /fhir/Observation?patient={patientId}&\_profile=http://nictiz.nl/fhir/StructureDefinition/zib-Respiration&\_sort=-date&\_count=5       | [https://simplifier.net/packages/nictiz.fhir.nl.stu3.zib2017/2.2.10/files/1954947](https://simplifier.net/packages/nictiz.fhir.nl.stu3.zib2017/2.2.10/files/1954947) |
+| Rapportage                                                    | GET    | Date DESC | 10    | /fhir/Observation?patient={patientId}&\_profile=https://nuts.nl/fhir/StructureDefinition/nl-core-nursingreport&\_sort=-date&\_count=10 | [https://simplifier.net/anw/nl-core-nursi ngreport](https://simplifier.net/anw/nl-core-nursingreport)                                                                |
+| Rapportage (aanmaken)                                         | POST   |           |       | /fhir/Observation                                                                                                                      | [https://simplifier.net/anw/nl-core-nursingreport](https://simplifier.net/anw/nl-core-nursingreport)                                                                 |
+| Woonsituatie                                                  | GET    |           |       | /fhir/Observation?patient={patientId}&\_profile=http://nictiz.nl/fhir/StructureDefinition/zib-LivingSituation                          | [https://simplifier.net/packages/nictiz.fhir.nl.stu3.zib2017/2.2.10/files/1954848](https://simplifier.net/packages/nictiz.fhir.nl.stu3.zib2017/2.2.10/files/1954848) |
+| Alerts                                                        | GET    |           |       | /fhir/Flag?patient={patientId}}&\_profile=http://nictiz.nl/fhir/StructureDefinition/zib-Alert                                          | [https://simplifier.net/packages/nictiz.fhir.nl.stu3.zib2017/2.2.10/files/1954733](https://simplifier.net/packages/nictiz.fhir.nl.stu3.zib2017/2.2.10/files/1954733) |
+| Wilsverklaring                                                | GET    |           |       | /fhir/Consent?patient={patientId}&\_profile=http://nictiz.nl/fhir/StructureDefinition/zib-AdvanceDirective                             | [https://simplifier.net/packages/nictiz.fhir.nl.stu3.zib2017/2.2.10/files/1954726](https://simplifier.net/packages/nictiz.fhir.nl.stu3.zib2017/2.2.10/files/1954726) |
+| Allergie                                                      | GET    |           |       | /fhir/AllergyIntolerance?patient={patientId}&\_profile=http://nictiz.nl/fhir/StructureDefinition/zib-AllergyIntolerance                | [http://nictiz.nl/fhir/StructureDefinition/zib-AllergyIntolerance](http://nictiz.nl/fhir/StructureDefinition/zib-AllergyIntolerance)                                 |
 
 #### Sequentie diagram
 
