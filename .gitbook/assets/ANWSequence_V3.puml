@@ -20,11 +20,17 @@ ZMWANW -> ANWSystem++: Koppelt medewerker\naan patiënt
 ZMWANW --
 ANWSystem -> ANWSystem : Maakt een Task \nmet status "requested" \nmet bijbehorende credentials
 ANWSystem -> VVTB++: Notificeert dat er een nieuwe Task is aangemaakt voor Client
-VVTB --> ANWSystem: Haalt Task op
+VVTB --> ANWSystem: Accepted
+VVTB -> ANWSystem ++: Haalt Task op
+ANWSystem --> VVTB: Task
+ANWSystem --
 VVTB -> VVTB: Creëert benodige credentials \nvoor ANW-Zorgverlener uit Task
 VVTB --> ANWSystem --: Update de Task met VC-ID en status "ready"
 ANWSystem -> VVTA ++: Notificatie dat er een Task klaar staat voor zorgverlener
-VVTA --> ANWSystem: Haalt Task op
+VVTA --> ANWSystem: Accepted
+VVTA -> ANWSystem ++: Haalt Task op
+ANWSystem --> VVTA: Task
+ANWSystem --
 ANWSystem --
 VVTA -> ANWEmpl ++: Notificatie van nieuwe zorgtoewijzing
 

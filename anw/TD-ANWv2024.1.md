@@ -3,38 +3,36 @@
 # Inhoudsopgave
 
 <!-- TOC -->
-
 * [ANW](#anw)
 * [Inhoudsopgave](#inhoudsopgave)
-    * [Uitgeschreven proces flow](#uitgeschreven-proces-flow)
-        * [Uitgangspunten](#uitgangspunten)
-        * [Woordenlijst](#woordenlijst)
-        * [NUTS-adresboek](#nuts-adresboek)
-        * [Regisseur vraagt de cliënt / medewerker gegevens op in alle ECD’s](#regisseur-vraagt-de-cliënt--medewerker-gegevens-op-in-alle-ecds)
-            * [Omschrijving](#omschrijving)
-            * [Endpoints voor data regisseur](#endpoints-voor-data-regisseur)
-            * [Sequentie diagram](#sequentie-diagram)
-            * [Voorbeeld verifiable credential Regisseur (om cliënten/medewerkers op te halen)](#voorbeeld-verifiable-credential-regisseur-om-cliëntenmedewerkers-op-te-halen)
-        * [Onderstaande credential geeft het inzagesysteem uit.](#onderstaande-credential-geeft-het-inzagesysteem-uit)
-        * [Regisseur kent medewerker toe aan cliënt](#regisseur-kent-medewerker-toe-aan-cliënt)
-            * [Omschrijving](#omschrijving-1)
-        * [Medewerker haalt gegevens op bij het bronsysteem](#medewerker-haalt-gegevens-op-bij-het-bronsysteem)
-            * [Voorbeeld task](#voorbeeld-task)
-            * [Voorbeeld update task](#voorbeeld-update-task)
-            * [Voorbeeld verifiable credential Regisseur (get/put op task)](#voorbeeld-verifiable-credential-regisseur-getput-op-task)
-                * [Bronhouder](#bronhouder)
-                * [Zorgverlener](#zorgverlener)
-            * [Voorbeeld verifiable credential bronhouder (informatie opvragen)](#voorbeeld-verifiable-credential-bronhouder-informatie-opvragen)
-            * [Endpoints voor data overdracht](#endpoints-voor-data-overdracht)
-            * [Sequentie diagram](#sequentie-diagram-1)
-                * [Toelichting per stap](#toelichting-per-stap)
-    * [Logging](#logging)
-    * [Nuts register](#nuts-register)
-        * [ANW-Regisseur](#anw-regisseur)
-        * [ANW-Bronhouder](#anw-bronhouder)
-        * [ANW-Zorgverlener](#anw-zorgverlener)
-    * [Openstaande punten](#openstaande-punten)
-
+  * [Uitgeschreven proces flow](#uitgeschreven-proces-flow)
+    * [Uitgangspunten](#uitgangspunten)
+    * [Woordenlijst](#woordenlijst)
+    * [NUTS-adresboek](#nuts-adresboek)
+    * [Regisseur vraagt de cliënt / medewerker gegevens op in alle ECD’s](#regisseur-vraagt-de-cliënt--medewerker-gegevens-op-in-alle-ecds)
+      * [Omschrijving](#omschrijving)
+      * [Endpoints voor data regisseur](#endpoints-voor-data-regisseur)
+      * [Sequentie diagram](#sequentie-diagram)
+      * [Voorbeeld verifiable credential Regisseur (om cliënten/medewerkers op te halen)](#voorbeeld-verifiable-credential-regisseur-om-cliëntenmedewerkers-op-te-halen)
+    * [Onderstaande credential geeft het inzagesysteem uit.](#onderstaande-credential-geeft-het-inzagesysteem-uit)
+    * [Regisseur kent medewerker toe aan cliënt](#regisseur-kent-medewerker-toe-aan-cliënt)
+      * [Omschrijving](#omschrijving-1)
+    * [Medewerker haalt gegevens op bij het bronsysteem](#medewerker-haalt-gegevens-op-bij-het-bronsysteem)
+      * [Voorbeeld task](#voorbeeld-task)
+      * [Voorbeeld update task](#voorbeeld-update-task)
+      * [Voorbeeld verifiable credential Regisseur (get/put op task)](#voorbeeld-verifiable-credential-regisseur-getput-op-task)
+        * [Bronhouder](#bronhouder)
+        * [Zorgverlener](#zorgverlener)
+      * [Voorbeeld verifiable credential bronhouder (informatie opvragen)](#voorbeeld-verifiable-credential-bronhouder-informatie-opvragen)
+      * [Endpoints voor data overdracht](#endpoints-voor-data-overdracht)
+      * [Sequentie diagram](#sequentie-diagram-1)
+        * [Toelichting per stap](#toelichting-per-stap)
+  * [Logging](#logging)
+  * [Nuts register](#nuts-register)
+    * [ANW-Regisseur](#anw-regisseur)
+    * [ANW-Bronhouder](#anw-bronhouder)
+    * [ANW-Zorgverlener](#anw-zorgverlener)
+    * [TODO](#todo)
 <!-- TOC -->
 
 ## Uitgeschreven proces flow
@@ -93,7 +91,7 @@ zal voor deze usecase volgende twee: [Endpoints voor data regisseur](#endpoints-
 Als query wordt er een op voorhand afgesproken term “ANW-zorg” meegegeven. Hiermee kan de zorgaanbieder bepalen welke
 cliënten/medewerkers teruggestuurd moeten worden.
 
-Elke leverancier zal zelf in het ECD voorzien dat medewerkers en cliënten als ”ANW” cliënt gekenmerkt worden. Afspraak
+Elke leverancier zal zelf in het ECD voorzien dat medewerkers en cliënten als "ANW" cliënt gekenmerkt worden. Afspraak
 is dat alleen “In zorg” zijnde cliënten teruggegeven worden voor de ANW-usecase en ook alleen “In dienst (actief
 contract)” zijnde medewerkers teruggegeven worden voor de ANW-usecase.
 
@@ -115,6 +113,7 @@ gebruiken om zelf te filteren op de gewenste cliënten / medewerkers.
 | Zorgmedewerker | /fhir/Practitioner?\_query=ANW-zorg | [https://simplifier.net/nictizstu3-zib2017/nl-core-practitioner](https://simplifier.net/nictizstu3-zib2017/nl-core-practitioner)                                     |
 
 #### Sequentie diagram
+![](../.gitbook/assets/ANW_regisseur_sequence.png)
 
 #### Voorbeeld verifiable credential Regisseur (om cliënten/medewerkers op te halen)
 
@@ -287,7 +286,7 @@ usecases rechten wordt verleend aan een regissuer.
 
 #### Omschrijving
 
-Wanneer de regisseur een medewerker en cliënt aan elkaar gekoppeld heeft zal deze een “Task” aanmaken. Deze “Task”
+Wanneer de regisseur een medewerker en cliënt aan elkaar gekoppeld heeft, zal deze een “Task” aanmaken. Deze “Task”
 omschrijft dat er een “Verifiable credential” aangemaakt moet worden in het bronsysteem. Die task heeft als
 status “[Requested](https://www.hl7.org/fhir/STU3/valueset-task-status.html)”. Binnen de “Task” staat gedefinieerd voor
 wie en wat de credential uitgegeven moet worden.
@@ -310,7 +309,7 @@ Het bronsysteem maakt een verifiable credential aan met de gegevens in de task v
 credentials hebben een geldigheidsduur van 48 uur. Deze geldigheidsduur staat beschreven in zowel de Task als de
 Nuts-autorisatiecredential.
 
-In dit credential is gedefinieerd welke profielen bevraagd mogen worden. De profiel URL’s die opgenomen zijn kunnen in
+In dit credential is gedefinieerd welke profielen bevraagd mogen worden. De profiel-URL’s die opgenomen zijn kunnen in
 het volgende hoofdstuk teruggelezen worden: [Endpoints voor data regisseur](#endpoints-voor-data-regisseur)
 
 Zodra de credential gemaakt is, wordt deze automatisch (in de huidige opzet) binnen het NUTS netwerk kenbaar gemaakt.
@@ -729,16 +728,8 @@ ze beschikbaar moeten stellen.
 | oauth        | Url van de n2n/auth/v1/accesstoken van de nutsnode van de inzage applicatie                                                               |
 | notification | Endpoint waar de notificatie naar toe gestuurd kan worden om mee te delen dat er een authorisatie door een “ANW-Bronhouder” is aangemaakt |
 
-## Openstaande punten
 
-* Mag de vc voor de regisseur dat hij bij de ecd’s de cliënten / medewerkers ophaalt voor altijd blijven bestaan?
-    * Anders moet men een specifieke organisatie credential maken. Trusten van de regisseur op endpoint (
-      cliënten/medewerkers) niveau.
-* Kan je in een vc een medewerker nummer kwijt?
-* Mag je een custom tag toevoegen aan een vc?
-
-**TODO**
-
+### TODO
 * Alle purposes of use in een tabelletje.
 * Beschrijven alle parameters meesturen en niet meer dan afgesproken en in het vc staan.
 * `userContext` voor het opvragen van de lijst van Patient/Practitioner voor ANW-zorg moet duidelijk gemaakt worden:
