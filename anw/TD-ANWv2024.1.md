@@ -720,7 +720,6 @@ ze beschikbaar moeten stellen.
 
 ### TODO
 
-* Alle purposes of use in een tabelletje.
 * `userContext` voor het opvragen van de lijst van Patient/Practitioner voor ANW-zorg moet duidelijk gemaakt worden:
   `true` of `false`? Mogelijk moet dit om data protection redenen op `true` (immers grote lijst van namen). Voordat dit
   duidelijk werd is bij een eerder technisch overleg overeengekomen voorlopig te gaan voor `false`, om (pre-)caching
