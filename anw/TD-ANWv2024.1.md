@@ -62,8 +62,8 @@
 ### NUTS-adresboek
 
 De regisseur heeft toegang tot het NUTS-adresboek, hierin kunnen de leveranciers voor elke organisatie die onderdeel uit
-zal maken het ANW-netwerk aanduiden dat de betreffende organisatie gebruik maakt van de usecase “ANW-Zorgverlener”
-en “ANW-Bronhouder”. De regisseur is zelf ook te vinden in het adresboek voor de bronhouder en zorgverlener om toegang
+ maken het ANW-netwerk aanduiden dat de betreffende organisatie de service “ANW-Zorgverlener”
+en “ANW-Bronhouder” aanbiedt. De regisseur is zelf ook te vinden in het adresboek voor de bronhouder en zorgverlener om toegang
 te geven tot deze regisseur met als service “ANW-Regisseur”.
 
 ### Regisseur vraagt de cliënt / medewerker gegevens op in alle ECD’s
@@ -78,7 +78,7 @@ Het uitgangspunt is dat de regisseur een eigen NUTS-node heeft draaien. De regis
 een access token opvragen om hiermee de
 cliënt- en medewerkergegevens van de verschillende zorgaanbieders op te vragen.
 
-Deze zorgaanbieders vinden de regisseur door binnen het NUTS-adresboek op de usecase “ANW-Bronhouder” en
+Deze zorgaanbieders vinden de regisseur door binnen het NUTS-adresboek op de service “ANW-Bronhouder” en
 “ANW-Zorgverlener” te filteren. Hiervan krijgt hij de endpoints terug die gebruikt kunnen worden om de informatie mee op
 te vragen.
 
@@ -86,20 +86,16 @@ Binnen dit access token wordt gespecificeerd wie de bevraging uitvoert. Wanneer 
 niet
 nodig vertrouwensniveau substantieel te gebruiken. Het bevragen van de cliënt en medewerker gegevens wordt door de
 regisseur geïnitialiseerd. Dit kan op eender welk moment plaatsvinden met een door de regisseur te bepalen frequentie.
-De frequentie is hierbij een redelijk aantal requests per dag.
 
 Op basis van het ontvangen access token kan de zorgaanbieder bepalen tot welke endpoints de regisseur toegang heeft. Dit
-zal voor deze usecase volgende twee: [Endpoints voor data regisseur](#endpoints-voor-data-regisseur)
+zijn voor deze usecase de volgende twee: [Endpoints voor data regisseur](#endpoints-voor-data-regisseur)
 
-Als query wordt er een op voorhand afgesproken term “ANW-zorg” meegegeven. Hiermee kan de zorgaanbieder bepalen welke
-cliënten/medewerkers teruggestuurd moeten worden.
+Als query wordt de query “ANW-zorg” meegegeven. Hiermee kan de zorgaanbieder bepalen welke
+cliënten/medewerkers teruggestuurd moeten worden. 
 
 Elke leverancier maakt het mogelijk voor organisaties om cliënten als "ANW" cliënt te kenmerken in hun ECD. Afspraak
 is dat alleen “In zorg” zijnde cliënten teruggegeven worden voor de ANW-usecase en ook alleen “In dienst (actief
 contract)” zijnde medewerkers teruggegeven worden voor de ANW-usecase.
-
-Via de bovengenoemde endpoints is het vervolgens alleen mogelijk ANW-medewerkers / cliënten op te vragen als de tag
-“ANW-zorg” meegegeven wordt. Elk ECD logt zelf wie deze gegevens heeft opgevraagd als bewijsvoering.
 
 Alle gekenmerkte cliënten worden teruggeven, onafhankelijk of er een BSN staat geregistreerd of niet. Het is de
 verantwoordelijkheid van de regisseur applicatie om cliënten die niet aan de door hun gestelde voorwaarden voldoen, niet
@@ -272,7 +268,7 @@ Onderstaand is een voorbeeld van een POST voor het aanmaken van deze credential:
 ```
 
 Voor het aanmaken van deze credentials moet door de leverancier een functionaliteit ontwikkeld worden waar voor de twee
-usecases rechten wordt verleend aan een regissuer.
+services rechten worden verleend aan een regisseur.
 
 ### Regisseur kent medewerker toe aan cliënt
 
@@ -696,6 +692,7 @@ Hier staan de verschillende nutsservices die de verschillende partijen moeten re
 ze beschikbaar moeten stellen.
 
 ### ANW-Regisseur
+- Service: **ANW-Regisseur**
 
 | Endpoint | Beschrijving                                                                  |
 |:---------|:------------------------------------------------------------------------------|
@@ -703,6 +700,7 @@ ze beschikbaar moeten stellen.
 | oauth    | Volledige URL van de n2n/auth/v1/accesstoken van de nutsnode van de regisseur |
 
 ### ANW-Bronhouder
+- Service: **ANW-Bronhouder**
 
 | Endpoint     | Beschrijving                                                                                                                            |
 |:-------------|:----------------------------------------------------------------------------------------------------------------------------------------|
@@ -711,6 +709,7 @@ ze beschikbaar moeten stellen.
 | notification | Endpoint waar de notificatie naar toe gestuurd kan worden voor het verzoek om een autorisatie aan te maken voor een “ANW-Zorgverlener”  |
 
 ### ANW-Zorgverlener
+- Service: **ANW-Zorgverlener**
 
 | Endpoint     | Beschrijving                                                                                                                              |
 |:-------------|:------------------------------------------------------------------------------------------------------------------------------------------|
