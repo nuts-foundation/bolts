@@ -32,6 +32,9 @@
     * [ANW-Regisseur](#anw-regisseur)
     * [ANW-Bronhouder](#anw-bronhouder)
     * [ANW-Zorgverlener](#anw-zorgverlener)
+* [Uitbreidingen](#uitbreidingen)
+  * [Registeren van metingen](#registeren-van-metingen)
+  * [Foutafhandeling van registraties naar het brondossier](#foutafhandeling-van-registraties-naar-het-brondossier)
     * [TODO](#todo)
 <!-- TOC -->
 
@@ -62,8 +65,9 @@
 ### NUTS-adresboek
 
 De regisseur heeft toegang tot het NUTS-adresboek, hierin kunnen de leveranciers voor elke organisatie die onderdeel uit
- maken het ANW-netwerk aanduiden dat de betreffende organisatie de service “ANW-Zorgverlener”
-en “ANW-Bronhouder” aanbiedt. De regisseur is zelf ook te vinden in het adresboek voor de bronhouder en zorgverlener om toegang
+maken het ANW-netwerk aanduiden dat de betreffende organisatie de service “ANW-Zorgverlener”
+en “ANW-Bronhouder” aanbiedt. De regisseur is zelf ook te vinden in het adresboek voor de bronhouder en zorgverlener om
+toegang
 te geven tot deze regisseur met als service “ANW-Regisseur”.
 
 ### Regisseur vraagt de cliënt / medewerker gegevens op in alle ECD’s
@@ -91,7 +95,7 @@ Op basis van het ontvangen access token kan de zorgaanbieder bepalen tot welke e
 zijn voor deze usecase de volgende twee: [Endpoints voor data regisseur](#endpoints-voor-data-regisseur)
 
 Als query wordt de query “ANW-zorg” meegegeven. Hiermee kan de zorgaanbieder bepalen welke
-cliënten/medewerkers teruggestuurd moeten worden. 
+cliënten/medewerkers teruggestuurd moeten worden.
 
 Elke leverancier maakt het mogelijk voor organisaties om cliënten als "ANW" cliënt te kenmerken in hun ECD. Afspraak
 is dat alleen “In zorg” zijnde cliënten teruggegeven worden voor de ANW-usecase en ook alleen “In dienst (actief
@@ -692,6 +696,7 @@ Hier staan de verschillende nutsservices die de verschillende partijen moeten re
 ze beschikbaar moeten stellen.
 
 ### ANW-Regisseur
+
 - Service: **ANW-Regisseur**
 
 | Endpoint | Beschrijving                                                                  |
@@ -700,6 +705,7 @@ ze beschikbaar moeten stellen.
 | oauth    | Volledige URL van de n2n/auth/v1/accesstoken van de nutsnode van de regisseur |
 
 ### ANW-Bronhouder
+
 - Service: **ANW-Bronhouder**
 
 | Endpoint     | Beschrijving                                                                                                                            |
@@ -709,6 +715,7 @@ ze beschikbaar moeten stellen.
 | notification | Endpoint waar de notificatie naar toe gestuurd kan worden voor het verzoek om een autorisatie aan te maken voor een “ANW-Zorgverlener”  |
 
 ### ANW-Zorgverlener
+
 - Service: **ANW-Zorgverlener**
 
 | Endpoint     | Beschrijving                                                                                                                              |
@@ -716,6 +723,37 @@ ze beschikbaar moeten stellen.
 | fhir         | Base fhir endpoint waar de Practitioners ontsloten worden waarop geautoriseerd kan worden                                                 |
 | oauth        | Volledige URL van de n2n/auth/v1/accesstoken van de nutsnode van de inzage applicatie                                                     |
 | notification | Endpoint waar de notificatie naar toe gestuurd kan worden om mee te delen dat er een authorisatie door een “ANW-Bronhouder” is aangemaakt |
+
+# Uitbreidingen
+
+## Registeren van metingen
+
+Eerste uitbreiding op ANW is het registreren van metingen richting het brondossier. Om te registreren is geen
+uitbreiding nodig op de bestaande authorization credentials. Vanwege de tekstrapportage is de POST voor observation
+toegestaan. Het is aan de
+leverancier welke registraties beschikbaar zijn richting het brondossier voor de zorgverlener. Het brondossier
+**accepteert te allen tijde** een valide meting volgens de onderstaande Nictiz-profielen. Hoe het brondossier dit
+vervolgens
+verder verwerkt is aan de leverancier. De registratie zijn losse create requests per meting. Dit gebeurt in dezelfde
+stap als het registreren van de tekstrapportage.
+
+| ZIB                 | Fhir-profiel                                                                                                                                                         |
+|:--------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Polsfrequentie      | [https://simplifier.net/packages/nictiz.fhir.nl.stu3.zib2017/2.2.10/files/1954945](https://simplifier.net/packages/nictiz.fhir.nl.stu3.zib2017/2.2.10/files/1954945) |
+| Lichaamstemperatuur | [https://simplifier.net/packages/nictiz.fhir.nl.stu3.zib2017/2.2.10/files/1954748](https://simplifier.net/packages/nictiz.fhir.nl.stu3.zib2017/2.2.10/files/1954748) |
+| Lichaamslengte      | [https://simplifier.net/packages/nictiz.fhir.nl.stu3.zib2017/2.2.10/files/1954746](https://simplifier.net/packages/nictiz.fhir.nl.stu3.zib2017/2.2.10/files/1954746) |
+| Lichaamsgewicht     | [https://simplifier.net/packages/nictiz.fhir.nl.stu3.zib2017/2.2.10/files/1954750](https://simplifier.net/packages/nictiz.fhir.nl.stu3.zib2017/2.2.10/files/1954750) |
+| Respiration         | [https://simplifier.net/packages/nictiz.fhir.nl.stu3.zib2017/2.2.10/files/1954947](https://simplifier.net/packages/nictiz.fhir.nl.stu3.zib2017/2.2.10/files/1954947) |
+
+## Foutafhandeling van registraties naar het brondossier
+
+In het geval van een fout bij de registratie antwoord het bronsysteem met een OperationOutcome.
+Zie [Fout afhandeling/Handling Errors](https://informatiestandaarden.nictiz.nl/wiki/FHIR:V1.0_FHIR_IG_STU3#Handling_errors)
+in de implementatiegids van Nictiz. De [operation outcome](https://hl7.org/fhir/STU3/operationoutcome.html) kan door een
+systeem gebruikt worden om aan te geven richting de
+zorgverlener wat er fout is gegaan. In het geval van inhoudelijke fouten die niet zijn toegestaan volgens de
+Nictiz-profielen geeft de operationoutcome
+aan welke fout dit betreft. Zodat de zorgverlener de nodige aanpassing kan doen.
 
 ### TODO
 
