@@ -759,6 +759,100 @@ aan welke fout dit betreft. Zodat de zorgverlener de nodige aanpassing kan doen.
 ## Relatieve naar volledige URL's
 Op het moment worden er relatieve url's gebruikt in de Task van de Regisseur. Deze moeten worden omgezet naar volledige URL's. Hiermee moeten ook de brondossiers en inzage dossier compatible mee zijn.
 
+## Sleutel toegang
+Voor sleuteltoegang wordt er gebruik gemaakt van de Location Resource. In de Location resource wordt in het description veld de sleutelcode gevuld als vrije veld met potentionele beschrijving erbij (TODO: bespreken sleutelcode apart in de resource vullen?). Het inzage dossier kan aan deze Location komen doormiddel van dat die in de input zit van de Task. Het is de verantwoordelijkheid van het Brondossier om bij de PUT van de Task die al gebeurd dan ook dit input mee te sturen. Daarnaast moet de bronhouder ook het verifiable credential updaten om ook hier de Location reference bij in te zetten die in de Task wordt gezet. Als voorbeeld hoe dan de PUT in de nieuwe versie eruit komt zien is:
+```json
+{
+  "resourceType": "Task",
+  "id": "af10c4c8-bc4d-40c7-a335-fb63fe7158d3",
+  "meta": {
+    "profile": [
+      "https://nuts.nl/fhir/StructureDefinition/nl-core-authorization-request"
+    ]
+  },
+  "intent": "order",
+  "code": {
+    "coding": [
+      {
+        "code": "ANW-autorisatie-verzoek"
+      }
+    ]
+  },
+  "for": {
+    "reference": "https://fhirserverbron.example.nl/Patient/{patientId}",
+    "display": "patient display name"
+  },
+  "authoredOn": "2024-01-23T13:23:42.1885689+00:00",
+  "requester": {
+    "agent": {
+      "identifier": {
+        "system": "http://nuts.nl",
+        "value": "{DID regiseur}"
+      },
+      "display": "Regiseur A"
+    },
+    "onBehalfOf": {
+      "identifier": {
+        "system": "http://nuts.nl",
+        "value": "{DID authorizing party}"
+      },
+      "display": "Authorizing party C (data owner)"
+    }
+  },
+  "owner": {
+    "identifier": {
+      "system": "http://nuts.nl",
+      "value": "{DID accessing party}"
+    },
+    "display": "Accessing party B (data accessor)"
+  },
+  "reason": {
+    "text": "{optional user input of the regisseur}"
+  },
+  "restriction": {
+    "period": {
+      "start": "2024-01-23T14:23:42.2264869+01:00",
+      "end": "2024-01-26T13:23:42.2295674+00:00"
+    },
+    "recipient": [
+      {
+        "reference": "https://fhirserverinzagedossier.example.nl/Practitioner/{practitioner with access Id}",
+        "display": "anw practitioner display name"
+      }
+    ]
+  },
+  "output": [
+    {
+      "type": {
+        "coding": [
+          {
+            "system": "http://nuts.nl",
+            "code": "vc-id"
+          }
+        ]
+      },
+      "valueString": "did:nuts:EwVMYK2ugaMvRHUbGFBhuyF423JuNQbtpes35eHhkQic#b53bda82-712a-4d20-b673-e67efaf60acc"
+    }
+  ],
+  "input": [
+    {
+      "type": {
+        "coding": [
+          {
+            "system": "http://hl7.org/fhir/task-input-type",
+            "code": "location",
+            "display": "Location"
+          }
+        ]
+      },
+      "valueReference": {
+        "reference": "https://fhirserverbron.example.nl/Location/{locationId}"
+      }
+    }
+  ]
+}
+```
+
 ## Versionering
 Voor de bovenstaande doorontwikkelingen wordt als versionering tijdelijk gebruik gemaakt naar een link in het compatibility statement (op te halen op het /metadata endpoint) met daarin een instantiates waarbij een van de waarden deze moet bevatten:
 "https://github.com/nuts-foundation/bolts/blob/master/anw/TD-ANWv2024.1.md|1.1"
