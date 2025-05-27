@@ -855,8 +855,7 @@ Voor sleuteltoegang wordt er gebruik gemaakt van de Location Resource. In de Loc
 
 ## Versionering
 Voor de bovenstaande doorontwikkelingen wordt als versionering tijdelijk gebruik gemaakt naar een link in het compatibility statement (op te halen op het /metadata endpoint) met daarin een instantiates waarbij een van de waarden deze moet bevatten:
-"https://github.com/nuts-foundation/bolts/blob/master/anw/TD-ANWv2024.1.md|1.1"
-In de doorontwikkeling wordt ook het metadata endpoint verwacht dat die publiekelijk toegankelijk is. Wanneer /metadata niet resolvable is of bevat niet de bovenstaande URI dan draait er een "1.0" versie waarbij de bovenstaande doorontwikkelingen nog niet zijn geimplementeerd. 
+"https://github.com/nuts-foundation/bolts/blob/master/anw/TD-ANWv2024.1.md|1.1". De uiteindelijke versie beheer gaat ook werken met het vullen van de instantiates met een link naar een implementation guide voor elke specifieke rol een URI (bronhouder, inzagedossier, reggiseur). In de doorontwikkeling wordt ook het metadata endpoint verwacht dat die publiekelijk toegankelijk is. Wanneer /metadata niet resolvable is of bevat niet de bovenstaande URI dan draait er een "1.0" versie waarbij de bovenstaande doorontwikkelingen nog niet zijn geimplementeerd. 
 
 ### TODO
 
