@@ -744,6 +744,7 @@ stap als het registreren van de tekstrapportage.
 | Lichaamslengte      | [https://simplifier.net/packages/nictiz.fhir.nl.stu3.zib2017/2.2.10/files/1954746](https://simplifier.net/packages/nictiz.fhir.nl.stu3.zib2017/2.2.10/files/1954746) |
 | Lichaamsgewicht     | [https://simplifier.net/packages/nictiz.fhir.nl.stu3.zib2017/2.2.10/files/1954750](https://simplifier.net/packages/nictiz.fhir.nl.stu3.zib2017/2.2.10/files/1954750) |
 | Respiration         | [https://simplifier.net/packages/nictiz.fhir.nl.stu3.zib2017/2.2.10/files/1954947](https://simplifier.net/packages/nictiz.fhir.nl.stu3.zib2017/2.2.10/files/1954947) |
+| Bloeddruk           | [https://simplifier.net/packages/nictiz.fhir.nl.stu3.zib2017/2.2.10/files/1954945](https://simplifier.net/packages/nictiz.fhir.nl.stu3.zib2017/2.2.10/files/1954945) |
 
 ## Foutafhandeling van registraties naar het brondossier
 
@@ -754,6 +755,14 @@ systeem gebruikt worden om aan te geven richting de
 zorgverlener wat er fout is gegaan. In het geval van inhoudelijke fouten die niet zijn toegestaan volgens de
 Nictiz-profielen geeft de operationoutcome
 aan welke fout dit betreft. Zodat de zorgverlener de nodige aanpassing kan doen.
+
+## Relatieve naar volledige URL's
+Op het moment worden er relatieve url's gebruikt in de Task van de Regisseur. Deze moeten worden omgezet naar volledige URL's. Hiermee moeten ook de brondossiers en inzage dossier compatible mee zijn.
+
+## Versionering
+Voor de bovenstaande doorontwikkelingen wordt als versionering tijdelijk gebruik gemaakt naar een link in het compatibility statement (op te halen op het /metadata endpoint) met daarin een instantiates waarbij een van de waarden deze moet bevatten:
+"https://github.com/nuts-foundation/bolts/blob/master/anw/TD-ANWv2024.1.md|1.1"
+In de doorontwikkeling wordt ook het metadata endpoint verwacht dat die publiekelijk toegankelijk is. Wanneer /metadata niet resolvable is of bevat niet de bovenstaande URI dan draait er een "1.0" versie waarbij de bovenstaande doorontwikkelingen nog niet zijn geimplementeerd. 
 
 ### TODO
 
