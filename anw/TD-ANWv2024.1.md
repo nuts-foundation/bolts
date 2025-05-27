@@ -759,8 +759,8 @@ aan welke fout dit betreft. Zodat de zorgverlener de nodige aanpassing kan doen.
 ## Relatieve naar volledige URL's
 Op het moment worden er relatieve url's gebruikt in de Task van de Regisseur. Deze moeten worden omgezet naar volledige URL's. Hiermee moeten ook de brondossiers en inzage dossier compatible mee zijn.
 
-## Sleutel toegang
-Voor sleuteltoegang wordt er gebruik gemaakt van de Location Resource. In de Location resource wordt in het description veld de sleutelcode gevuld als vrije veld met potentionele beschrijving erbij (TODO: bespreken sleutelcode apart in de resource vullen?). Het inzage dossier kan aan deze Location komen doormiddel van dat die in de input zit van de Task. Het is de verantwoordelijkheid van het Brondossier om bij de PUT van de Task die al gebeurd dan ook dit input mee te sturen. Daarnaast moet de bronhouder ook het verifiable credential updaten om ook hier de Location reference bij in te zetten die in de Task wordt gezet. Als voorbeeld hoe dan de PUT in de nieuwe versie eruit komt zien is:
+## Woningtoegang
+Voor woningtoegang wordt er gebruik gemaakt van de Location Resource. In de Location resource wordt in het description veld de sleutelcode gevuld als vrije veld met potentionele beschrijving erbij (TODO: bespreken sleutelcode apart in de resource vullen?). Het inzage dossier kan aan deze Location komen doormiddel van dat die in de input zit van de Task. Het is de verantwoordelijkheid van het Brondossier om bij de PUT van de Task die al gebeurd dan ook dit input mee te sturen. Daarnaast moet de bronhouder ook het verifiable credential updaten om ook hier de Location reference bij in te zetten die in de Task wordt gezet. Als voorbeeld hoe dan de PUT in de nieuwe versie eruit komt zien is:
 ```json
 {
   "resourceType": "Task",
