@@ -25,7 +25,7 @@ VVTB -> ANWSystem ++: Haalt Task op
 ANWSystem --> VVTB: Task
 ANWSystem --
 VVTB -> VVTB: Creëert benodige credentials \nvoor ANW-Zorgverlener uit Task
-VVTB --> ANWSystem --: Update de Task met VC-ID en status "ready"
+VVTB --> ANWSystem --: Update de Task met VC-ID, location reference en status "ready"
 ANWSystem -> VVTA ++: Notificatie dat er een Task klaar staat voor zorgverlener
 VVTA --> ANWSystem: Accepted
 VVTA -> ANWSystem ++: Haalt Task op
